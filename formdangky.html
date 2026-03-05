@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form method="post" action="http://demo.codegym.vn/6/registration_form/register.php">
+        <h1>ĐĂNG KÝ HỌC VIÊN</h1>
+        <div>
+            <label>Họ và tên:</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <br>
+        <div>
+            <label>Ngày sinh:</label>
+            <input type="date" id="date" name="date">
+        </div>
+        <br>
+        <div>
+            <p>Giới tính</p>
+            <input type="radio" id="male" name="gender" value="male">
+            <label for="male">Nam </label><br>
+            <input type="radio" id="female" name="gender" value="female">
+            <label for="female">Nữ</label><br>
+        </div>
+        <br>
+        <div>
+            <p for="address">Địa chỉ</p>
+            <textarea id="address" name="address"></textarea>
+        </div>
+        <br>
+        <div>
+            <label for="class">Lớp</label>
+            <select name="class" id="class">
+                <option value="a">-Chọn lớp-</option>
+                <option value="a">A</option>
+                <option value="b">B</option>
+                <option value="c">C</option>
+                <option value="d">D</option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <label>Email:</label>
+            <input type="email" id="email" name="email">
+        </div>
+        <br>
+        <div>
+            <label>Điện thoại:</label>
+            <input type="tel" id="phone" name="phone">
+        </div>
+        <br>
+        <input type="submit" value="Gửi thông tin">
+        <input type="reset" value="Nhập lại">
+    </form>
+
+</body>
+
+</html>
