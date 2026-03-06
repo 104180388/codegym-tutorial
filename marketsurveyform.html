@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form method="post" action="http://demo.codegym.vn/6/registration_form/register.php">
+        <h1>Market Research Survey</h1>
+        <p>Please take a few moments to complete this satisfaction survey.</p>
+        <div>
+            <label>What is your age range?</label>
+            <select name="age" id="age">
+                <option>18-24</option>
+                <option>25-34</option>
+                <option>35-50</option>
+                <option>50+</option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <label>What is your yearly income range?</label>
+            <select name="income" id="income">
+                <option>$0 - $25,000</option>
+                <option>$25,001 - $50,000</option>
+                <option>$50,001 - $100,000</option>
+                <option>$100,000+</option>
+                <option>50+</option>
+            </select>
+        </div>
+        <p>Gender</p>
+        <input type="radio" id="male" name="gender" value="Male">
+        <label for="male">Male</label><br>
+        <input type="radio" id="female" name="gender" value="Female">
+        <label for="female">Female</label><br>
+        <input type="radio" id="nonbinary" name="gender" value="Nonbinary">
+        <label for="nonbinary">Nonbinary</label><br>
+        <input type="radio" id="other" name="gender" value="Other">
+        <label for="other">Other</label><br>
+        <input>
+        </div>
+        <br>
+
+        <div>
+            <p>
+                Which of the following products have your purchased in the last 2 months. Please check all that apply.
+            </p>
+            <input type="checkbox" id="product1" name="product1" value="Product1">
+            <label for="product1">Product 1</label><br>
+            <input type="checkbox" id="product2" name="product2" value="Product2">
+            <label for="product2">Product 2</label><br>
+            <input type="checkbox" id="product3" name="product3" value="Product3">
+            <label for="product3">Product 3</label><br>
+        </div>
+        <br>
+        </div>
+
+        <div>
+        <p>How often would you use our new product?</p>
+        <input type="radio" id="daily" name="frequency" value="Daily">
+        <label for="daily">Daily</label><br>
+        <input type="radio" id="weekly" name="frequency" value="Weekly">
+        <label for="weekly">Weekly</label><br>
+        <input type="radio" id="monthly" name="frequency" value="Monthly">
+        <label for="monthly">Monthly</label>
+        </div>
+        <br>
+        <div>
+            <p>What would you pay for the new product?</p>
+            <span>$</span> <input type="number" name="price" value="Price">.<input type="number" name="price" value="Price">
+        </div>
+    </form>
+
+</body>
+
+</html>
