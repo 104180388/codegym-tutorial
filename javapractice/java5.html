@@ -8,19 +8,53 @@
 </head>
 <script>
     function convert() {
-        let banKinh = parseInt(document.getElementById("c").value);
-        let dienTich = 2*banKinh*3.14;
-        let chuVi = banKinh*banKinh*3.14;
-        document.getElementById("dientich").innerHTML = "Dien tich hinh tron la: " + dienTich;
-        document.getElementById("chuvi").innerHTML = "Chu vi hinh tron la: " + chuVi;
+        let firstType = document.getElementById("type1").value;
+        let secondType = document.getElementById("type2").value;
+        let money = parseInt(document.getElementById("money").value);
+        let afterConvert;
+        if(firstType == "vnd" & secondType == "usd"){
+            afterConvert = money/23000;
+        }
+        else if(firstType == "usd" & secondType == "vnd"){
+            afterConvert = money*23000;
+        }
+        else{
+            afterConvert = money
+        }
+
+        document.getElementById("money2").innerHTML = afterConvert;
     }
 </script>
+<style>
+    td{
+        height:30px;
+        width: 200px;
+    }
+</style>
 
 <body>
-    <input type="number" placeholder="Nhap ban kinh hinh tron" id="c">
-    <button onclick="convert()">Submit</button>
-    <p id="dientich"></p>
-    <p id="chuvi"></p>
+    <table>
+        <tr>
+            <td>Amount</td>
+            <td>From currency</td>
+            <td>To Currency</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><input type="number" id="money"></td>
+            <td><select id="type1">
+                <option value="vnd">VND</option>
+                <option value="usd">USD</option>
+            </select></td>
+            <td><select id="type2">
+                <option value="usd">USD</option>
+                <option value="vnd">VND</option>
+            </select></td>
+            <td><button onclick="convert()">Convert</button></td>
+        </tr>
+    </table>
+
+    <p id="money2"></p>
 </body>
 
 </html>
