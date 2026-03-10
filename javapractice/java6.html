@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+
+    function calculation(type) {
+        let firstNumber = parseInt(document.getElementById("number1").value);
+        let secondNumber = parseInt(document.getElementById("number2").value);
+        let result;
+
+        if(type === "add"){
+            result = firstNumber + secondNumber
+        }
+        else if(type === "sub"){
+            result = firstNumber - secondNumber
+        }
+        else if(type === "multi"){
+            result = firstNumber * secondNumber
+        }
+        else if(type === "divide"){
+            result = firstNumber / secondNumber
+        }
+        else{result = "null"}
+
+        document.getElementById("result").innerHTML = result;
+    };
+
+</script>
+
+<body>
+    <table>
+        <tr>
+            <td colspan="2"><input type="number" id="number1"></td>
+            <td colspan="2"><input type="number" id="number2"></td>
+        </tr>
+        <tr>
+            <td><button onclick="calculation('add')">Addition(+)</button></td>
+            <td><button onclick="calculation('sub')">Subtraction(-)</button></td>
+            <td><button onclick="calculation('multi')">Multication(X)</button></td>
+            <td><button onclick="calculation('divide')">Division(/)</button></td>
+        </tr>
+    </table>
+
+    <p id="result"></p>
+</body>
+
+</html>
