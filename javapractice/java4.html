@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    function convert() {
+        let Celsius = parseInt(document.getElementById("c").value);
+        let Fahrenheit = (9 * Celsius / 5) + 32;
+        document.getElementById("result").innerHTML = Fahrenheit + "F";
+    }
+</script>
+
+<body>
+    <input type="number" placeholder="Nhap do C" id="c">
+    <button onclick="convert()">Submit</button>
+    <p id="result"></p>
+</body>
+
+</html>

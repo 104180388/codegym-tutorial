@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    function convert() {
+        let banKinh = parseInt(document.getElementById("c").value);
+        let dienTich = 2*banKinh*3.14;
+        let chuVi = banKinh*banKinh*3.14;
+        document.getElementById("dientich").innerHTML = "Dien tich hinh tron la: " + dienTich;
+        document.getElementById("chuvi").innerHTML = "Chu vi hinh tron la: " + chuVi;
+    }
+</script>
+
+<body>
+    <input type="number" placeholder="Nhap ban kinh hinh tron" id="c">
+    <button onclick="convert()">Submit</button>
+    <p id="dientich"></p>
+    <p id="chuvi"></p>
+</body>
+
+</html>

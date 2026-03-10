@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    diemVatLi = prompt("Nhap diem vat li");
+    diemHoaHoc = prompt("Nhap diem hoa hoc");
+    diemSinhHoc = prompt("Nhap diem sinh hoc");
+    let vatLi = parseInt(diemVatLi);
+    let hoaHoc = parseInt(diemHoaHoc);
+    let sinhHoc = parseInt(diemSinhHoc);
+
+    let diemTrungBinh = (vatLi + hoaHoc + sinhHoc)/3;
+    document.write("Diem trung binh la: " + diemTrungBinh);
+    document.write("<br/>")
+    let diemTong = vatLi + hoaHoc + sinhHoc;
+    document.write("Diem tong la: " + diemTong);
+</script>
+
+<body>
+
+</body>
+
+</html>
