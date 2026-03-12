@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Bài 1</h1>
+    <input type="number" id="number1" placeholder="Nhap so a">
+    <input type="number" id="number2" placeholder="Nhap so b">
+    <input type="button" onclick="check()" value="Check">
+    <p id="result"></p>
+
+    <h1>Bài 2</h1>
+    <input type="number" id="tuoi" placeholder="Nhap tuoi">
+    <input type="button" onclick="checkTuoi()" value="Check">
+    <p id="resulttuoi"></p>
+
+    <h1>Bài 3</h1>
+    <input type="number" id="number" placeholder="Nhap so bat ki">
+    <input type="button" onclick="checkSo()" value="Check">
+    <p id="result0"></p>
+
+    <h1>Bài 4</h1>
+    <input type="number" id="number1a" placeholder="Nhap so a">
+    <input type="number" id="number2a" placeholder="Nhap so b">
+    <input type="number" id="number3a" placeholder="Nhap so c">
+    <input type="button" onclick="checkSoLonNhat()" value="Check">
+    <p id="result1"></p>
+
+    <h1>Bài 5</h1>
+    <input type="number" id="number1b" placeholder="Nhap diểm bài kiểm tra">
+    <input type="number" id="number2b" placeholder="Nhap diểm thi giữa kỳ">
+    <input type="number" id="number3b" placeholder="Nhap diểm thi cuối kỳ">
+    <input type="button" onclick="checkHocLuc()" value="Check">
+    <p id="result2"></p>
+
+    <h1>Bài 6</h1>
+    <input type="number" id="doanhso" placeholder="Nhap doanh so ban hang(VND)">
+    <input type="button" onclick="checkHoaHong()" value="Check">
+    <p id="result3"></p>
+
+    <h1>Bài 7</h1>
+    <input type="number" id="thoigian" placeholder="Nhap thoi gian su dung dien thoai(phut)">
+    <input type="button" onclick="checkCuoc()" value="Check">
+    <p id="result4"></p>
+
+</body>
+<script>
+    function check() {
+        let num1 = parseInt(document.getElementById("number1").value)
+        let num2 = parseInt(document.getElementById("number2").value)
+        let ketQua = document.getElementById("result");
+        if (num1 % num2 == 0) {
+            ketQua.innerText = "a chia het cho b";
+        }
+        else {
+            ketQua.innerText = "a khong chia het cho b";
+        }
+    }
+
+    function checkTuoi() {
+        let age = parseInt(document.getElementById("tuoi").value)
+        let ketQuaDo = document.getElementById("resulttuoi");
+        if (age >= 16) {
+            ketQuaDo.innerText = "Du dieu kien";
+        }
+        else {
+            ketQuaDo.innerText = "Khong du dieu kien";
+        }
+    }
+
+    function checkSo() {
+        let num = parseInt(document.getElementById("number").value)
+        let ketQua = document.getElementById("result0");
+        if (num > 0) {
+            ketQua.innerText = "Lon hon 0";
+        }
+        else if (num == 0) {
+            ketQua.innerText = "Bang 0";
+        }
+        else {
+            ketQua.innerText = "Nho hon 0";
+        }
+    }
+
+    function checkSoLonNhat() {
+        let num1 = parseInt(document.getElementById("number1a").value)
+        let num2 = parseInt(document.getElementById("number2a").value)
+        let num3 = parseInt(document.getElementById("number3a").value)
+        let ketQua = document.getElementById("result1");
+        if (num1 >= num2 && num1 >= num3) {
+            ketQua.innerText = "So " + num1 + " lon nhat"
+        }
+        else if (num2 >= num1 && num2 >= num3) {
+            ketQua.innerText = "So " + num2 + " lon nhat"
+        }
+        else if (num3 >= num1 && num3 >= num2) {
+            ketQua.innerText = "So " + num3 + " lon nhat"
+        }
+
+    }
+
+    function checkHocLuc() {
+        let num1 = parseInt(document.getElementById("number1b").value)
+        let num2 = parseInt(document.getElementById("number2b").value)
+        let num3 = parseInt(document.getElementById("number3b").value)
+        let hocLuc = document.getElementById("result2");
+        let diemTrungBinh = (num1 + num2 * 2 + num3 * 3) / 6
+        if (diemTrungBinh >= 8) {
+            hocLuc.innerHTML = "Hoc luc Gioi"
+        }
+        else if (diemTrungBinh < 8 && diemTrungBinh > 5) {
+            hocLuc.innerHTML = "Hoc luc Kha"
+        }
+        else {
+            hocLuc.innerHTML = "Hoc luc Trung binh"
+        }
+    }
+
+    function checkHoaHong() {
+        let num = parseInt(document.getElementById("doanhso").value)
+        let doanhSo = document.getElementById("result3");
+        if (num > 100000000) {
+            doanhSo.innerHTML = "Doanh so: " + num * 7 / 100
+        }
+        else if (num >= 50000000 && num <= 100000000) {
+            doanhSo.innerHTML = "Doanh so: " + num * 5 / 100
+        }
+        else {
+            doanhSo.innerHTML = "Doanh so: " + num * 3 / 100
+        }
+    }
+
+    function checkCuoc() {
+        let num = parseInt(document.getElementById("thoigian").value)
+        let cuocPhi = document.getElementById("result4");
+        
+        if(num <= 50){
+            cuocPhi.innerHTML = "Cuoc phi: " + num*600 + " dong"
+        }
+        else if(num>50 && num<=200){
+            cuocPhi.innerHTML = "Cuoc phi: " + (50*600 + num*400) + " dong"
+        }
+        else{
+            cuocPhi.innerHTML = "Cuoc phi: " + (50*600 + 150*400 + num*200) + " dong"
+        }
+    }
+</script>
+
+</html>
