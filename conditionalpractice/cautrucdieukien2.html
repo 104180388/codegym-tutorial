@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Bài 1</h1>
+    <input type="number" id="temp" placeholder="Nhap nhiet do(C)">
+    <input type="button" onclick="check()" value="Check">
+    <p id="result"></p>
+
+    <h1>Bài 2</h1>
+    <input type="number" id="height" placeholder="Nhap do cao(m)">
+    <input type="button" onclick="check2()" value="Check">
+    <p id="result2"></p>
+
+    <h1>Bài 3</h1>
+    <input type="number" id="length" placeholder="Nhap do dai canh hinh vuong">
+    <input type="button" onclick="check3()" value="Check">
+    <p id="result3"></p>
+
+    <h1>Bài 4: Hinh chu nhat</h1>
+    <input type="number" id="canh1" placeholder="Nhap do dai canh 1">
+    <input type="number" id="canh2" placeholder="Nhap do dai canh 2">
+    <input type="button" onclick="check4()" value="Check">
+    <p id="result4"></p>
+
+    <h1>Bài 5: Hinh vuong</h1>
+    <input type="number" id="canh1a" placeholder="Nhap do dai canh 1">
+    <input type="number" id="canh2a" placeholder="Nhap do dai canh 2">
+    <input type="button" onclick="check5()" value="Check">
+    <p id="result5"></p>
+
+    <h1>Bài 6</h1>
+    <input type="number" id="soA" placeholder="a"><span>x + </span>
+    <input type="number" id="soB" placeholder="b"><span> = 0</span>
+    <input type="button" onclick="check6()" value="Check">
+    <p id="result6"></p>
+
+    <h1>Bài 7</h1>
+    <input type="number" id="soAA" placeholder="a"><span>x**2 + </span>
+    <input type="number" id="soBB" placeholder="b"><span>x +</span>
+    <input type="number" id="soCC" placeholder="c"><span> = 0</span>
+    <input type="button" onclick="check7()" value="Check">
+    <p id="result7"></p>
+
+    <h1>Bài 8</h1>
+    <input type="number" id="age" placeholder="Nhap tuoi">
+    <input type="button" onclick="check8()" value="Check">
+    <p id="result8"></p>
+
+    <h1>Bài 9</h1>
+    <input type="number" id="canh1b" placeholder="Nhap canh a">
+    <input type="number" id="canh2b" placeholder="Nhap canh b">
+    <input type="number" id="canh3b" placeholder="Nhap canh c">
+    <input type="button" onclick="check9()" value="Check">
+    <p id="result9"></p>
+
+    <h1>Bài 10</h1>
+    <input type="number" id="electric" placeholder="Nhap so dien (kWh)">
+    <input type="button" onclick="check10()" value="Check">
+    <p id="result10"></p>
+
+    <h1>Bài 11</h1>
+    <input type="number" id="tax" placeholder="Nhap so luong theo thang(VND)">
+    <input type="button" onclick="check11()" value="Check">
+    <p id="result11"></p>
+
+    <h1>Bài 12</h1>
+    <input type="number" id="interest" placeholder="Nhap so tien gui ngan hang(VND)">
+    <input type="number" id="time" placeholder="Nhap so nam">
+    <input type="button" onclick="check12()" value="Check">
+    <p id="result12"></p>
+</body>
+<script>
+    function check() {
+        let num = parseInt(document.getElementById("temp").value);
+        let result = document.getElementById("result")
+        result.innerHTML = num * 9 / 5 + 32 + " F"
+    }
+
+    function check2() {
+        let num = parseInt(document.getElementById("height").value);
+        let result = document.getElementById("result2")
+        result.innerHTML = num * 3.2808 + " ft"
+    }
+
+    function check3() {
+        let num = parseInt(document.getElementById("length").value);
+        let result = document.getElementById("result3")
+        result.innerHTML = "Dien tich hinh vuong la: "+num **2
+    }
+
+    function check4() {
+        let num1 = parseInt(document.getElementById("canh1").value);
+        let num2 = parseInt(document.getElementById("canh2").value);
+        let result = document.getElementById("result4")
+        result.innerHTML = "Dien tich hinh chu nhat la: " + num1*num2
+    }
+
+    function check5() {
+        let num1 = parseInt(document.getElementById("canh1a").value);
+        let num2 = parseInt(document.getElementById("canh2a").value);
+        let result = document.getElementById("result5")
+        result.innerHTML = "Dien tich hinh tam giac vuong la: " + num1*num2/2
+    }
+
+    function check6() {
+        let num1 = parseInt(document.getElementById("soA").value);
+        let num2 = parseInt(document.getElementById("soB").value);
+        let result = document.getElementById("result6")
+        result.innerHTML = "Nghiem cua phuong trinh la: " + -num2/num1
+    }
+
+    function check7() {
+        let num1 = parseInt(document.getElementById("soAA").value);
+        let num2 = parseInt(document.getElementById("soBB").value);
+        let num3 = parseInt(document.getElementById("soCC").value);
+        let result = document.getElementById("result7")
+        let delta = num2**2 - (4*num1*num3)
+        if(delta < 0){
+            result.innerHTML = "Phuong trinh vo nghiem"
+        }
+        else if(delta == 0){
+            result.innerHTML = "Phuong trinh cos nghiem kep: x1 = x2 = " + -num2/ (2*num1)
+        }
+        else if(delta>0){
+            result.innerHTML = "Phuong trinh co 2 nghiem phan biet: x1 = " + (-num2 + Math.sqrt(delta)) / (2*num1)  + "       x2 = "+ (-num2 - Math.sqrt(delta)) / (2*num1)
+        }
+        else{
+            result.innerHTML = "Phuong trinh co vo so nghiem"
+        }
+
+    }
+
+    function check8() {
+        let num = parseInt(document.getElementById("age").value);
+        let result = document.getElementById("result8")
+        if(num > 0 && num <120){
+            result.innerHTML = "Day la tuoi cua mot nguoi"
+        }
+        else{
+            result.innerHTML = "Day la khong phai la tuoi cua mot nguoi"
+        }
+    }
+
+    function check9() {
+        let num1 = parseInt(document.getElementById("canh1b").value);
+        let num2 = parseInt(document.getElementById("canh2b").value);
+        let num3 = parseInt(document.getElementById("canh3b").value);
+        let result = document.getElementById("result9")
+
+        
+
+        if(num1>0 && num2>0 && num3>0){
+            if(num1+num2>num3 && num1+num3>num2 &&num3+num2>num1 ){
+                result.innerHTML = "Day la canh cua mot tam giac"
+            }
+            else{
+                result.innerHTML = "Day khong phai la canh cua mot tam giac"
+            }
+        }
+        else{
+            result.innerHTML = "Day khong phai la canh cua mot tam giac"
+        }
+    }
+
+    function check10() {
+        let num = parseInt(document.getElementById("electric").value);
+        let result = document.getElementById("result10")
+        if(num<=50){
+            result.innerHTML = "So tien can dong la: "+ num *1984 + " VND"
+        }
+        else if(num>50&&num<=100){
+            result.innerHTML = "So tien can dong la: "+ 50*1984 +  num *2050 + " VND"
+        }
+        else if(num>100&&num<=200){
+            result.innerHTML = "So tien can dong la: "+ 50*1984 +  50*2050 + num*2380 + " VND"
+        }
+        else if(num>200&&num<=300){
+            result.innerHTML = "So tien can dong la: "+ 50*1984 +  50*2050 + 100 *2380 + num*2998 + " VND"
+        }
+        else if(num>300&&num<=400){
+            result.innerHTML = "So tien can dong la: "+ 50*1984 +  50*2050 + 100 *2380 + 100*2998 + num*3350 +" VND"
+        }
+        else{
+            result.innerHTML = "So tien can dong la: "+ 50*1984 +  50*2050 + 100 *2380 + 100*2998 + 100*3350 +num*3460+" VND"
+        }
+
+    }
+
+    function check11() {
+        let num = parseInt(document.getElementById("tax").value);
+        let result = document.getElementById("result11")
+        if(num<=5000000){
+            result.innerHTML = "So tien thue can dong la: "+ (num *5)/100 + " VND"
+        }
+        else if(num>5000000&&num<=10000000){
+            result.innerHTML = "So tien thue can dong la: "+ (num *10)/100 + " VND"
+        }
+        else if(num>10000000&&num<=18000000){
+            result.innerHTML = "So tien thue can dong la: "+ (num *15)/100 + " VND"
+        }
+        else if(num>18000000&&num<=32000000){
+            result.innerHTML = "So tien thue can dong la: "+ (num *20)/100 + " VND"
+        }
+        else if(num>32000000&&num<=52000000){
+            result.innerHTML = "So tien thue can dong la: "+ (num *25)/100 + " VND"
+        }
+        else if(num>52000000&&num<=80000000){
+            result.innerHTML = "So tien thue can dong la: "+ (num *30)/100 + " VND"
+        }
+        else{
+            result.innerHTML = "So tien thue can dong la: "+ (num *35)/100 + " VND"
+        }
+    }
+
+    function check12() {
+        let num = parseInt(document.getElementById("interest").value);
+        let time = parseInt(document.getElementById("time").value);
+        let result = document.getElementById("result12")
+        result.innerHTML = "Tong so tien ca goc va lai la: " +(((4/100)+1)**time)*num + " VND"
+    }
+
+</script>
+
+</html>
