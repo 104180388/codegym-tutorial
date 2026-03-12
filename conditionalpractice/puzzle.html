@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <img onclick="changeImage1()" id="image-1" style="box-shadow: black 2px 3px 3px;" data-name="obelisk" alt=""
+        src="../img/obelisk-p1.jpg">
+    <br>
+    <img onclick="changeImage2()" id="image-2" style="box-shadow: black 2px 3px 3px;" data-name="osiris" alt=""
+        src="../img/osiris-p2.jpg">
+    <br>
+    <img onclick="changeImage3()" id="image-3" style="box-shadow: black 2px 3px 3px;" data-name="ra" alt=""
+        src="../img/ra-p3.jpg">
+    <br>
+    <img onclick="changeImage4()" id="image-4" style="box-shadow: black 2px 3px 3px;" data-name="obelisk" alt=""
+        src="../img/obelisk-p4.jpg">
+
+    <script>
+        let imag = document.getElementById("image-1");
+        let imag2 = document.getElementById("image-2");
+        let imag3 = document.getElementById("image-3");
+        let imag4 = document.getElementById("image-4");
+
+        function changeImage1() {
+            if (imag.getAttribute("data-name") == "obelisk") {
+                imag.src = "../img/osiris-p1.jpg";
+                imag.setAttribute("data-name", "osiris")
+            }
+            else if (imag.getAttribute("data-name") == "osiris") {
+                imag.src = "../img/ra-p1.jpg";
+                imag.setAttribute("data-name", "ra")
+            }
+            else {
+                imag.src = "../img/obelisk-p1.jpg";
+                imag.setAttribute("data-name", "obelisk")
+            }
+            checkMatch()
+        }
+
+        function changeImage2() {
+            if (imag2.getAttribute("data-name") == "obelisk") {
+                imag2.src = "../img/osiris-p2.jpg";
+                imag2.setAttribute("data-name", "osiris")
+            }
+            else if (imag2.getAttribute("data-name") == "osiris") {
+                imag2.src = "../img/ra-p2.jpg";
+                imag2.setAttribute("data-name", "ra")
+            }
+            else {
+                imag2.src = "../img/obelisk-p2.jpg";
+                imag2.setAttribute("data-name", "obelisk")
+            }
+            checkMatch()
+        }
+
+        function changeImage3() {
+            if (imag3.getAttribute("data-name") == "obelisk") {
+                imag3.src = "../img/osiris-p3.jpg";
+                imag3.setAttribute("data-name", "osiris")
+            }
+            else if (imag3.getAttribute("data-name") == "osiris") {
+                imag3.src = "../img/ra-p3.jpg";
+                imag3.setAttribute("data-name", "ra")
+            }
+            else {
+                imag3.src = "../img/obelisk-p3.jpg";
+                imag3.setAttribute("data-name", "obelisk")
+            }
+            checkMatch()
+        }
+
+        function changeImage4() {
+            if (imag4.getAttribute("data-name") == "obelisk") {
+                imag4.src = "../img/osiris-p4.jpg";
+                imag4.setAttribute("data-name", "osiris")
+            }
+            else if (imag4.getAttribute("data-name") == "osiris") {
+                imag4.src = "../img/ra-p4.jpg";
+                imag4.setAttribute("data-name", "ra")
+            }
+            else {
+                imag4.src = "../img/obelisk-p4.jpg";
+                imag4.setAttribute("data-name", "obelisk")
+            }
+            checkMatch()
+        }
+
+        function checkMatch() {
+            if (imag.getAttribute("data-name") == imag2.getAttribute("data-name") &&
+                imag2.getAttribute("data-name") == imag3.getAttribute("data-name") &&
+                imag3.getAttribute("data-name") == imag4.getAttribute("data-name")) {
+
+                imag.style.boxShadow = "red 2px 3px 3px";
+                imag2.style.boxShadow = "red 2px 3px 3px";
+                imag3.style.boxShadow = "red 2px 3px 3px";
+                imag4.style.boxShadow = "red 2px 3px 3px";
+            }
+            else {
+                imag.style.boxShadow = "black 2px 3px 3px";
+                imag2.style.boxShadow = "black 2px 3px 3px";
+                imag3.style.boxShadow = "black 2px 3px 3px";
+                imag4.style.boxShadow = "black 2px 3px 3px";
+            }
+        }
+    </script>
+</body>
+
+</html>
