@@ -12,6 +12,10 @@
 
     <h1>Bai 2</h1>
     <input type="button" onclick="bai2()" value="Check">
+
+    <h1>Bai 3</h1>
+    <input type="button" onclick="bai3()" value="Check">
+    <p id="result3"></p>
     
 </body>
 <script>
@@ -30,8 +34,36 @@
 
     function bai2(){
         num = prompt("Nhap nhiet do")
-        
+        while(num<20){
+            num = prompt("Vui long tang nhiet do")
+        }
 
+        while(num>100){
+            num = prompt("Vui long giam nhiet do")
+        }
+
+    }
+
+    function bai3() {
+        let a = 0; // Số thứ nhất
+        let b = 1; // Số thứ hai
+        
+        // Tạo một chuỗi chứa sẵn 2 số đầu tiên
+        let resultText = a + ", " + b; 
+
+        // Đã có 2 số, chúng ta lặp 18 lần nữa để đủ 20 số
+        for (let i = 2; i < 20; i++) {
+            let next = a + b; // Tính số tiếp theo
+            
+            resultText += ", " + next; // Nối số mới vào chuỗi kết quả
+            
+            // Cập nhật lại giá trị của a và b trượt lên phía trước
+            a = b; 
+            b = next; 
+        }
+
+        // Hiển thị chuỗi kết quả ra thẻ <p id="result3">
+        document.getElementById("result3").innerText = resultText;
     }
 
 
