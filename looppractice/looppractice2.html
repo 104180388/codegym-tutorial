@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Bai 1</h1>
+    <input type="button" onclick="bai1()" value="Check">
+    <p id="result"></p>
+
+    <h1>Bai 2</h1>
+    <input type="button" onclick="bai2()" value="Check">
+    <p id="result2"></p>
+
+    <h1>Bai 3</h1>
+    <input type="button" onclick="bai3()" value="Check">
+    <div id="result3"></div>
+
+    <h1>Bai 4</h1>
+    <input type="button" onclick="bai4()" value="Check">
+    <div id="result4"></div>
+
+    <h1>Bai 5</h1>
+    <input type="number" id="num" placeholder="Nhập số tiền ban đầu">
+    <input type="number" id="month" placeholder="Nhập số tháng cho vay">
+    <input type="number" id="interest" placeholder="Nhập lãi xuất hàng tháng(%)">
+    <input type="button" onclick="bai5()" value="Check">
+    <div id="result5"></div>
+
+    <h1>Bai 6</h1>
+    <input type="button" onclick="bai6()" value="Check">
+    <div id="result6"></div>
+</body>
+<script>
+    function bai1() {
+        let a = 0;
+        let b = 1;
+
+        let resultText = a + ", " + b;
+
+        for (let i = 2; i <= 20; i++) {
+            let next = a + b;
+
+            resultText += ", " + next;
+
+            a = b;
+            b = next;
+        }
+
+        document.getElementById("result").innerText = resultText;
+    }
+
+    function bai2() {
+        let number = parseInt(prompt("Nhap so nguyen duong"))
+        let result = 1
+        for (let i = 1; i <= number; i++) {
+            result = result * i
+        }
+        document.getElementById("result2").innerText = "Giai thua cua " + number + " la " + result;
+    }
+
+    function bai3() {
+        let result = "";
+        for (let i = 1; i <= 5; i++) {
+            result = result + "*".repeat(i) + "<br>";
+        }
+
+        for (let j = 5; j > 0; j--) {
+            result = result + "*".repeat(j) + "<br>";
+        }
+
+        for (let m = 1; m <= 5; m++) {
+            result = result + "&nbsp&nbsp".repeat(6 - m) + "*".repeat(m) + "<br>";
+        }
+
+        for (let n = 5; n > 0; n--) {
+            result = result + "&nbsp&nbsp".repeat(6 - n) + "*".repeat(n) + "<br>";
+        }
+
+        document.getElementById("result3").innerHTML = result;
+    }
+
+    function bai4() {
+        let result = "";
+        result = result + "*".repeat(21) + "<br>" + "*";
+        for (let i = 1; i <= 5; i++) {
+            result = result + "&nbsp&nbsp".repeat(19) + "*" + "<br>" + "*";
+        }
+        result = result + "*".repeat(20);
+        document.getElementById("result4").innerHTML = result;
+    }
+
+    function bai5(){
+        let num = parseFloat(document.getElementById("num").value)
+        let month = parseFloat(document.getElementById("month").value)
+        let interest = parseFloat(document.getElementById("interest").value)/100
+        let result = ((1+interest)**month)*num
+        document.getElementById("result5").innerHTML = "So tien lai la: " +  (result-num);
+
+    }
+
+    function bai6(){
+        let result="";
+        for (let m = 3; m <= 5; m++) {
+            result = result + "&nbsp".repeat(6 - m) + "*".repeat(m)+ "&nbsp".repeat(6 - m) + "*".repeat(m)+ "<br>";
+        }
+
+        for (let n = 10; n > 0; n--) {
+            result = result + "&nbsp".repeat(11 - n) + "*".repeat(n) + "<br>";
+        }
+        
+        document.getElementById("result6").innerHTML = result;
+    }
+
+</script>
+
+</html>
