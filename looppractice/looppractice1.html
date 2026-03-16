@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <h1>Bai 1</h1>
     <input type="button" onclick="bai1()" value="Raise">
@@ -12,28 +14,177 @@
 
     <h1>Bai 2</h1>
     <input type="button" onclick="bai2()" value="Check">
-    
+
+    <h1>Bai 3</h1>
+    <input type="button" onclick="bai3()" value="Check">
+    <p id="result3"></p>
+
+    <h1>Bai 4</h1>
+    <input type="button" onclick="bai4()" value="Check">
+    <p id="result4"></p>
+
+    <h1>Bai 5</h1>
+    <input type="button" onclick="bai5()" value="Check">
+    <p id="result5"></p>
+
+    <h1>Bai 6</h1>
+    <input type="button" onclick="bai6()" value="Check">
+    <p id="result6"></p>
+
+    <h1>Bai 7</h1>
+    <input type="button" onclick="bai7()" value="Check">
+    <p id="result7"></p>
+
+    <h1>Bai 8</h1>
+    <input type="button" onclick="bai8()" value="Check">
+    <p id="result8"></p>
 </body>
 <script>
-    function bai1(){
-        let result = document.getElementById("result");  
+    function bai1() {
+        let result = document.getElementById("result");
         let num = parseInt(result.innerText);
         num++;
-        
-        if(num<100){
+
+        if (num < 100) {
             result.innerText = num;
         }
-        else{
+        else {
             result.innerText = "Da dem du 100"
         }
     }
 
-    function bai2(){
+    function bai2() {
         num = prompt("Nhap nhiet do")
-        
-        
+        while (num < 20) {
+            num = prompt("Vui long tang nhiet do")
+        }
+
+        while (num > 100) {
+            num = prompt("Vui long giam nhiet do")
+        }
+
     }
 
+    function bai3() {
+        let a = 0;
+        let b = 1;
 
+        let resultText = a + ", " + b;
+
+        for (let i = 2; i <= 20; i++) {
+            let next = a + b;
+
+            resultText += ", " + next;
+
+            a = b;
+            b = next;
+        }
+
+        document.getElementById("result3").innerText = resultText;
+    }
+
+    function bai4() {
+        let a = 0;
+        let b = 1;
+
+        let resultText = a + ", " + b;
+
+        for (let i = 2; i < 20; i++) {
+            let next = a + b;
+
+            resultText += ", " + next;
+
+            a = b;
+            b = next;
+            if (a % 5 == 0) {
+                document.getElementById("result4").innerText = a + " trong day so fibonacci chia het cho 5"
+                break;
+            }
+            else if (b % 5 == 0) {
+                document.getElementById("result4").innerText = b + " trong day so fibonacci chia het cho 5"
+                break;
+            }
+        }
+    }
+
+    function bai5() {
+        let a = 0;
+        let b = 1;
+
+        let resultText = a + b;
+
+        for (let i = 2; i <= 20; i++) {
+            let next = a + b;
+
+            resultText += next;
+
+            a = b;
+            b = next;
+        }
+
+        document.getElementById("result5").innerText = resultText;
+    }
+
+    function bai6() {
+        let count = 0;
+        let result = 0;
+        let a = 0;
+        while (count < 30) {
+            a += 7;
+            result = result + a;
+            count++
+        }
+
+        document.getElementById("result6").innerText = "Tong 20 so dau tien chia het cho 7 la: " + result;
+    }
+
+    function bai7() {
+        let result = 0;
+        for (let i = 1; i <= 100; i++) {
+            if (i % 3 == 0 && i % 5 == 0) {
+                result = result + "FizzBuzz" + " "
+            }
+            else if (i % 5 == 0) {
+                result = result + "Buzz" + " "
+            }
+            else if (i % 3 == 0) {
+                result = result + "Fizz" + " "
+            }
+            else {
+                result = result + i + " "
+            }
+        }
+
+        document.getElementById("result7").innerText = result;
+    }
+
+    function bai8() {
+        let range = parseInt(prompt("Số bạn muốn đoán trong khoảng lớn nhất là bao nhiêu?"))
+        let randomNumber = Math.floor(Math.random() * (range + 1))
+        let guess = 0
+        let num = parseInt(prompt("Nhap so ban doan"))
+        while (guess < 3) {
+
+            if (num === randomNumber) {
+                document.getElementById("result8").innerText = "Ban da doan dung so can tim!";
+                return;
+            }
+            else {
+                guess++
+                if (guess === 3) {
+                    document.getElementById("result8").innerText = "Bạn đã hết lượt! Số đúng là: " + randomNumber;
+                    break;
+                }
+                if (num > randomNumber) {
+                    num = prompt("Vui long nhap so be hon");
+                }
+                else {
+                    num = prompt("Vui long nhap so lon hon");
+                }
+            }
+        }
+
+    }
 </script>
+
 </html>
