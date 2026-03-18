@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form>
+        <input type="text" id="search1">
+        <input type="button" value="Search" onclick="search()">
+    </form>
+</body>
+<script>
+    function search() {
+        let eng = ['car', 'bike', 'book', 'pen', 'game'];
+        let vie = ['oto', 'xe dap', 'sach', 'but', 'tro choi'];
+        let word = document.getElementById("search1").value;
+        var found=0;
+        for (let i = 0; i < eng.length; i++) {
+            if (word === eng[i]) {
+                alert(vie[i])
+                found = 1;
+            }
+        }
+        if (found == 0) {
+            alert("Khong tim thay")
+        }
+    }
+</script>
+
+</html>
