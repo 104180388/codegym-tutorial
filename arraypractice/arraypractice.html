@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="button" onclick="bai1()" value="Bai 1"></input>
+
+    <input type="button" onclick="bai2()" value="Bai 2"></input>
+
+    <input type="button" onclick="bai3()" value="Bai 3"></input>
+</body>
+<script>
+    function bai1() {
+        let myColor = ["Red", "Green", "White", "Black"];
+        let result = "";
+        for (let i = 0; i < myColor.length; i++) {
+            result = result + myColor[i] + ",";
+        }
+        document.write(result);
+    }
+
+    function bai2() {
+        let num = prompt("Nhap mot day so vao day")
+        let arr = num.split('')
+        for(let i=1;i<arr.length;i++){
+            if(arr[i]%2 == 0 && arr[i-1]%2== 0){
+                arr[i-1]= arr[i-1] +'-';
+            }
+        }
+        document.write(arr.join(''));
+    }
+
+    function bai3(){
+        let line = prompt("Nhap mot cau vao day")
+        let arr = line.split('')
+        for(let i=0;i<arr.length;i++){
+            if(arr[i] === arr[i].toLowerCase()){
+                arr[i] = arr[i].toUpperCase();
+            }
+            else if(arr[i] === arr[i].toUpperCase()){
+                arr[i] = arr[i].toLowerCase();
+            }
+        }
+        document.write(arr.join(''));
+    }
+</script>
+
+</html>
