@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+</head>
+
+<body>
+    <button onclick="change()">Change value</button>
+    <p id="result"></p>
+
+    <script>
+        let tictac = [
+            ['(.)', '(.)', '(.)', '(.)', '(.)'],
+            ['(.)', '(.)', '(.)', '(.)', '(.)'],
+            ['(.)', '(.)', '(.)', '(.)', '(.)'],
+            ['(.)', '(.)', '(.)', '(.)', '(.)'],
+            ['(.)', '(.)', '(.)', '(.)', '(.)']
+        ];
+        let count = 0;
+
+        function renderBoard() {
+            let board = "";
+            for (let i = 0; i < tictac.length; i++) {
+                board += tictac[i].join(' ') + '<br>';
+            }
+            document.getElementById('result').innerHTML = board;
+        }
+        renderBoard();
+
+        function change() {
+            let x = prompt("Enter the position of x")
+            let y = prompt("Enter the position of y")
+
+            if (count % 2 == 0) {
+                tictac[x][y] = 'x';
+            }
+            else{
+                tictac[x][y] = 'o';
+            }
+            count+=1
+            renderBoard();
+        }
+
+    </script>
+</body>
+
+</html>
