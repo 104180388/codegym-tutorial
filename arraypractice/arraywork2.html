@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="bai1()">Bai 1</button>
+    <p id="result"></p>
+
+    <button onclick="bai2()">Bai 2</button>
+    <p id="result2"></p>
+
+    <button onclick="bai3()">Bai 3</button>
+    <p id="result3"></p>
+
+    <button onclick="bai4()">Bai 4</button>
+    <p id="result4"></p>
+
+    <button onclick="bai5()">Bai 5</button>
+    <p id="result5"></p>
+
+    <button onclick="bai6()">Bai 6</button>
+    <p id="result6"></p>
+</body>
+<script>
+    function bai1() {
+        let num = [
+            [1, 2, 1, 24],
+            [8, 11, 9, 4],
+            [7, 0, 7, 27],
+            [7, 4, 28, 14],
+            [3, 10, 26, 7]
+        ];
+        let result = " ";
+        for (let i = 0; i < num.length; i++){
+            result +="<br>"+ "Row "+(i+1)+"<br>";
+            for (let j = 0; j < num[i].length; j++){
+                result+=num[i][j]
+            }
+        }
+        document.getElementById('result').innerHTML = result
+    }
+
+    function bai2(){
+        let arr = [ 'c', 's', 'c', '2', '6', '1' ];
+        let temp = '';
+        for(let i=0;i<arr.length/2;i++){
+            temp = arr[i]
+            arr[i] = arr[arr.length-1-i]
+            arr[arr.length-1-i] = temp
+        }
+        document.getElementById('result2').innerHTML = arr.join('')
+    }
+
+    function bai3(){
+        let arr = [2,4,51,7,8,1,14,21,5,98];
+        document.getElementById('result3').innerHTML = arr.join(' ')+"<br>" +"Do dai mang la: "+arr.length;
+    }
+
+    function bai4(){
+        let sentence = "Day la mot chuoi cac tu"
+        let arr = sentence.split(' ')
+        document.getElementById('result4').innerHTML = "Cau tren co "+arr.length+" tu"
+    }
+
+    function bai5(){
+        let str1 = prompt('Nhap chuoi thu nhat');
+        let str2 = prompt('Nhap chuoi thu hai');
+        if(str1 === str2){
+            document.getElementById('result5').innerHTML = "Hai chuoi giong nhau"
+        }
+        else{
+            document.getElementById('result5').innerHTML = "Hai chuoi khac nhau"
+        }
+    }
+
+    function bai6(){
+        let str = prompt('Nhap chuoi');
+        let arr = str.split('')
+        for(let i =0;i<arr.length;i++){
+            if(arr[i]=='-'){
+                arr[i] = '_'
+            }
+        }
+        document.getElementById('result6').innerHTML = arr.join('')
+    }
+</script>
+
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="bai1()">Bai 1</button>
+    <p id="result"></p>
+
+    <button onclick="bai2()">Bai 2</button>
+    <p id="result2"></p>
+
+    <button onclick="bai3()">Bai 3</button>
+    <p id="result3"></p>
+
+    <button onclick="bai4()">Bai 4</button>
+    <p id="result4"></p>
+
+    <button onclick="bai5()">Bai 5</button>
+    <p id="result5"></p>
+
+    <button onclick="bai6()">Bai 6</button>
+    <p id="result6"></p>
+
+    <button onclick="bai7()">Bai 7</button>
+    <p id="result7"></p>
+
+    <button onclick="bai8()">Bai 8</button>
+    <p id="result8"></p>
+
+    <button onclick="bai9()">Bai 9</button>
+    <p id="result9"></p>
+</body>
+<script>
+    function bai1(){
+        let arr = [2,4,51,7,8,1,14,21,5,98];
+        let result='';
+        for(let i=0;i<arr.length;i++){
+            if(arr[i]>10){
+                result= result+arr[i]+' '
+            }
+        }
+        document.getElementById('result').innerHTML = result
+    }
+
+    function bai2(){
+        let arr = [2,4,51,7,8,1,14,21,5,98];
+        let max=arr[0] + ' tai vi tri 0';
+        for(let i=1;i<arr.length;i++){
+            if(arr[i]>arr[i-1]){
+                max = arr[i] + ' tai vi tri '+ i
+            }
+        }
+        document.getElementById('result2').innerHTML = max
+    }
+
+    function bai3(){
+        let arr = [2,4,51,7,8,1,14,21,5,98];
+        let max=arr[0] + ' tai vi tri 0';
+        let total=0;
+        for(let i=1;i<arr.length;i++){
+            if(arr[i]>arr[i-1]){
+                max = arr[i] + ' tai vi tri '+ i
+                total+=arr[i]
+            }
+        }
+        document.getElementById('result3').innerHTML = max + " trung binh cong mang la " + total
+    }
+
+    function bai4(){
+        let arr = [2,4,51,7,8,1,14,21,5,98];
+        let temp = 0;
+        for(let i=0;i<arr.length/2;i++){
+            temp = arr[i]
+            arr[i] = arr[arr.length-1-i]
+            arr[arr.length-1-i] = temp
+        }
+        document.getElementById('result4').innerHTML = arr
+    }
+
+    function bai5(){
+        let arr = [2,-4,51,-7,8,1,-14,21,-5,98];
+        let result=0;
+        for(let i=0;i<arr.length;i++){
+            if(arr[i]<0){
+                result+=1
+            }
+        }
+        document.getElementById('result5').innerHTML ="Co "+ result+" so nguyen am trong mang"
+    }
+
+    function bai6(){
+        let arr = [2,-4,51,-7,8,1,-14,21,-5,98];
+        let v = prompt("Nhap mot so v");
+        for(let i=0;i<arr.length;i++){
+            if(arr[i]==v){
+                document.getElementById('result6').innerHTML ="V is in the array"
+                breaK;
+            }
+            else{
+                document.getElementById('result6').innerHTML ="V is not in the array"
+            }
+        }
+    }
+
+    function bai7(){
+        let arr = [2,-4,51,-7,8,1,-14,21,-5,98];
+        let v = prompt("Nhap mot so v");
+        for(let i=0;i<arr.length;i++){
+            if(arr[i]==v){
+                arr.splice(i,1);
+                arr[arr.length-1]=0
+                break;
+                document.getElementById('result7').innerHTML = arr
+            }
+            else{
+                document.getElementById('result7').innerHTML = "V khong thuoc mang"
+            }
+        } 
+    }
+
+    function bai8(){
+        let arr = [2,4,51,7,8,1,14,21,5,98];
+        arr.sort((a, b) => b - a);
+        document.getElementById('result8').innerHTML = arr
+    }
+
+    function bai9(){
+        let arr1 = [2,4,51,7,8,1,14,21,5,98];
+        let arr2 = [0,3,17,9,2,5,36,18,71,22];
+        let arr3=arr1.concat(arr2);
+        document.getElementById('result9').innerHTML = arr3
+    }
+</script>
+</html>
