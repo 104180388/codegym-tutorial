@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Typing Effect</title>
+</head>
+
+<body>
+
+    <p>Hãy thử gõ bất kỳ phím nào vào khung bên dưới:</p>
+    <textarea id="myTextarea"></textarea>
+
+    <script>
+        const fixedText = "The glowing cursor blinked steadily on the dark terminal screen, waiting for the next command.\nFingers flew across the mechanical keyboard, weaving complex algorithms into reality.\nWith a final keystroke, the system unlocked, revealing a hidden world of data.";
+        let index = 0;
+        const textArea = document.getElementById('myTextarea');
+
+        textArea.addEventListener('keydown', function (event) {
+            event.preventDefault();
+            if (index < fixedText.length) {
+                textArea.value += fixedText[index];
+                index++;
+            }
+        });
+    </script>
+
+</body>
+
+</html>
