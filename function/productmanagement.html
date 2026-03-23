@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="addproduct" placeholder="Nhap ten san pham">
+    <button type="button" onclick="addProduct()">Add</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Số thứ tự</th>
+                <th>Tên sản phẩm</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="tableProduct"></tbody>
+    </table>
+
+    <script>
+    let product = ["Sony", "Samsung", "Oppo", "Apple", "RedMagic"];
+
+    function showProduct() {
+        let table = '';
+        for (let i = 0; i < product.length; i++) {
+            table = table + "<tr>" +
+                "<td>" + i + "</td>" +
+                "<td>" + product[i] + "</td>" +
+                "<td>  <button onclick='fixProduct(" + i + ")'>Sua</button> </td>" +
+                "<td>  <button onclick='deleteProduct(" + i + ")'>Xoa</button> </td>" +
+                "</tr>";
+        }
+        document.getElementById("tableProduct").innerHTML = table;
+    }
+    showProduct();
+
+    function addProduct() {
+        let productAdd = document.getElementById('addproduct').value
+        if(productAdd!=''){
+        product.push(productAdd)
+        showProduct()
+        }
+    }
+
+    function fixProduct(index) {
+        let tenMoi = prompt("Nhập tên mới cho sản phẩm:", product[index]);
+        if (tenMoi !== '') {
+            product[index] = tenMoi;
+            showProduct();
+        }
+    }
+
+    function deleteProduct(index) {
+        product.splice(index, 1)
+        showProduct();
+    }
+</script>
+</body>
+
+
+</html>
