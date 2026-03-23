@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="bai1()">Tinh binh phuong</button>
+    <br>
+    <button onclick="bai2()">Tinh dien tich va chu vi hinh tron</button>
+    <br>
+    <button onclick="bai3()">Tinh giai thua</button>
+    <br>
+    <button onclick="bai4()">Kiem tra ky tu so</button>
+    <br>
+    <button onclick="bai5()">Tim so nguyen nho nhat</button>
+    <br>
+    <button onclick="bai6()">Kiem tra so nguyen duong</button>
+    <br>
+    <button onclick="bai7()">Doi cho hai so nguyen</button>
+    <br>
+    <button onclick="bai8()">Dao nguoc mang</button>
+    <br>
+    <button onclick="bai9()">Kiem tra ky tu trong mang</button>
+</body>
+<script>
+    function bai1() {
+        let num = parseFloat(prompt('Nhap so can tinh binh phuong'))
+        alert('Binh phuong cua ' + num + ' la: ' + num ** 2)
+    }
+
+    function bai2() {
+        let num = parseFloat(prompt('Nhap ban kinh hinh tron'))
+        let chuvi = num * 2 * 3.14
+        let dientich = (num ** 2) * 3.14
+        alert('Chu vi hinh tron la: ' + chuvi + '    Dien tich hinh tron la: ' + dientich)
+    }
+
+    function bai3() {
+        let num = parseInt(prompt('Nhap so nguyen de tinh giai thua'))
+        let result = 1
+        for (let i = 1; i <= num; i++) {
+            result = result * i
+        }
+        alert('Giai thua cua ' + num + ' la ' + result)
+    }
+
+    function bai4() {
+        let input = prompt('Nhap vao mot ky tu')
+        if (isNaN(input)) {
+            alert("Ban vua nhap chu")
+        }
+        else {
+            alert("Ban vua nhap so")
+        }
+    }
+
+    function bai5() {
+        let input = prompt("Nhập 3 số cách nhau bằng dấu phẩy:");
+        let arr = input.split(",").map(Number);
+        if (arr[0] <= arr[1] && arr[0] <= arr[2]) {
+            alert('So nho nhat trong 3 so la ' + arr[0])
+        }
+        else if (arr[1] <= arr[0] && arr[1] <= arr[2]) {
+            alert('So nho nhat trong 3 so la ' + arr[1])
+        }
+        else {
+            alert('So nho nhat trong 3 so la ' + arr[2])
+        }
+    }
+
+    function bai6() {
+        let input = parseInt(prompt("Nhap vao 1 so"));
+        if (input >= 0) {
+            alert(input + " la so nguyen duong")
+        }
+        else {
+            alert(input + " la so nguyen am")
+        }
+    }
+
+    function bai7() {
+        let input = prompt("Nhập 2 số cách nhau bằng dấu phẩy:");
+        let arr = input.split(",").map(Number);
+        function swap(num1, num2) {
+            alert("Vi tri hai so sau khi doi la: " + num2 + ', ' + num1)
+        }
+        swap(arr[0], arr[1])
+    }
+
+    function bai8() {
+        let input = prompt("Nhap 1 mang so nguyen ngan cach bang dau , :");
+        let arr = input.split(",").map(Number);
+        function daoNguocMang(mang) {
+            alert(mang.reverse());
+        }
+        daoNguocMang(arr)
+    }
+
+    function bai9() {
+        function demKyTuTrongMang(arr, num) {
+            let count = 0;
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i] === num) {
+                    count++;
+                }
+            }
+            alert("Co "+count+" ky tu "+num+" trong mang "+arr)
+        }
+        let arr1 = [1,2,3,4,5,6,7,7,9]
+        demKyTuTrongMang(arr1,7)
+    }
+</script>
+
+</html>
