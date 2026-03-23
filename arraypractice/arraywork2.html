@@ -36,53 +36,53 @@
             [3, 10, 26, 7]
         ];
         let result = " ";
-        for (let i = 0; i < num.length; i++){
-            result +="<br>"+ "Row "+(i+1)+"<br>";
-            for (let j = 0; j < num[i].length; j++){
-                result+=num[i][j]
+        for (let i = 0; i < num.length; i++) {
+            result += "<br>" + "Row " + (i + 1) + "<br>";
+            for (let j = 0; j < num[i].length; j++) {
+                result += num[i][j]
             }
         }
         document.getElementById('result').innerHTML = result
     }
 
-    function bai2(){
-        let arr = [ 'c', 's', 'c', '2', '6', '1' ];
+    function bai2() {
+        let arr = ['c', 's', 'c', '2', '6', '1'];
         let temp = '';
-        for(let i=0;i<arr.length/2;i++){
+        for (let i = 0; i < arr.length / 2; i++) {
             temp = arr[i]
-            arr[i] = arr[arr.length-1-i]
-            arr[arr.length-1-i] = temp
+            arr[i] = arr[arr.length - 1 - i]
+            arr[arr.length - 1 - i] = temp
         }
         document.getElementById('result2').innerHTML = arr.join('')
     }
 
-    function bai3(){
-        let arr = [2,4,51,7,8,1,14,21,5,98];
-        document.getElementById('result3').innerHTML = arr.join(' ')+"<br>" +"Do dai mang la: "+arr.length;
+    function bai3() {
+        let arr = [2, 4, 51, 7, 8, 1, 14, 21, 5, 98];
+        document.getElementById('result3').innerHTML = arr.join(' ') + "<br>" + "Do dai mang la: " + arr.length;
     }
 
-    function bai4(){
+    function bai4() {
         let sentence = "Day la mot chuoi cac tu"
         let arr = sentence.split(' ')
-        document.getElementById('result4').innerHTML = "Cau tren co "+arr.length+" tu"
+        document.getElementById('result4').innerHTML = "Cau tren co " + arr.length + " tu"
     }
 
-    function bai5(){
+    function bai5() {
         let str1 = prompt('Nhap chuoi thu nhat');
         let str2 = prompt('Nhap chuoi thu hai');
-        if(str1 === str2){
+        if (str1 === str2) {
             document.getElementById('result5').innerHTML = "Hai chuoi giong nhau"
         }
-        else{
+        else {
             document.getElementById('result5').innerHTML = "Hai chuoi khac nhau"
         }
     }
 
-    function bai6(){
+    function bai6() {
         let str = prompt('Nhap chuoi');
         let arr = str.split('')
-        for(let i =0;i<arr.length;i++){
-            if(arr[i]=='-'){
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] == '-') {
                 arr[i] = '_'
             }
         }
@@ -91,3 +91,5 @@
 </script>
 
 </html>
+
+[[]]

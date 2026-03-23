@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    function check(num) {
+        if (num < 2) {
+            alert("Day khong phai so nguyen to");
+            return false;
+        }
+        for (let i = 2; i <= Math.sqrt(num); i++) {
+            if (num % i === 0) {
+                alert("Day khong phai so nguyen to");
+                return false;
+            }
+        }
+        alert("Day la so nguyen to");
+        return true;
+    }
+
+    let num1 = prompt("Nhap so can check")
+    check(num1);
+</script>
+
+</html>

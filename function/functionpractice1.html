@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="bai1()">Bai 1</button>
+
+    <button onclick="bai2(2)">Bai 2</button>
+    <p id="result2"></p>
+
+    <button onclick="bai3(1,2)">Bai 3</button>
+
+    <button onclick="addNumbers()">Bai 4</button>
+    <p id="result4"></p>
+
+    <button onclick="bai5()">Bai 5</button>
+</body>
+<script>
+    function bai1() {
+        alert('Xin chao')
+    }
+
+    function bai2(num) {
+        let num2 = num + 1
+        document.getElementById('result2').innerHTML = num2
+    }
+
+    function bai3(num1, num2) {
+        if (num1 > num2) {
+            alert('So thu nhat lon hon so thu hai')
+        }
+        else {
+            alert('Tong 2 so la: ' + (num1 + num2))
+        }
+    }
+
+    function addNumbers() {
+        let result = 0
+        alert('Ket qua truoc khi goi ham: ' + result);
+        firstNum = 4;
+        secondNum = 8;
+        result = firstNum + secondNum;
+        alert('Ket qua sau khi goi ham: ' + result);
+    }
+
+
+    function bai5() {
+        let inputStar = prompt('Nhap ten ngoi sao')
+        let arr1 = ['Polaris', 'Aldebaran', 'Deneb', 'Vega', 'Altair', 'Dubhe', 'Regulus'];
+        let arr2 = ['Ursa Minor', 'Taurus, Cygnus', 'Lyra', 'Aquila', 'Ursa Major', 'Leo'];
+
+        function findstar(starName) {
+            let appear = false
+            for (let i = 0; i < arr1.length; i++) {
+                if (starName === arr1[i]) {
+                    alert('Chom sao tuong ung la: ' + arr2[i])
+                    appear = true
+                    break;
+                }
+            }
+            if (appear == false) {
+                alert('Khong co chom sao tuong ung')
+            }
+
+        }
+
+        findstar(inputStar)
+    }
+</script>
+
+</html>
