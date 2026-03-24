@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function Rectangle(length, width){
+            this.length = length;
+            this.width = width;
+
+            this.chuVi = function(){
+                return (length+width)*2;
+            }
+            this.dienTich = function(){
+                return length*width;
+            }
+        }
+
+        let rectangle1 = new Rectangle(6,2);
+        let chuVi1 = rectangle1.chuVi();
+        let dienTich1 = rectangle1.dienTich();
+        alert('Chu vi hinh chu nhat la: '+chuVi1+"  Dien tich hinh chu nhat la: "+dienTich1);
+
+    </script>
+</body>
+</html>

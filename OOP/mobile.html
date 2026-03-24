@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function Mobile(name) {
+            this.name = name;
+            this.battery = 100;
+            this.status = 'on';
+
+            this.draft = "";
+            this.inbox = [];
+            this.sentBox = [];
+
+            this.isOn = function () {
+                return this.status === 'on' && this.battery > 0;
+            }
+
+            this.toggleSwitch = function () {
+                if (this.status === 'on') {
+                    this.status = 'off';
+                } else {
+                    this.status = 'on';
+                }
+            }
+
+            this.chargeBattery = function () {
+                if (this.battery < 100) {
+                    this.battery += 10; // Mỗi lần sạc lên 10%
+                    if (this.battery > 100) this.battery = 100;
+                }
+            }
+
+            this.writeMessage = function (text) {
+                if (this.isOn()) {
+                    this.draft = text;
+                    this.battery--;
+                } else {
+                    console.log(this.name + " đang tắt hoặc hết pin!");
+                }
+            }
+
+            this.sendMessage = function (targetPhone) {
+                if (this.isOn() && this.draft !== "") {
+                    this.sentBox.push(this.draft);
+
+                    targetPhone.inbox.push(this.draft);
+                    this.draft = "";
+                    this.battery--;
+                } else {
+                    console.log("Không thể gửi tin nhắn!");
+                }
+            }
+
+            this.checkInbox = function () {
+                if (this.isOn()) {
+                    this.battery--;
+                    return this.inbox;
+                }
+            }
+
+            this.checkSentBox = function () {
+                if (this.isOn()) {
+                    this.battery--;
+                    return this.sentBox;
+                }
+            }
+        }
+        let nokia = new Mobile("Nokia");
+        let iphone = new Mobile("iPhone");
+
+        nokia.writeMessage("Chào iPhone, đi nhậu không?");
+        nokia.sendMessage(iphone);
+
+        console.log("Hộp thư đến của iPhone:", iphone.checkInbox());
+        console.log("Hộp thư đã gửi của Nokia:", nokia.checkSentBox());
+        console.log("Pin của Nokia hiện tại:", nokia.battery);
+    </script>
+</body>
+
+</html>
