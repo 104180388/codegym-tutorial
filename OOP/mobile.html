@@ -32,7 +32,7 @@
 
             this.chargeBattery = function () {
                 if (this.battery < 100) {
-                    this.battery += 10; // Mỗi lần sạc lên 10%
+                    this.battery += 10;
                     if (this.battery > 100) this.battery = 100;
                 }
             }
@@ -42,7 +42,7 @@
                     this.draft = text;
                     this.battery--;
                 } else {
-                    console.log(this.name + " đang tắt hoặc hết pin!");
+                    console.log(this.name + " đang tắt hoặc hết pin");
                 }
             }
 
@@ -75,7 +75,7 @@
         let nokia = new Mobile("Nokia");
         let iphone = new Mobile("iPhone");
 
-        nokia.writeMessage("Chào iPhone, đi nhậu không?");
+        nokia.writeMessage("Hello Iphone");
         nokia.sendMessage(iphone);
 
         console.log("Hộp thư đến của iPhone:", iphone.checkInbox());
