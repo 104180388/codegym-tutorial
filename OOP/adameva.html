@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function Apple() {
+            this.weight = 10;
+
+            this.decrease = function () {
+                if (this.weight > 0) {
+                    this.weight--;
+                }
+            }
+
+            this.isEmpty = function () {
+                return this.weight <= 0;
+            }
+
+            this.getWeight = function () {
+                return this.weight;
+            }
+        }
+
+        function Human(name, gender, weight) {
+            this.name = name;
+            this.gender = gender;
+            this.weight = weight;
+
+            this.isMale = function () {
+                return this.gender === true;
+            }
+
+            this.setGender = function (gender) {
+                this.gender = gender;
+            }
+
+            this.checkApple = function (apple) {
+                return !apple.isEmpty();
+            }
+
+            this.eat = function (apple) {
+                if (this.checkApple(apple)) {
+                    apple.decrease();
+                    this.weight++;
+                } else {
+                    console.log("Tao da bi an");
+                }
+            }
+
+            this.say = function (words) {
+                console.log(this.name + " say: " + words);
+            }
+
+            this.getName = function () {
+                return this.name;
+            }
+
+            this.setName = function (name) {
+                this.name = name;
+            }
+
+            this.getWeight = function () {
+                return this.weight;
+            }
+
+            this.setWeight = function (weight) {
+                this.weight = weight;
+            }
+        }
+
+        var apple = new Apple();
+        var adam = new Human("Adam", true, 65);
+        var eva = new Human("Eva", false, 50);
+
+        while (!apple.isEmpty()) {
+            adam.eat(apple);
+            console.log("Khoi luong tao la: "+apple.getWeight());
+            console.log("Can nang cua adam la:"+adam.getWeight());
+
+            if (apple.isEmpty()) {
+                console.log("Tao da bi an");
+                break;
+            }
+
+            eva.eat(apple);
+            console.log("Khoi luong tao la: "+apple.getWeight());
+            console.log("Can nang cua eva la:"+eva.getWeight());
+
+            if (apple.isEmpty()) {
+                console.log("Tao da bi an");
+                break;
+            }
+
+        }
+    </script>
+</body>
+
+</html>
