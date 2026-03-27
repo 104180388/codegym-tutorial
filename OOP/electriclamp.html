@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function ElectricLamp(status) {
+            this.status = status;
+            this.turnOn = function () {
+                this.status = true
+                console.log("Den dang bat")
+            }
+            this.turnOff = function () {
+                this.status = false
+                console.log("Den dang tat")
+            }
+        }
+
+        function SwitchButton(status, lamp) {
+            this.status = status;
+            this.lamp = lamp;
+
+            this.connectToLamp = function (lamp) {
+                this.lamp = lamp
+            }
+
+            this.switchOn = function () {
+                this.status = true;
+                console.log("Cong tac dang bat")
+                this.lamp.turnOn();
+            }
+
+            this.switchOff = function () {
+                this.status = false;
+                console.log("Cong tac dang tat")
+                this.lamp.turnOff();
+            }
+            
+            
+        }
+
+        let den1 = new ElectricLamp(true)
+            let congTac1 = new SwitchButton(true, den1)
+
+            congTac1.connectToLamp(den1)
+            congTac1.switchOn()
+            congTac1.switchOff()
+    </script>
+</body>
+
+</html>

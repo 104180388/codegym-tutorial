@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function Rat(name,weight,speed){
+            this.name=name
+            this.weight=weight
+            this.speed=speed
+            this.status=false
+
+            this.isDeath=function(){
+                this.status=true
+            }
+
+            this.sound =function(){
+                console.log("chit chit")
+            }
+        }
+
+        function Cat(name,weight,speed){
+            this.name=name
+            this.weight=weight
+            this.speed=speed
+
+            this.sound =function(){
+                console.log("meo meo")
+            }
+
+            this.catchRat =function(rat){
+                if(this.speed>rat.speed&&rat.status==false){
+                    console.log("Meo da bat duoc chuot")
+                }
+            }
+
+            this.eatRat =function(rat){
+                if(this.speed>rat.speed&&rat.status==false){
+                    rat.isDeath()
+                    this.weight+=rat.weight
+                }
+            }
+        }
+        let tom = new Cat("Tom", 5, 20);
+        let jerry = new Rat("Jerry", 1, 15);
+
+        tom.eatRat(jerry);
+    </script>
+</body>
+</html>
