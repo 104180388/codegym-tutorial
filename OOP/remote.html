@@ -10,6 +10,12 @@
     <script>
         function Remote(tV){
             this.tV=tV
+            this.turnTVOn = function(){
+                return this.tV.status = true
+            }
+            this.turnTVOff = function(){
+                return this.tV.status = false
+            }
             this.raiseVolume = function(dB){
                 return this.tV.volume += dB
             }
@@ -26,8 +32,26 @@
             this.volume=volume
             this.status=status
 
-
+            this.tvStatus= function(){
+                if(this.status==true){
+                    console.log("This tv is on")
+                }
+                else if(this.status==false){
+                    console.log("This tv is off")
+                }
+            }
         }
+
+        let tv1 = new TV(1,15,false);
+        let remote1 = new Remote(tv1);
+
+        remote1.turnTVOn();
+        tv1.tvStatus()
+        remote1.raiseVolume(5)
+        console.log(tv1.volume)
+        remote1.changeChannel(3)
+        console.log(tv1.channel)
+
     </script>
 </body>
 </html>
