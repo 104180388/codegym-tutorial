@@ -1,5 +1,7 @@
+import java.time.LocalDate;
+
 public class NextDayCalculator {
-    public static String nextDay(String date){
-        return date + "00:00:00";
+    public static String nextDay(LocalDate date){
+        return date.plusDays(1).toString();
     }
 }
