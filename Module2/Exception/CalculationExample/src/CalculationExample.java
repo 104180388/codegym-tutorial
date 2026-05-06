@@ -25,5 +25,8 @@ public class CalculationExample {
         } catch (Exception e) {
             System.err.println("Xảy ra ngoại lệ: " + e.getMessage());
         }
+        finally {
+            System.out.print("C");
+        }
     }
 }
