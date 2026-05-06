@@ -12,7 +12,7 @@ public class FindMaxValue {
     }
     public static void main(String[] args) {
         ReadAndWriteFile readAndWriteFile = new ReadAndWriteFile();
-        List<Integer> numbers = readAndWriteFile.readFile("numbers.txt");
+        List<Integer> numbers = readAndWriteFile.readFile("C:/Users/ADMIN/OneDrive/Desktop/file.txt");
         int maxValue = findMax(numbers);
         readAndWriteFile.writeFile("result.txt", maxValue);
     }
