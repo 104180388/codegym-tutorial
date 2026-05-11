@@ -16,7 +16,6 @@ public class Product implements Serializable {
         this.description = description;
     }
 
-    // Getters để hỗ trợ tìm kiếm và hiển thị
     public String getId() { return id; }
     public String getName() { return name; }
 

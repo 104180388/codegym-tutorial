@@ -26,7 +26,6 @@ public class ProductApp {
         } while (choice != 4);
     }
 
-    // Chức năng 1: Ghi thêm đối tượng vào file nhị phân
     private static void addProduct() {
         List<Product> list = readFromFile();
 
@@ -41,7 +40,6 @@ public class ProductApp {
         System.out.println("Đã lưu sản phẩm vào file nhị phân!");
     }
 
-    // Chức năng 2: Đọc file nhị phân và hiển thị
     private static void showAllProducts() {
         List<Product> list = readFromFile();
         if (list.isEmpty()) {
@@ -55,7 +53,6 @@ public class ProductApp {
         }
     }
 
-    // Chức năng 3: Tìm kiếm trong danh sách đã đọc từ file
     private static void searchProduct() {
         System.out.print("Nhập tên sản phẩm muốn tìm: ");
         String keyword = scanner.nextLine().toLowerCase();
@@ -71,9 +68,7 @@ public class ProductApp {
         if (!found) System.out.println("Không tìm thấy kết quả nào.");
     }
 
-    // --- LOGIC XỬ LÝ FILE (Kế thừa OutputStream) ---
     private static void saveToFile(List<Product> list) {
-        // FileOutputStream là lớp dẫn xuất từ OutputStream
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             oos.writeObject(list);
         } catch (IOException e) {
@@ -81,18 +76,17 @@ public class ProductApp {
         }
     }
 
-    // --- LOGIC XỬ LÝ FILE (Kế thừa InputStream) ---
     private static List<Product> readFromFile() {
         List<Product> list = new ArrayList<>();
         File file = new File(FILE_NAME);
         if (!file.exists()) return list;
 
-        // FileInputStream là lớp dẫn xuất từ InputStream
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
             list = (List<Product>) ois.readObject();
-        } catch (EOFException e) {
-            // Hết file, không cần xử lý
-        } catch (IOException | ClassNotFoundException e) {
+        }
+        catch (EOFException e) {
+        }
+        catch (IOException | ClassNotFoundException e) {
             System.err.println("Lỗi khi đọc file: " + e.getMessage());
         }
         return list;
