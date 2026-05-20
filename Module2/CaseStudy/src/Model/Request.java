@@ -5,9 +5,9 @@ import java.util.List;
 public class Request {
     private String action;       // Ví dụ: "update", "lookup", "drop", "export"
     private String keyword;      // Ví dụ: "HS001"
-    private List<String> params; // Ví dụ: ["--grade", "Toán", "9.5"]
+    private String params; // Ví dụ: ["--grade", "Toán", "9.5"]
 
-    public Request(String action, String keyword, List<String> params) {
+    public Request(String action, String keyword, String params) {
         this.action = action;
         this.keyword = keyword;
         this.params = params;
@@ -21,7 +21,7 @@ public class Request {
         return keyword;
     }
 
-    public List<String> getParams() {
+    public String getParams() {
         return params;
     }
 
