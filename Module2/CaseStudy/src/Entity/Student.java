@@ -1,17 +1,23 @@
 package Entity;
 
-public class Student {
+class Student {
     private String name;
     private String studentId;
     private String className;
 
-    protected Student(String name, String id, String className) {
+    public Student(String name, String studentId, String className) {
         this.name = name;
-        this.studentId = id;
+        this.studentId = studentId;
         this.className = className;
     }
 
-    public void hienThiThongTin() {
-        System.out.println("Name: " + name + " | StudentId: " + studentId + " | Class: " + className);
+    // Getters
+    public String getName() { return name; }
+    public String getStudentId() { return studentId; }
+    public String getClassName() { return className; }
+
+    @Override
+    public String toString() {
+        return String.format("[ID: %s | Tên: %s | Lớp: %s]", studentId, name, className);
     }
 }
