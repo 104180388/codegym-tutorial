@@ -4,9 +4,7 @@ public class StudentFactory {
     private static int counter = 1;
 
     public static Student createStudent(String name, String className) {
-        String studentId;
-        studentId = "HS-" + counter;
-        counter++;
+        String studentId = "HS-" + counter++;
         return new Student(studentId, name, className);
     }
 }

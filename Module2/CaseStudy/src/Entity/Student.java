@@ -1,19 +1,18 @@
 package Entity;
 
-class Student {
-    private String name;
+public class Student {
     private String studentId;
+    private String name;
     private String className;
 
-    public Student(String name, String studentId, String className) {
-        this.name = name;
+    public Student(String studentId, String name, String className) {
         this.studentId = studentId;
+        this.name = name;
         this.className = className;
     }
 
-    // Getters
-    public String getName() { return name; }
     public String getStudentId() { return studentId; }
+    public String getName() { return name; }
     public String getClassName() { return className; }
 
     @Override
@@ -21,3 +20,4 @@ class Student {
         return String.format("[ID: %s | Tên: %s | Lớp: %s]", studentId, name, className);
     }
 }
+
