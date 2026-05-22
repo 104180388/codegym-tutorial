@@ -1,11 +1,8 @@
-import Entity.Student;
-
 import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        LinkedList<Student> studentList = new LinkedList<>();
         System.out.println("Choose an option");
         System.out.println("1. Add student information");
         System.out.println("2. Search student by student ID");
@@ -17,3 +14,4 @@ public class Main {
 
     }
 }
+ppp
