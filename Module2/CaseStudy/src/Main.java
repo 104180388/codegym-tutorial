@@ -15,12 +15,12 @@ public class Main {
         menuMapping.put(7, "export");
 
         while (true) {
-            System.out.println("\n========= QUẢN LÝ HỌC SINH =========");
+            System.out.println("\n------ QUẢN LÝ HỌC SINH ------");
             System.out.println("1. Thêm học sinh");
             System.out.println("2. Tìm kiếm theo ID");
             System.out.println("3. Tìm kiếm theo Tên");
             System.out.println("4. Tìm kiếm theo Lớp");
-            System.out.println("5. Xóa học sinh");
+            System.out.println("5. Xóa học sinh(theo ID");
             System.out.println("6. Hiển thị danh sách");
             System.out.println("7. Xuất danh sách ra file .txt");
             System.out.println("0. Thoát");
@@ -40,8 +40,10 @@ public class Main {
             Request request = null;
 
             if (action.equals("define")) {
-                System.out.print("Tên: "); String name = scanner.nextLine();
-                System.out.print("Lớp: "); String className = scanner.nextLine();
+                System.out.print("Tên: ");
+                String name = scanner.nextLine();
+                System.out.print("Lớp: ");
+                String className = scanner.nextLine();
                 request = new Request(action, null, Map.of("name", name, "className", className));
             }
             else if (action.equals("export")) {
@@ -53,7 +55,7 @@ public class Main {
                 request = new Request(action, null, null);
             }
             else {
-                System.out.print("Nhập từ khóa: ");
+                System.out.print("Nhập thông tin học sinh: ");
                 String key = scanner.nextLine();
                 request = new Request(action, key, null);
             }

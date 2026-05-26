@@ -63,7 +63,7 @@ public class StudentService {
         if (studentList.isEmpty()) {
             System.out.println("Danh sách hiện tại đang trống.");
         } else {
-            System.out.println("--- DANH SÁCH HỌC SINH (Sắp xếp theo tên) ---");
+            System.out.println("--- DANH SÁCH HỌC SINH ---");
             studentList.forEach(System.out::println);
             System.out.println("---------------------------------------------");
         }
@@ -93,7 +93,6 @@ public class StudentService {
         classMap.clear();
     }
 
-    // Giúp lấy danh sách để kiểm tra trong Test
     public LinkedList<Entity.Student> getStudentList() {
         return studentList;
     }
