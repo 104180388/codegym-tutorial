@@ -13,6 +13,8 @@ public class StudentService {
     private Map<String, Student> idMap = new HashMap<>();
     private Map<String, List<Student>> nameMap = new HashMap<>();
     private Map<String, List<Student>> classMap = new HashMap<>();
+    private Map<String, Student> emailMap = new HashMap<>();
+    private Map<String, Student> phoneMap = new HashMap<>();
 
     private StudentService() {}
 
@@ -21,8 +23,16 @@ public class StudentService {
         return instance;
     }
 
-    public void define(String name, String className) {
-        Student s = StudentFactory.createStudent(name, className);
+    public boolean isEmailExists(String email) {
+        return emailMap.containsKey(email);
+    }
+
+    public boolean isPhoneExists(String phoneNumber) {
+        return phoneMap.containsKey(phoneNumber);
+    }
+
+    public void define(String name, String className, String email, String phoneNumber) {
+        Student s = StudentFactory.createStudent(name, className, email, phoneNumber);
 
         int index = 0;
         for (Student existing : studentList) {
@@ -34,6 +44,8 @@ public class StudentService {
         idMap.put(s.getStudentId(), s);
         nameMap.computeIfAbsent(s.getName(), k -> new ArrayList<>()).add(s);
         classMap.computeIfAbsent(s.getClassName(), k -> new ArrayList<>()).add(s);
+        emailMap.put(email, s);
+        phoneMap.put(phoneNumber, s);
 
         System.out.println("Đã thêm thành công: " + s);
     }
@@ -71,15 +83,19 @@ public class StudentService {
 
     public void exportToFile(String filename) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
-            writer.println("========== DANH SÁCH HỌC SINH ==========");
-            writer.printf("%-10s | %-20s | %-10s%n", "Mã HS", "Họ tên", "Lớp");
-            writer.println("----------------------------------------");
-
+            writer.println("============================== DANH SÁCH HỌC SINH ==============================");
+            writer.printf("%-10s | %-20s | %-8s | %-25s | %-12s%n",
+                    "Mã HS", "Họ tên", "Lớp", "Email", "Số điện thoại");
+            writer.println("--------------------------------------------------------------------------------");
             for (Entity.Student s : studentList) {
-                writer.printf("%-10s | %-20s | %-10s%n",
-                        s.getStudentId(), s.getName(), s.getClassName());
+                writer.printf("%-10s | %-20s | %-8s | %-25s | %-12s%n",
+                        s.getStudentId(),
+                        s.getName(),
+                        s.getClassName(),
+                        s.getEmail(),
+                        s.getPhoneNumber());
             }
-
+            writer.println("================================================================================");
             System.out.println("Đã xuất danh sách ra file: " + filename);
         } catch (IOException e) {
             System.out.println("Lỗi khi ghi file: " + e.getMessage());

@@ -19,7 +19,7 @@ public class StudentController {
 
     public StudentController() {
         commands.put("define", req -> {
-            service.define(req.params.get("name"), req.params.get("className"));
+            service.define(req.params.get("name"), req.params.get("className"), req.params.get("email"), req.params.get("phoneNumber"));
         });
 
         commands.put("lookupId", req -> printResults(service.lookup("id", req.keyword)));

@@ -17,7 +17,7 @@ public class StudentServiceTest {
 
     @Test
     void testLookupById_ShouldReturnCorrectStudent() {
-        service.define("Tuấn", "12A");
+        service.define("Tuấn", "12A", "tuancui@gmail.com", "0123456789");
 
         String generatedId = service.getStudentList().get(0).getStudentId();
 
@@ -30,7 +30,7 @@ public class StudentServiceTest {
 
     @Test
     void testDropStudent_ShouldRemoveFromAllStructures() {
-        service.define("Tuấn", "12A");
+        service.define("Tuấn", "12A", "tuancui@gmail.com", "0123456789");
         String id = service.getStudentList().get(0).getStudentId();
 
         boolean isDeleted = service.drop(id);

@@ -20,7 +20,7 @@ public class Main {
             System.out.println("2. Tìm kiếm theo ID");
             System.out.println("3. Tìm kiếm theo Tên");
             System.out.println("4. Tìm kiếm theo Lớp");
-            System.out.println("5. Xóa học sinh(theo ID");
+            System.out.println("5. Xóa học sinh(theo ID)");
             System.out.println("6. Hiển thị danh sách");
             System.out.println("7. Xuất danh sách ra file .txt");
             System.out.println("0. Thoát");
@@ -40,11 +40,39 @@ public class Main {
             Request request = null;
 
             if (action.equals("define")) {
+                StudentService service = StudentService.getInstance();
                 System.out.print("Tên: ");
                 String name = scanner.nextLine();
                 System.out.print("Lớp: ");
                 String className = scanner.nextLine();
-                request = new Request(action, null, Map.of("name", name, "className", className));
+
+                if (!className.matches("^(10|11|12)[A-E]$")) {
+                    System.out.println("LỖI: Khối (10-12) + Chữ cái (A-E). Ví dụ: 11A.");
+                    continue;
+                }
+                System.out.print("Email (@gmail.com): ");
+                String email = scanner.nextLine();
+                if (!email.matches("^[a-zA-Z0-9._%+-]+@gmail.com$")) {
+                    System.out.println("LỖI: Email phải có đuôi @gmail.com");
+                    continue;
+                }
+                if (service.isEmailExists(email)) {
+                    System.out.println("LỖI: Email này đã tồn tại");
+                    continue;
+                }
+
+                System.out.print("Số điện thoại (10 số): ");
+                String phoneNumber = scanner.nextLine();
+                if (!phoneNumber.matches("^\\d{10}$")) {
+                    System.out.println("LỖI: Số điện thoại phải có đúng 10 chữ số");
+                    continue;
+                }
+                if (service.isPhoneExists(phoneNumber)) {
+                    System.out.println("LỖI: Số điện thoại này đã tồn tại");
+                    continue;
+                }
+
+                request = new Request(action, null, Map.of("name", name, "className", className, "email", email, "phoneNumber", phoneNumber));
             }
             else if (action.equals("export")) {
                 System.out.print("Nhập tên file (VD: students.txt): ");
