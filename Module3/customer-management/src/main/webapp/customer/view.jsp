@@ -6,7 +6,7 @@
 <body>
 <h1>Customer details</h1>
 <p>
-    <a href="/customers">Back to customer list</a>
+    <a href="customers">Back to customer list</a>
 </p>
 <table>
     <tr>

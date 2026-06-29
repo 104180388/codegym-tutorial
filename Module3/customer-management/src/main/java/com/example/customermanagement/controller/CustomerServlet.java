@@ -97,18 +97,12 @@ public class CustomerServlet extends HttpServlet {
 
         Customer customer = new Customer(id, name, email, address);
         this.customerService.save(customer);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("customer/create.jsp");
-        request.setAttribute("message", "New customer was created");
         try {
-            dispatcher.forward(request, response);
-        } catch (ServletException e) {
-            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/customers");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

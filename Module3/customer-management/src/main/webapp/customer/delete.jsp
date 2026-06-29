@@ -6,7 +6,7 @@
 <body>
 <h1>Delete customer</h1>
 <p>
-    <a href="/customers">Back to customer list</a>
+    <a href="customers">Back to customer list</a>
 </p>
 <form method="post">
     <h3>Are you sure?</h3>
