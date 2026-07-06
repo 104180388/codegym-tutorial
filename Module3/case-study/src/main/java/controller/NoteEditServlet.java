@@ -2,7 +2,6 @@ package controller;
 
 import model.Note;
 import model.NoteDB;
-import model.NoteFile;
 import model.NoteManagement;
 
 import javax.servlet.ServletException;
@@ -26,13 +25,8 @@ public class NoteEditServlet extends HttpServlet {
             Note[] allNotes = management.searchNotes("", null);
 
             for (Note n : allNotes) {
-                if (n instanceof NoteDB && ((NoteDB) n).getId() == id) {
                     targetNote = n;
                     break;
-                } else if (n instanceof NoteFile && ((NoteFile) n).getId() == id) {
-                    targetNote = n;
-                    break;
-                }
             }
         }
 
@@ -54,14 +48,8 @@ public class NoteEditServlet extends HttpServlet {
         NoteManagement management = (NoteManagement) session.getAttribute("noteManagement");
 
         if (management != null) {
-            // Logic cập nhật: Tạo đối tượng ghi chú chứa ID cũ và gọi hàm save() đa hình
-            if (management.getNote() instanceof NoteDB) {
                 NoteDB dbNote = new NoteDB(id, title, content, typeId);
                 dbNote.save();
-            } else if (management.getNote() instanceof NoteFile) {
-                NoteFile fileNote = new NoteFile(id, title, content, typeId);
-                fileNote.save();
-            }
         }
 
         response.sendRedirect("list-notes");

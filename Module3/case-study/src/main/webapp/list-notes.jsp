@@ -35,13 +35,6 @@
                 </select>
             </div>
 
-            <div class="mb-3">
-                <span class="me-2 fw-bold">Môi trường lưu trữ hiện tại:</span>
-                <span class="badge bg-success p-2 me-3">${currentStore == 'DB' ? 'Database (MySQL)' : 'Tệp tin (JSON)'}</span>
-
-                <a href="list-notes?storeType=DB" class="btn btn-sm btn-outline-secondary ${currentStore == 'DB' ? 'active' : ''}">Chuyển sang DB</a>
-                <a href="list-notes?storeType=File" class="btn btn-sm btn-outline-secondary ${currentStore == 'File' ? 'active' : ''}">Chuyển sang FILE JSON</a>
-            </div>
 
             <div class="col">
                 <input type="text" name="keyword" class="form-control border-dark" placeholder="Tiêu đề" value="${param.keyword}">
@@ -94,14 +87,6 @@
                 </c:if>
             </tbody>
         </table>
-    </div>
-
-    <div class="d-flex justify-content-end align-items-center mt-2 pagination-text">
-        <span class="me-3">Trang:</span>
-        <a href="?page=1" class="text-decoration-none text-dark fw-bold me-2">[1]</a>
-        <a href="?page=2" class="text-decoration-none text-dark me-2">2</a>
-        <a href="?page=3" class="text-decoration-none text-dark me-2">3</a>
-        <a href="?page=4" class="text-decoration-none text-dark">4</a>
     </div>
 
 </div>
