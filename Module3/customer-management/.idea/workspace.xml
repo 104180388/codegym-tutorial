@@ -5,32 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="484ce28c-35a6-4565-bffa-ca8267034ed4" name="Changes" comment="customerdemo">
-      <change afterPath="$PROJECT_DIR$/../demo/.idea/copilot.data.migration.agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../demo/.idea/copilot.data.migration.edit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/.idea/copilot.data.migration.ask2agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/src/main/java/com/example/usermanager/controller/UserServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/src/main/java/com/example/usermanager/model/IUserDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/src/main/java/com/example/usermanager/model/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/src/main/java/com/example/usermanager/model/UserDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/src/main/webapp/create.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/src/main/webapp/edit.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/src/main/webapp/index.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../user-manager/src/main/webapp/list.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/.idea/copilot.data.migration.ask2agent.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/src/main/java/model/Note.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../case-study/src/main/webapp/index.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/customermanagement/controller/CustomerServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/customermanagement/controller/CustomerServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/customer/create.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/customer/create.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/customer/delete.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/customer/delete.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/customer/edit.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/customer/edit.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/customer/list.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/customer/list.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/customer/view.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/customer/view.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
