@@ -9,9 +9,6 @@ public class DBConnection {
     private static final String USER = "root";
     private static final String PASSWORD = "myauthsql8659";
 
-    /**
-     * Hàm mở kết nối tới MySQL
-     */
     public static Connection getConnection() {
         Connection connection = null;
         try {
@@ -27,10 +24,6 @@ public class DBConnection {
         return connection;
     }
 
-    /**
-     * Hàm main dùng để TEST NHANH xem kết nối có thành công không.
-     * Bạn có thể chuột phải vào file này -> Run as -> Java Application.
-     */
     public static void main(String[] args) {
         Connection conn = DBConnection.getConnection();
         if (conn != null) {

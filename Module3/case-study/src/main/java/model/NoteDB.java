@@ -75,18 +75,13 @@ public class NoteDB implements Note{
         boolean isInsert = (this.id == 0); // Xác định xem là thêm mới hay cập nhật
 
         if (isInsert) {
-            // Câu lệnh thêm mới
             sql = "INSERT INTO note (title, content, `type_id`) VALUES (?, ?, ?)";
         } else {
-            // Câu lệnh cập nhật ghi chú đã có
             sql = "UPDATE note SET title = ?, content = ?, `type_id` = ? WHERE id = ?";
         }
 
         try (Connection conn = DBConnection.getConnection();
-             // Thêm tham số RETURN_GENERATED_KEYS để lấy lại ID tự tăng sau khi Insert
              PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-
-            // Truyền giá trị vào các dấu hỏi (?) trong chuỗi SQL
             ps.setString(1, this.title);
             ps.setString(2, this.content);
             ps.setInt(3, this.typeId);
@@ -95,10 +90,8 @@ public class NoteDB implements Note{
                 ps.setInt(4, this.id); // Truyền ID cho mệnh đề WHERE nếu là Update
             }
 
-            // Thực thi câu lệnh
             int rowAffected = ps.executeUpdate();
 
-            // Nếu là Insert thành công, cập nhật lại ID mới sinh ra vào đối tượng này
             if (isInsert && rowAffected > 0) {
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
@@ -107,7 +100,6 @@ public class NoteDB implements Note{
                 }
             }
 
-            // Trả về true nếu có ít nhất 1 dòng bị ảnh hưởng (nghĩa là lưu thành công)
             return rowAffected > 0;
 
         } catch (Exception e) {
@@ -117,12 +109,8 @@ public class NoteDB implements Note{
         }
     }
 
-    /**
-     * Hàm xóa ghi chú khỏi Database dựa vào thuộc tính id.
-     */
     @Override
     public boolean delete() {
-        // Nếu ID chưa được thiết lập (hoặc = 0) thì không có gì để xóa
         if (this.id <= 0) {
             System.out.println("Không thể xóa ghi chú vì chưa có ID hợp lệ.");
             return false;
@@ -133,10 +121,8 @@ public class NoteDB implements Note{
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            // Truyền ID vào câu lệnh
             ps.setInt(1, this.id);
 
-            // Thực thi và kiểm tra
             int rowAffected = ps.executeUpdate();
             return rowAffected > 0;
 
@@ -150,10 +136,8 @@ public class NoteDB implements Note{
     public static List<NoteDB> searchInDB(String keyword, String typeIdStr) {
         List<NoteDB> resultList = new ArrayList<>();
 
-        // Câu lệnh gốc: tìm theo tiêu đề hoặc nội dung
         String sql = "SELECT * FROM note WHERE (title LIKE ? OR content LIKE ?)";
 
-        // Nếu người dùng có chọn Thể loại cụ thể thì nối thêm điều kiện AND vào SQL
         boolean hasType = (typeIdStr != null && !typeIdStr.isEmpty());
         if (hasType) {
             sql += " AND type_id = ?";

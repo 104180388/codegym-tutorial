@@ -27,13 +27,11 @@ public class NoteListServlet extends HttpServlet {
             session.setAttribute("currentStore", "DB");
         }
 
-        // ĐỌC CẢ 2 THAM SỐ TỪ list-notes.jsp GỬI LÊN
         String keyword = request.getParameter("keyword");
-        String typeId = request.getParameter("typeId"); // Thêm dòng này
+        String typeId = request.getParameter("typeId");
 
         if (keyword == null) { keyword = ""; }
 
-        // GỌI HÀM TÌM KIẾM ĐÃ NÂNG CẤP
         Note[] notes = management.searchNotes(keyword, typeId);
 
         request.setAttribute("noteList", notes);
