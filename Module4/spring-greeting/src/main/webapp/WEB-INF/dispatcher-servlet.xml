@@ -16,7 +16,7 @@
        https://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!-- Scan Controller -->
-    <context:component-scan base-package="org.example.controller"/>
+    <context:component-scan base-package="controller"/>
 
     <!-- Enable Spring MVC -->
     <mvc:annotation-driven/>
@@ -25,6 +25,7 @@
     <mvc:resources mapping="/resources/**"
                    location="/resources/" />
 
+    <bean name="customerService" class="service.impl.SimpleCustomerServiceImpl"/>
     <!-- View Resolver -->
     <bean
             class="org.springframework.web.servlet.view.InternalResourceViewResolver">
