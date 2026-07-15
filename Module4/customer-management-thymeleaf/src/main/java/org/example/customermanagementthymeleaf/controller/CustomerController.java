@@ -19,13 +19,13 @@ public class CustomerController {
     public String index(Model model) {
         List<Customer> customerList = customerService.findAll();
         model.addAttribute("customers", customerList);
-        return "/index";
+        return "index";
     }
 
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("customer", new Customer());
-        return "/create";
+        return "create";
     }
 
     @PostMapping("/save")
@@ -36,10 +36,11 @@ public class CustomerController {
         return "redirect:/customers";
     }
 
+    // Sửa @PathVariable int id -> @PathVariable("id") int id
     @GetMapping("/{id}/edit")
-    public String update(@PathVariable int id, Model model) {
+    public String update(@PathVariable("id") int id, Model model) {
         model.addAttribute("customer", customerService.findById(id));
-        return "/update";
+        return "update";
     }
 
     @PostMapping("/update")
@@ -49,10 +50,11 @@ public class CustomerController {
         return "redirect:/customers";
     }
 
+    // Sửa @PathVariable int id -> @PathVariable("id") int id
     @GetMapping("/{id}/delete")
-    public String delete(@PathVariable int id, Model model) {
+    public String delete(@PathVariable("id") int id, Model model) {
         model.addAttribute("customer", customerService.findById(id));
-        return "/delete";
+        return "delete";
     }
 
     @PostMapping("/delete")
@@ -62,9 +64,10 @@ public class CustomerController {
         return "redirect:/customers";
     }
 
+    // Sửa @PathVariable int id -> @PathVariable("id") int id
     @GetMapping("/{id}/view")
-    public String view(@PathVariable int id, Model model) {
+    public String view(@PathVariable("id") int id, Model model) {
         model.addAttribute("customer", customerService.findById(id));
-        return "/view";
+        return "view";
     }
 }
