@@ -1,0 +1,76 @@
+28-Jul-2026 08:51:44.154 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version name:   Apache Tomcat/10.1.57
+28-Jul-2026 08:51:44.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Jul 3 2026 13:06:05 UTC
+28-Jul-2026 08:51:44.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version number: 10.1.57.0
+28-Jul-2026 08:51:44.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Name:               Windows 11
+28-Jul-2026 08:51:44.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Version:            10.0
+28-Jul-2026 08:51:44.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Architecture:          amd64
+28-Jul-2026 08:51:44.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Java Home:             C:\Users\admin\.jdks\ms-25.0.3
+28-Jul-2026 08:51:44.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Version:           25.0.3+9-LTS
+28-Jul-2026 08:51:44.159 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Vendor:            Microsoft
+28-Jul-2026 08:51:44.159 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_BASE:         D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management
+28-Jul-2026 08:51:44.159 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_HOME:         D:\Tomcat10.1
+28-Jul-2026 08:51:44.166 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.lang=ALL-UNNAMED
+28-Jul-2026 08:51:44.166 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.io=ALL-UNNAMED
+28-Jul-2026 08:51:44.166 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.util=ALL-UNNAMED
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.home=D:\Tomcat10.1
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.base=D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.io.tmpdir=D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management\temp
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.config.file=D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management\conf\logging.properties
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2026.2\lib\idea_rt.jar=51723
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dfile.encoding=UTF-8
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dsun.stdout.encoding=UTF-8
+28-Jul-2026 08:51:44.167 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dsun.stderr.encoding=UTF-8
+28-Jul-2026 08:51:44.171 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent The Apache Tomcat Native library which allows using OpenSSL was not found on the java.library.path: [C:\Users\admin\.jdks\ms-25.0.3\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\IntelliJ IDEA 2026.2\bin;C:\Users\admin\AppData\Local\Programs\Microsoft VS Code\bin;.]
+28-Jul-2026 08:51:44.417 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["http-nio-8080"]
+28-Jul-2026 08:51:44.430 INFO [main] org.apache.catalina.startup.Catalina.load Server initialization in [473] milliseconds
+28-Jul-2026 08:51:44.476 INFO [main] org.apache.catalina.core.StandardService.startInternal Starting service [Catalina]
+28-Jul-2026 08:51:44.476 INFO [main] org.apache.catalina.core.StandardEngine.startInternal Starting Servlet engine: [Apache Tomcat/10.1.57]
+28-Jul-2026 08:51:44.486 INFO [main] org.apache.catalina.startup.HostConfig.deployDescriptor Deploying deployment descriptor [D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management\conf\Catalina\localhost\customer-province-management.xml]
+28-Jul-2026 08:51:44.759 INFO [main] org.apache.catalina.startup.HostConfig.deployDescriptor Deployment of deployment descriptor [D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management\conf\Catalina\localhost\customer-province-management.xml] has finished in [270] ms
+28-Jul-2026 08:51:44.761 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
+28-Jul-2026 08:51:44.790 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in [358] milliseconds
+28-Jul-2026 08:52:40.045 INFO [Thread-1] org.apache.coyote.AbstractProtocol.pause Pausing ProtocolHandler ["http-nio-8080"]
+28-Jul-2026 08:52:40.053 INFO [Thread-1] org.apache.catalina.core.StandardService.stopInternal Stopping service [Catalina]
+28-Jul-2026 08:52:40.062 INFO [Thread-1] org.apache.coyote.AbstractProtocol.stop Stopping ProtocolHandler ["http-nio-8080"]
+28-Jul-2026 08:52:40.065 INFO [Thread-1] org.apache.coyote.AbstractProtocol.destroy Destroying ProtocolHandler ["http-nio-8080"]
+28-Jul-2026 08:52:41.415 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version name:   Apache Tomcat/10.1.57
+28-Jul-2026 08:52:41.417 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Jul 3 2026 13:06:05 UTC
+28-Jul-2026 08:52:41.417 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version number: 10.1.57.0
+28-Jul-2026 08:52:41.417 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Name:               Windows 11
+28-Jul-2026 08:52:41.417 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Version:            10.0
+28-Jul-2026 08:52:41.417 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Architecture:          amd64
+28-Jul-2026 08:52:41.417 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Java Home:             C:\Users\admin\.jdks\ms-25.0.3
+28-Jul-2026 08:52:41.418 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Version:           25.0.3+9-LTS
+28-Jul-2026 08:52:41.418 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Vendor:            Microsoft
+28-Jul-2026 08:52:41.418 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_BASE:         D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management
+28-Jul-2026 08:52:41.418 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_HOME:         D:\Tomcat10.1
+28-Jul-2026 08:52:41.426 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.lang=ALL-UNNAMED
+28-Jul-2026 08:52:41.426 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.io=ALL-UNNAMED
+28-Jul-2026 08:52:41.426 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.util=ALL-UNNAMED
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.home=D:\Tomcat10.1
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.base=D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.io.tmpdir=D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management\temp
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.config.file=D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management\conf\logging.properties
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2026.2\lib\idea_rt.jar=50068
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dfile.encoding=UTF-8
+28-Jul-2026 08:52:41.427 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dsun.stdout.encoding=UTF-8
+28-Jul-2026 08:52:41.428 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dsun.stderr.encoding=UTF-8
+28-Jul-2026 08:52:41.431 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent The Apache Tomcat Native library which allows using OpenSSL was not found on the java.library.path: [C:\Users\admin\.jdks\ms-25.0.3\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\IntelliJ IDEA 2026.2\bin;C:\Users\admin\AppData\Local\Programs\Microsoft VS Code\bin;.]
+28-Jul-2026 08:52:41.666 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["http-nio-8080"]
+28-Jul-2026 08:52:41.687 INFO [main] org.apache.catalina.startup.Catalina.load Server initialization in [437] milliseconds
+28-Jul-2026 08:52:41.735 INFO [main] org.apache.catalina.core.StandardService.startInternal Starting service [Catalina]
+28-Jul-2026 08:52:41.736 INFO [main] org.apache.catalina.core.StandardEngine.startInternal Starting Servlet engine: [Apache Tomcat/10.1.57]
+28-Jul-2026 08:52:41.747 INFO [main] org.apache.catalina.startup.HostConfig.deployDescriptor Deploying deployment descriptor [D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management\conf\Catalina\localhost\customer-province-management.xml]
+28-Jul-2026 08:52:42.039 INFO [main] org.apache.catalina.startup.HostConfig.deployDescriptor Deployment of deployment descriptor [D:\codegym-tutorial\Module4\7-customer-province-management\.smarttomcat\customer-province-management\conf\Catalina\localhost\customer-province-management.xml] has finished in [289] ms
+28-Jul-2026 08:52:42.050 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
+28-Jul-2026 08:52:42.076 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in [385] milliseconds
+28-Jul-2026 08:54:19.231 INFO [Thread-1] org.apache.coyote.AbstractProtocol.pause Pausing ProtocolHandler ["http-nio-8080"]
+28-Jul-2026 08:54:19.243 INFO [Thread-1] org.apache.catalina.core.StandardService.stopInternal Stopping service [Catalina]
+28-Jul-2026 08:54:19.252 INFO [Thread-1] org.apache.coyote.AbstractProtocol.stop Stopping ProtocolHandler ["http-nio-8080"]
+28-Jul-2026 08:54:19.265 INFO [Thread-1] org.apache.coyote.AbstractProtocol.destroy Destroying ProtocolHandler ["http-nio-8080"]
