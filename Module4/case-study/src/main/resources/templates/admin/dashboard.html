@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MedCare System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    <!-- Topbar -->
+    <header class="bg-slate-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-purple-600 flex items-center justify-center text-white font-bold">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <span class="font-bold text-lg">Admin Portal</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-xs font-semibold border border-purple-500/30">ROLE_ADMIN</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-slate-300">Xin chào, <strong class="text-white" sec:authentication="name">Admin</strong></span>
+                <form th:action="@{/logout}" method="post" class="inline">
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all">
+                        <i class="fa-solid fa-arrow-right-from-bracket mr-1.5"></i>Đăng Xuất
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        <!-- Status Card -->
+        <div class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white p-8 rounded-3xl shadow-xl">
+            <h1 class="text-3xl font-extrabold mb-2">Bảng Điều Khiển Quản Trị Viên</h1>
+            <p class="text-purple-200 text-sm">Hệ thống phân quyền Spring Security đã xác thực thành công vai trò <code class="bg-purple-950 px-2 py-0.5 rounded font-mono text-purple-300">ROLE_ADMIN</code>.</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-bold text-slate-400 uppercase">Tài Khoản</span>
+                    <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></span>
+                </div>
+                <div class="text-3xl font-extrabold text-slate-900">3</div>
+                <p class="text-xs text-slate-500 mt-1">Admin, Doctor, Patient</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-bold text-slate-400 uppercase">Chuyên Khoa</span>
+                    <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-stethoscopes"></i></span>
+                </div>
+                <div class="text-3xl font-extrabold text-slate-900">2</div>
+                <p class="text-xs text-slate-500 mt-1">Nội khoa, Nhi khoa</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-bold text-slate-400 uppercase">Bác Sĩ</span>
+                    <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center"><i class="fa-solid fa-user-doctor"></i></span>
+                </div>
+                <div class="text-3xl font-extrabold text-slate-900">1</div>
+                <p class="text-xs text-slate-500 mt-1">BS. Nguyễn Văn An</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-bold text-slate-400 uppercase">Trạng Thái DB</span>
+                    <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-database"></i></span>
+                </div>
+                <div class="text-xl font-bold text-emerald-600">Sẵn Sàng</div>
+                <p class="text-xs text-slate-500 mt-1">10 Bảng JPA Mapping</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

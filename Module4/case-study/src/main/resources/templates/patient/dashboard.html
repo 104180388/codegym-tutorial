@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal - MedCare System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    <!-- Topbar -->
+    <header class="bg-teal-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-teal-600 flex items-center justify-center text-white font-bold">
+                    <i class="fa-solid fa-hospital-user"></i>
+                </div>
+                <span class="font-bold text-lg">Cổng Thông Tin Bệnh Nhân</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-xs font-semibold border border-teal-500/30">ROLE_PATIENT</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-slate-300">Bệnh nhân: <strong class="text-white" sec:authentication="name">Patient</strong></span>
+                <form th:action="@{/logout}" method="post" class="inline">
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all">
+                        <i class="fa-solid fa-arrow-right-from-bracket mr-1.5"></i>Đăng Xuất
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        <!-- Status Banner -->
+        <div class="bg-gradient-to-r from-teal-800 to-emerald-900 text-white p-8 rounded-3xl shadow-xl">
+            <h1 class="text-3xl font-extrabold mb-2">Trang Cá Nhân & Đặt Lịch Khám</h1>
+            <p class="text-teal-200 text-sm">Hệ thống phân quyền Spring Security đã xác thực vai trò <code class="bg-teal-950 px-2 py-0.5 rounded font-mono text-teal-300">ROLE_PATIENT</code>.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm col-span-2 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-900 text-lg">Lịch Khám Của Tôi</h3>
+                    <button class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl transition-all">
+                        <i class="fa-solid fa-plus mr-1.5"></i>Tạo Lịch Khám Mới
+                    </button>
+                </div>
+
+                <div class="p-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-300 text-slate-500 text-sm">
+                    <i class="fa-regular fa-calendar-check text-3xl mb-2 text-slate-400 block"></i>
+                    Bạn chưa có lịch hẹn khám sắp tới. Hãy nhấn vào nút Đặt Lịch Khám Mới để đăng ký!
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-900 text-lg">Thông Tin Cá Nhân</h3>
+                <div class="space-y-2 text-sm text-slate-600">
+                    <p><strong class="text-slate-800">Họ và tên:</strong> Trần Thị Bình</p>
+                    <p><strong class="text-slate-800">Email:</strong> patient.binh@gmail.com</p>
+                    <p><strong class="text-slate-800">Số điện thoại:</strong> 0912345678</p>
+                    <p><strong class="text-slate-800">Địa chỉ:</strong> Đà Nẵng</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
