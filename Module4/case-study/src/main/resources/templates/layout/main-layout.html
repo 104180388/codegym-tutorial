@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<head th:replace="~{layout/header :: header(${title})}">
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Top Navbar Fragment -->
+    <header th:replace="~{layout/navbar :: navbar}">
+    </header>
+
+    <!-- Main Dynamic Content Body -->
+    <main class="flex-grow-1">
+        <div th:replace="${content}">
+            <!-- Page specific view replaces this block -->
+        </div>
+    </main>
+
+    <!-- Footer Fragment -->
+    <footer th:replace="~{layout/footer :: footer}">
+    </footer>
+</body>
+</html>

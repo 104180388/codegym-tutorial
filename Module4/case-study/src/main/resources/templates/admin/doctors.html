@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Quản Lý Bác Sĩ & Lịch Làm Việc - MedCare Admin')}">
+</head>
+<body class="bg-light">
+    <!-- Top Navbar -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Fragment -->
+        <aside th:replace="~{layout/sidebar :: sidebar('admin-doctors')}"></aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <div class="container-fluid">
+                <!-- Flash Messages -->
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i><span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i><span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Page Title -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1"><i class="fa-solid fa-user-md text-danger me-2"></i>Quản Lý Đội Ngũ Bác Sĩ & Ca Làm Việc</h4>
+                        <p class="text-muted small mb-0">Quản lý hồ sơ bác sĩ, gán chuyên khoa, số phòng khám & phân ca làm việc (Schedule) theo ngày</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-teal rounded-pill btn-sm px-3" style="border-color:#0d9488; color:#0d9488;" data-bs-toggle="modal" data-bs-target="#scheduleModal">
+                            <i class="fa-solid fa-calendar-plus me-1"></i>Tạo Ca Làm Việc
+                        </button>
+                        <button class="btn btn-primary-medcare rounded-pill btn-sm px-3" data-bs-toggle="modal" data-bs-target="#doctorModal">
+                            <i class="fa-solid fa-user-plus me-1"></i>Thêm Bác Sĩ Mới
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table Card -->
+                <div class="card-medcare p-4 mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-medcare align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Họ & Tên Bác Sĩ</th>
+                                    <th>Chuyên Khoa</th>
+                                    <th>Học Vị / Chức Danh</th>
+                                    <th>Số Phòng Khám</th>
+                                    <th>Giá Khám Niêm Yết</th>
+                                    <th class="text-center">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="doc : ${doctors}">
+                                    <td><span class="badge bg-secondary-subtle text-secondary font-monospace" th:text="${doc.id}">1</span></td>
+                                    <td>
+                                        <strong class="d-block text-dark" th:text="${doc.account != null ? doc.account.fullName : 'BS. Chưa đặt tên'}">Nguyễn Văn An</strong>
+                                        <small class="text-muted" th:text="${doc.account != null ? doc.account.email : ''}">doctor@medcare.com</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-teal-subtle text-teal" style="color: #0d9488; background-color: #ccfbf1;" th:text="${doc.specialty != null ? doc.specialty.name : 'Chưa phân khoa'}">Tim Mạch</span>
+                                    </td>
+                                    <td th:text="${doc.degree != null ? doc.degree : (doc.position != null ? doc.position : 'Bác sĩ chuyên khoa')}">Tiến sĩ Bác sĩ</td>
+                                    <td>
+                                        <span class="badge bg-info-subtle text-info font-monospace" th:text="${doc.roomNumber != null ? doc.roomNumber : 'Phòng 101'}">P.101</span>
+                                    </td>
+                                    <td class="fw-bold text-teal" style="color: #0d9488;" th:text="${doc.consultationFee != null ? #numbers.formatDecimal(doc.consultationFee, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '300.000 VNĐ'}">300.000 VNĐ</td>
+                                    <td class="text-center">
+                                        <a th:href="@{/admin/doctors/edit/{id}(id=${doc.id})}" class="btn btn-sm btn-outline-primary rounded-pill me-1"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
+                                        <a th:href="@{/admin/doctors/delete/{id}(id=${doc.id})}" class="btn btn-sm btn-outline-danger rounded-pill" onclick="return confirm('Bạn có chắc chắn muốn xóa bác sĩ này?')"><i class="fa-solid fa-trash"></i> Xóa</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(doctors)}">
+                                    <td colspan="7" class="text-center text-muted py-4">Chưa có thông tin bác sĩ nào trong hệ thống.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Form Card Edit mode if selected -->
+                <div th:if="${isEdit}" class="card-medcare p-4 border-teal" style="border-color: #0d9488;">
+                    <h5 class="fw-bold text-teal mb-3"><i class="fa-solid fa-pen me-2"></i>Cập Nhật Bác Sĩ #<span th:text="${doctorForm.id}"></span></h5>
+                    <form th:action="@{/admin/doctors/save}" th:object="${doctorForm}" method="post" class="row g-3">
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{account.id}">
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Chuyên Khoa Đảm Nhận <span class="text-danger">*</span></label>
+                            <select th:field="*{specialty.id}" class="form-select" required>
+                                <option value="">-- Chọn Chuyên Khoa --</option>
+                                <option th:each="spec : ${specialties}" th:value="${spec.id}" th:text="${spec.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Số Phòng Khám Được Gán <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{roomNumber}" class="form-control" placeholder="VD: Phòng 101, Phòng 205..." required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Học Vị / Bằng Cấp</label>
+                            <input type="text" th:field="*{degree}" class="form-control" placeholder="VD: Tiến sĩ Bác sĩ (TS.BS)...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Chức Vụ Phụ Trách</label>
+                            <input type="text" th:field="*{position}" class="form-control" placeholder="VD: Trưởng Khoa...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Giá Khám Niêm Yết (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" step="10000" th:field="*{consultationFee}" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium small">Mô Tả / Tiểu Sử Bác Sĩ</label>
+                            <textarea th:field="*{bio}" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-12 d-flex gap-2 justify-content-end">
+                            <a th:href="@{/admin/doctors}" class="btn btn-light rounded-pill">Hủy Bỏ</a>
+                            <button type="submit" class="btn btn-primary-medcare rounded-pill">Cập Nhật Thông Tin Bác Sĩ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Doctor Modal (Create/Edit) -->
+    <div class="modal fade" id="doctorModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form th:action="@{/admin/doctors/save}" th:object="${doctorForm}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-md text-teal me-2" style="color:#0d9488;"></i>Cập Nhật Thông Tin Bác Sĩ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Chuyên Khoa Đảm Nhận <span class="text-danger">*</span></label>
+                            <select th:field="*{specialty.id}" class="form-select" required>
+                                <option value="">-- Chọn Chuyên Khoa --</option>
+                                <option th:each="spec : ${specialties}" th:value="${spec.id}" th:text="${spec.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Gán Số Phòng Khám <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{roomNumber}" class="form-control" placeholder="VD: Phòng 101..." required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Học Vị / Bằng Cấp</label>
+                            <input type="text" th:field="*{degree}" class="form-control" placeholder="VD: TS.BS...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Chức Vụ</label>
+                            <input type="text" th:field="*{position}" class="form-control" placeholder="VD: Bác sĩ chính...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Giá Khám Niêm Yết (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" step="10000" th:field="*{consultationFee}" class="form-control" placeholder="VD: 300000" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium small">Tiểu Sử / Giới Thiệu Bác Sĩ</label>
+                            <textarea th:field="*{bio}" class="form-control" rows="3" placeholder="Tóm tắt quá trình công tác & kinh nghiệm..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary-medcare rounded-pill">Lưu Bác Sĩ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Modal (Phân ca làm việc theo ngày) -->
+    <div class="modal fade" id="scheduleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/admin/doctors/schedule/create}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-calendar-plus text-teal me-2" style="color:#0d9488;"></i>Tạo Ca Làm Việc Cho Bác Sĩ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-medium small">Chọn Bác Sĩ <span class="text-danger">*</span></label>
+                            <select name="doctorId" class="form-select" required>
+                                <option value="">-- Chọn Bác Sĩ --</option>
+                                <option th:each="doc : ${doctors}" th:value="${doc.id}" th:text="${(doc.account != null ? doc.account.fullName : 'Bác sĩ #' + doc.id) + (doc.specialty != null ? ' (' + doc.specialty.name + ')' : '')}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Ngày Làm Việc <span class="text-danger">*</span></label>
+                            <input type="date" name="workDate" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Khung Giờ Ca Khám <span class="text-danger">*</span></label>
+                            <select name="timeSlot" class="form-select" required>
+                                <option value="07:30 - 08:30">Ca 1: 07:30 - 08:30</option>
+                                <option value="08:30 - 09:30">Ca 2: 08:30 - 09:30</option>
+                                <option value="09:30 - 10:30">Ca 3: 09:30 - 10:30</option>
+                                <option value="13:30 - 14:30">Ca 4: 13:30 - 14:30</option>
+                                <option value="14:30 - 15:30">Ca 5: 14:30 - 15:30</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium small">Số Lượng Bệnh Nhân Tối Đa Trong Ca</label>
+                            <input type="number" name="maxPatients" class="form-control" value="10" min="1" max="50">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary-medcare rounded-pill">Tạo Ca Làm Việc</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

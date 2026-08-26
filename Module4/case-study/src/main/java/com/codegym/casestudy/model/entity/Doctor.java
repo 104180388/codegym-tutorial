@@ -36,4 +36,7 @@ public class Doctor {
 
     @Column(name = "consultation_fee")
     private Double consultationFee;
+
+    @Column(name = "room_number")
+    private String roomNumber;
 }

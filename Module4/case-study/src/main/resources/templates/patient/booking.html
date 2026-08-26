@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Đặt Lịch Khám Bệnh - MedCare')}">
+</head>
+<body class="bg-light">
+    <!-- Top Navbar -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Fragment -->
+        <aside th:replace="~{layout/sidebar :: sidebar('patient-booking')}"></aside>
+
+        <!-- Dashboard Content Container -->
+        <main class="dashboard-content">
+            <div class="container-fluid">
+                <!-- Flash Alerts -->
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i><span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i><span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Page Title -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1"><i class="fa-solid fa-calendar-plus text-teal me-2" style="color:#0d9488;"></i>Đăng Ký Đặt Lịch Khám Bệnh</h4>
+                        <p class="text-muted small mb-0">Vui lòng chọn bác sĩ, thời gian và các dịch vụ cận lâm sàng đi kèm nếu có</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card-medcare p-4 mb-4">
+                            <form th:action="@{/patient/booking}" th:object="${appointmentDTO}" method="post" id="bookingForm">
+                                <input type="hidden" th:field="*{scheduleId}" id="scheduleIdInput">
+
+                                <h6 class="fw-bold text-teal border-bottom pb-2 mb-3" style="color:#0d9488;">1. Chọn Chuyên Khoa & Bác Sĩ</h6>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium small">Chuyên Khoa Khám <span class="text-danger">*</span></label>
+                                        <select th:field="*{specialtyId}" class="form-select" id="specialtyIdSelect" required>
+                                            <option value="">-- Chọn chuyên khoa --</option>
+                                            <option th:each="spec : ${specialties}" th:value="${spec.id}" th:text="${spec.name}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium small">Bác Sĩ Đảm Nhận <span class="text-danger">*</span></label>
+                                        <select th:field="*{doctorId}" class="form-select" id="doctorIdSelect" required>
+                                            <option value="" data-fee="0">-- Chọn bác sĩ --</option>
+                                            <option th:each="doc : ${doctors}" 
+                                                    th:value="${doc.id}" 
+                                                    th:data-fee="${doc.consultationFee != null ? doc.consultationFee : 0}"
+                                                    th:text="${(doc.account != null ? doc.account.fullName : 'Bác sĩ #' + doc.id) + (doc.specialty != null ? ' (' + doc.specialty.name + ')' : '') + (doc.consultationFee != null ? ' - ' + #numbers.formatDecimal(doc.consultationFee, 0, 'COMMA', 0, 'POINT') + 'đ' : '')}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold text-teal border-bottom pb-2 mb-3" style="color:#0d9488;">2. Chọn Ngày & Khung Giờ Khám (Tải Động AJAX 1)</h6>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium small">Ngày Khám Dự Kiến <span class="text-danger">*</span></label>
+                                        <input type="date" th:field="*{appointmentDate}" class="form-control" id="appointmentDateInput" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium small">Khung Giờ Khám <span class="text-danger">*</span></label>
+                                        <select th:field="*{appointmentTime}" class="form-select" id="appointmentTimeSelect" required>
+                                            <option value="">-- Vui lòng chọn Bác sĩ & Ngày khám trước --</option>
+                                            <option value="07:30 - 08:30">Ca 1: 07:30 - 08:30</option>
+                                            <option value="08:30 - 09:30">Ca 2: 08:30 - 09:30</option>
+                                            <option value="09:30 - 10:30">Ca 3: 09:30 - 10:30</option>
+                                            <option value="13:30 - 14:30">Ca 4: 13:30 - 14:30</option>
+                                            <option value="14:30 - 15:30">Ca 5: 14:30 - 15:30</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-medium small text-muted"><i class="fa-solid fa-bolt me-1 text-warning"></i>Khung Giờ Khám Trống Dạng Nút Chọn Nhanh:</label>
+                                        <div id="timeSlotContainer" class="p-3 border rounded bg-white text-muted small">
+                                            Vui lòng chọn <strong>Bác sĩ</strong> và <strong>Ngày khám</strong> ở trên để hệ thống tự động tải các khung giờ trống còn lại qua AJAX.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold text-teal border-bottom pb-2 mb-3" style="color:#0d9488;">3. Chọn Dịch Vụ Cận Lâm Sàng Chọn Trước (Cộng Tiền Realtime AJAX 2)</h6>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6" th:each="srv : ${services}">
+                                        <div class="form-check p-3 border rounded bg-white h-100">
+                                            <input class="form-check-input service-checkbox" 
+                                                   type="checkbox" 
+                                                   th:value="${srv.id}" 
+                                                   th:data-price="${srv.price != null ? srv.price : 0}"
+                                                   th:field="*{serviceIds}" 
+                                                   th:id="${'srvCheck_' + srv.id}">
+                                            <label class="form-check-label d-block ms-2" th:for="${'srvCheck_' + srv.id}">
+                                                <strong class="d-block text-dark" th:text="${srv.name}">Xét Nghiệm Máu CBC</strong>
+                                                <span class="text-teal font-monospace fw-bold" style="color:#0d9488;" th:text="${srv.price != null ? '+ ' + #numbers.formatDecimal(srv.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '+ 0 VNĐ'}">+ 180.000 VNĐ</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12" th:if="${#lists.isEmpty(services)}">
+                                        <p class="text-muted small">Hiện chưa có dịch vụ cận lâm sàng nào trong danh mục.</p>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold text-teal border-bottom pb-2 mb-3" style="color:#0d9488;">4. Lý Do Khám & Triệu Chứng</h6>
+                                <div class="mb-4">
+                                    <label class="form-label fw-medium small">Mô Tả Triệu Chứng Bệnh <span class="text-danger">*</span></label>
+                                    <textarea th:field="*{notes}" class="form-control" rows="3" placeholder="Nhập chi tiết biểu hiện mệt mỏi, đau ngực, chóng mặt hoặc nhu cầu tái khám..." required></textarea>
+                                </div>
+
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="reset" class="btn btn-outline-secondary rounded-pill px-4">Làm Mới Form</button>
+                                    <button type="submit" class="btn btn-primary-medcare rounded-pill px-5">
+                                        <i class="fa-solid fa-paper-plane me-1"></i>Xác Nhận Đặt Lịch
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Calculator summary -->
+                    <div class="col-lg-4">
+                        <div class="card-medcare p-4 mb-4 sticky-top" style="top: 80px;">
+                            <h6 class="fw-bold text-dark mb-3 border-bottom pb-2"><i class="fa-solid fa-calculator text-teal me-2" style="color:#0d9488;"></i>Tổng Tiền Tạm Tính (Realtime)</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-2 small">
+                                <span class="text-muted">Giá khám bác sĩ:</span>
+                                <strong id="docFeeDisplay" class="text-dark">0 VNĐ</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3 small">
+                                <span class="text-muted">Dịch vụ đi kèm chọn trước:</span>
+                                <span class="badge bg-teal-subtle text-teal" style="color:#0d9488; background-color:#ccfbf1;">Theo checkbox</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="fw-bold text-dark">Tổng Tiền Dự Kiến:</span>
+                                <h4 id="realtimeTotalDisplay" class="fw-extrabold text-teal mb-0" style="color:#0d9488;">0 VNĐ</h4>
+                            </div>
+                            <small class="text-muted d-block mb-3" style="font-size:0.75rem;"><i class="fa-solid fa-shield-halved me-1 text-success"></i>Giá đã bao gồm thuế & niêm yết công khai tại phòng khám.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer Fragment with jQuery & app.js -->
+    <footer th:replace="~{layout/footer :: footer}"></footer>
+</body>
+</html>

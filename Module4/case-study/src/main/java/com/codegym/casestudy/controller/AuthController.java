@@ -8,11 +8,21 @@ public class AuthController {
 
     @GetMapping("/")
     public String home() {
-        return "home";
+        return "index";
     }
 
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/doctors")
+    public String doctors() {
+        return "doctors";
+    }
+
+    @GetMapping("/services")
+    public String services() {
+        return "services";
     }
 }

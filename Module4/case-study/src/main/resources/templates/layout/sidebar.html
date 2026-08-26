@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <aside th:fragment="sidebar(activeMenu)" class="sidebar-medcare">
+        <!-- Sidebar Brand Card -->
+        <div class="p-3 rounded-4 bg-teal-subtle bg-opacity-20 border border-teal-subtle text-center mb-3" style="background-color: #f0fdf4;">
+            <div class="d-inline-flex align-items-center justify-content-center w-12 h-12 rounded-circle bg-teal text-white shadow-sm mb-2" style="width:46px; height:46px; background: linear-gradient(135deg, #0d9488, #0284c7);">
+                <i class="fa-solid fa-hospital-user fs-4"></i>
+            </div>
+            <h6 class="fw-bold mb-0 text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif;">MedCare Portal</h6>
+            <span class="badge bg-teal bg-opacity-10 text-teal small fw-medium mt-1" style="color: #0d9488; background-color:#ccfbf1;">Hệ Thống Y Tế MedCare</span>
+        </div>
+
+        <!-- Section 1: Bệnh nhân -->
+        <div class="mb-3">
+            <div class="sidebar-section-title"><i class="fa-solid fa-user me-1 text-teal" style="color:#0d9488;"></i>Dành Cho Bệnh Nhân</div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/patient/dashboard}" class="nav-link" th:classappend="${activeMenu == 'patient-dashboard'} ? 'active' : ''">
+                        <i class="fa-solid fa-chart-pie me-2"></i>
+                        <span>Tổng Quan</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/patient/booking}" class="nav-link" th:classappend="${activeMenu == 'patient-booking'} ? 'active' : ''">
+                        <i class="fa-solid fa-calendar-plus me-2"></i>
+                        <span>Đặt Lịch Khám</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/patient/my-appointments}" class="nav-link" th:classappend="${activeMenu == 'patient-appointments'} ? 'active' : ''">
+                        <i class="fa-solid fa-clock-rotate-left me-2"></i>
+                        <span>Lịch Hẹn Của Tôi</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Section 2: Bác Sĩ & Nhân Viên -->
+        <div class="mb-3">
+            <div class="sidebar-section-title"><i class="fa-solid fa-user-nurse me-1 text-primary"></i>Bác Sĩ & Nhân Viên</div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/staff/dashboard}" class="nav-link" th:classappend="${activeMenu == 'staff-dashboard'} ? 'active' : ''">
+                        <i class="fa-solid fa-stethoscope me-2"></i>
+                        <span>Bàn Làm Việc</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/staff/queue}" class="nav-link" th:classappend="${activeMenu == 'staff-queue'} ? 'active' : ''">
+                        <i class="fa-solid fa-list-check me-2"></i>
+                        <span>Hàng Chờ Khám</span>
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill ms-auto small">Realtime</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/staff/examination}" class="nav-link" th:classappend="${activeMenu == 'staff-examination'} ? 'active' : ''">
+                        <i class="fa-solid fa-notes-medical me-2"></i>
+                        <span>Khám & Kê Đơn</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Section 3: Quản Trị Viên (Admin) -->
+        <div class="mb-3">
+            <div class="sidebar-section-title"><i class="fa-solid fa-user-shield me-1 text-danger"></i>Quản Trị Hệ Thống</div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a th:href="@{/admin/dashboard}" class="nav-link" th:classappend="${activeMenu == 'admin-dashboard'} ? 'active' : ''">
+                        <i class="fa-solid fa-gauge-high me-2"></i>
+                        <span>Dashboard Admin</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/specialties}" class="nav-link" th:classappend="${activeMenu == 'admin-specialties'} ? 'active' : ''">
+                        <i class="fa-solid fa-hospital-user me-2"></i>
+                        <span>QL Chuyên Khoa</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/doctors}" class="nav-link" th:classappend="${activeMenu == 'admin-doctors'} ? 'active' : ''">
+                        <i class="fa-solid fa-user-md me-2"></i>
+                        <span>QL Bác Sĩ</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/services}" class="nav-link" th:classappend="${activeMenu == 'admin-services'} ? 'active' : ''">
+                        <i class="fa-solid fa-vial-virus me-2"></i>
+                        <span>QL Dịch Vụ</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/medicines}" class="nav-link" th:classappend="${activeMenu == 'admin-medicines'} ? 'active' : ''">
+                        <i class="fa-solid fa-pills me-2"></i>
+                        <span>Danh Mục Thuốc</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Footer Back Home Action -->
+        <div class="pt-3 border-top mt-auto">
+            <a th:href="@{/}" class="btn btn-outline-secondary btn-sm w-100 rounded-pill font-medium shadow-none">
+                <i class="fa-solid fa-arrow-left me-1"></i> Trở Về Trang Chủ
+            </a>
+        </div>
+    </aside>
+</body>
+</html>

@@ -34,7 +34,7 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (accountRepository.count() == 0) {
-            System.out.println("========== BẮT ĐẦU KHỞI TẠO SEED DATA CHÓ HỆ THỐNG MEDCARE ==========");
+            System.out.println("========== BẮT ĐẦU KHỞI TẠO SEED DATA CHO HỆ THỐNG MEDCARE ==========");
 
             // 1. Khởi tạo Chuyên khoa
             Specialty specialtyInternal = Specialty.builder()

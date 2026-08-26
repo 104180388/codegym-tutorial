@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Lịch Hẹn Của Tôi & Đánh Giá - MedCare')}">
+</head>
+<body class="bg-light">
+    <!-- Top Navbar -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Fragment -->
+        <aside th:replace="~{layout/sidebar :: sidebar('patient-appointments')}"></aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <div class="container-fluid">
+                <!-- Flash Alerts -->
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i><span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i><span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Page Title -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1"><i class="fa-solid fa-clock-history text-teal me-2" style="color:#0d9488;"></i>Danh Sách Lịch Hẹn Đã Đặt</h4>
+                        <p class="text-muted small mb-0">Theo dõi tiến trình và trạng thái xử lý hồ sơ đặt lịch khám bệnh của bạn</p>
+                    </div>
+                    <a th:href="@{/patient/booking}" class="btn btn-primary-medcare rounded-pill btn-sm px-3">
+                        <i class="fa-solid fa-plus me-1"></i>Đặt Lịch Mới
+                    </a>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Appointments Table Column -->
+                    <div class="col-lg-8">
+                        <div class="card-medcare p-4 mb-4">
+                            <div class="table-responsive">
+                                <table class="table table-medcare align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã LH</th>
+                                            <th>Ngày & Giờ Khám</th>
+                                            <th>Bác Sĩ & Khoa</th>
+                                            <th>Tổng Tiền</th>
+                                            <th>Trạng Thái</th>
+                                            <th class="text-center">Thao Tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="app : ${appointments}">
+                                            <td><span class="badge bg-secondary-subtle text-secondary font-monospace" th:text="'LH-' + ${app.id}">LH-01</span></td>
+                                            <td>
+                                                <strong class="d-block text-dark" th:text="${app.appointmentDate}">28/08/2026</strong>
+                                                <small class="text-muted"><i class="fa-regular fa-clock me-1"></i><span th:text="${app.appointmentTime}">08:30 - 09:30</span></small>
+                                            </td>
+                                            <td>
+                                                <strong class="d-block text-dark" th:text="${app.doctor != null && app.doctor.account != null ? app.doctor.account.fullName : 'Bác sĩ phụ trách'}">TS.BS Nguyễn Văn An</strong>
+                                                <span class="badge bg-teal-subtle text-teal" style="color: #0d9488; background-color: #ccfbf1;" th:text="${app.doctor != null && app.doctor.specialty != null ? app.doctor.specialty.name : 'Chuyên khoa'}">Khoa Tim Mạch</span>
+                                            </td>
+                                            <td class="fw-bold text-teal" style="color:#0d9488;" th:text="${app.totalAmount != null ? #numbers.formatDecimal(app.totalAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">300.000 VNĐ</td>
+                                            <td>
+                                                <span th:if="${app.status.name() == 'PENDING'}" class="badge badge-status-pending px-3 py-2 rounded-pill"><i class="fa-solid fa-hourglass-half me-1"></i>Chờ xác nhận</span>
+                                                <span th:if="${app.status.name() == 'CONFIRMED'}" class="badge badge-status-confirmed px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i>Đã xác nhận</span>
+                                                <span th:if="${app.status.name() == 'IN_PROGRESS'}" class="badge badge-status-in-progress px-3 py-2 rounded-pill"><i class="fa-solid fa-stethoscope me-1"></i>Đang khám</span>
+                                                <span th:if="${app.status.name() == 'COMPLETED'}" class="badge badge-status-completed px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i>Hoàn thành</span>
+                                                <span th:if="${app.status.name() == 'CANCELLED'}" class="badge badge-status-cancelled px-3 py-2 rounded-pill"><i class="fa-solid fa-xmark me-1"></i>Đã hủy</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <a th:if="${app.status.name() == 'PENDING' || app.status.name() == 'CONFIRMED'}" 
+                                                   th:href="@{/patient/my-appointments/cancel/{id}(id=${app.id})}" 
+                                                   class="btn btn-sm btn-outline-danger rounded-pill px-3" 
+                                                   onclick="return confirm('Bạn có chắc chắn muốn hủy lịch hẹn này?')">
+                                                    <i class="fa-solid fa-xmark me-1"></i>Hủy Lịch
+                                                </a>
+                                                <span th:if="${app.status.name() != 'PENDING' && app.status.name() != 'CONFIRMED'}" class="text-muted small">-</span>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(appointments)}">
+                                            <td colspan="6" class="text-center text-muted py-4">Bạn chưa có lịch hẹn nào. Bấm "Đặt Lịch Mới" để tạo lịch khám.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AJAX 3: Async Review / Feedback Form Column -->
+                    <div class="col-lg-4">
+                        <div class="card-medcare p-4 mb-4">
+                            <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">
+                                <i class="fa-solid fa-star text-warning me-2"></i>Đánh Giá & Nhận Xét (AJAX 3)
+                            </h6>
+
+                            <div id="reviewAlertSuccess" class="alert alert-success small py-2 d-none">
+                                <i class="fa-solid fa-circle-check me-1"></i>Đã gửi đánh giá thành công!
+                            </div>
+
+                            <form id="ajaxReviewForm">
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small">Tên Của Bạn</label>
+                                    <input type="text" id="reviewPatientName" class="form-control form-control-sm" placeholder="VD: Trần Thị Bình">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small">Đánh Giá Bác Sĩ / Dịch Vụ</label>
+                                    <select id="reviewRating" class="form-select form-select-sm">
+                                        <option value="5">⭐⭐⭐⭐⭐ 5 Đánh giá tuyệt vời</option>
+                                        <option value="4">⭐⭐⭐⭐ 4 Rất tốt</option>
+                                        <option value="3">⭐⭐⭐ 3 Bình thường</option>
+                                        <option value="2">⭐⭐ 2 Cần cải thiện</option>
+                                        <option value="1">⭐ 1 Không hài lòng</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small">Nội Dung Nhận Xét <span class="text-danger">*</span></label>
+                                    <textarea id="reviewComment" class="form-control form-control-sm" rows="3" placeholder="Chia sẻ trải nghiệm khám bệnh của bạn..." required></textarea>
+                                </div>
+                                <button type="submit" id="btnSubmitReview" class="btn btn-primary-medcare rounded-pill btn-sm w-100">
+                                    <i class="fa-solid fa-paper-plane me-1"></i>Gửi Đánh Giá
+                                </button>
+                            </form>
+
+                            <!-- Dynamic Review Feed List Container -->
+                            <div class="mt-4 pt-3 border-top">
+                                <h6 class="fw-bold text-dark small mb-3"><i class="fa-solid fa-comments text-info me-1"></i>Đánh Giá Mới Nhất:</h6>
+                                <div id="reviewListContainer">
+                                    <div class="card-medcare p-3 mb-2 border-start border-3 border-teal">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <strong class="text-dark small">Nguyễn Văn Nam</strong>
+                                            <span class="text-warning small"><i class="fa-solid fa-star"></i> 5/5</span>
+                                        </div>
+                                        <p class="text-secondary small mb-0">Bác sĩ tư vấn rất tận tâm, phòng khám sạch sẽ hiện đại!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer Fragment with jQuery & app.js -->
+    <footer th:replace="~{layout/footer :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Bảng Giá Dịch Vụ - MedCare')}">
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Navbar Fragment -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <!-- Header Title Banner -->
+    <div class="bg-dark text-white py-4 mb-4" style="background: linear-gradient(135deg, #0f172a, #0284c7);">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-1"><i class="fa-solid fa-notes-medical me-2 text-info"></i>Bảng Giá Dịch Vụ Y Tế & Cận Lâm Sàng</h2>
+                    <p class="text-light opacity-75 small mb-0">Bảng giá niêm yết công khai, minh bạch toàn bộ dịch vụ thăm khám, xét nghiệm và chẩn đoán hình ảnh</p>
+                </div>
+                <a th:href="@{/patient/booking}" class="btn btn-teal rounded-pill px-4" style="background-color: #0d9488; color: white;">
+                    <i class="fa-solid fa-calendar-plus me-1"></i>Đặt Lịch Ngay
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mb-5">
+        <!-- Service Category Tabs -->
+        <ul class="nav nav-pills mb-4 gap-2 justify-content-center bg-white p-2 rounded-3 shadow-sm border" id="serviceTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active rounded-pill fw-medium" id="all-tab" data-bs-toggle="tab" data-bs-target="#all-services"><i class="fa-solid fa-list me-1"></i>Tất Cả Dịch Vụ</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link rounded-pill fw-medium" id="lab-tab" data-bs-toggle="tab" data-bs-target="#lab-services"><i class="fa-solid fa-vial me-1"></i>Xét Nghiệm Huyết Học</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link rounded-pill fw-medium" id="img-tab" data-bs-toggle="tab" data-bs-target="#img-services"><i class="fa-solid fa-x-ray me-1"></i>Chẩn Đoán Hình Ảnh (X-Quang/Siêu Âm)</button>
+            </li>
+        </ul>
+
+        <!-- Service Table Card -->
+        <div class="card-medcare p-4">
+            <div class="table-responsive">
+                <table class="table table-medcare align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 80px;">Mã DV</th>
+                            <th scope="col">Tên Dịch Vụ Y Tế</th>
+                            <th scope="col">Nhóm Dịch Vụ</th>
+                            <th scope="col">Mô Tả / Thời Gian</th>
+                            <th scope="col" class="text-end">Đơn Giá Niêm Yết</th>
+                            <th scope="col" class="text-center">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-secondary-subtle text-secondary font-monospace">DV001</span></td>
+                            <td>
+                                <strong class="d-block text-dark">Khám Chuyên Khoa Tim Mạch</strong>
+                                <small class="text-muted">Khám lâm sàng & tư vấn sức khỏe tim mạch</small>
+                            </td>
+                            <td><span class="badge bg-teal-subtle text-teal" style="color: #0d9488; background-color: #ccfbf1;">Khám Lâm Sàng</span></td>
+                            <td>30 - 45 Phút</td>
+                            <td class="text-end fw-bold text-teal" style="color: #0d9488;">300.000 VNĐ</td>
+                            <td class="text-center">
+                                <a th:href="@{/patient/booking}" class="btn btn-sm btn-outline-teal rounded-pill" style="border-color: #0d9488; color: #0d9488;">
+                                    <i class="fa-solid fa-plus me-1"></i>Chọn DV
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-secondary-subtle text-secondary font-monospace">DV002</span></td>
+                            <td>
+                                <strong class="d-block text-dark">Xét Nghiệm Công Thức Máu Toàn Phần (CBC)</strong>
+                                <small class="text-muted">Đánh giá các chỉ số hồng cầu, bạch cầu, tiểu cầu</small>
+                            </td>
+                            <td><span class="badge bg-info-subtle text-info">Xét Nghiệm</span></td>
+                            <td>Trả kết quả sau 45 phút</td>
+                            <td class="text-end fw-bold text-teal" style="color: #0d9488;">180.000 VNĐ</td>
+                            <td class="text-center">
+                                <a th:href="@{/patient/booking}" class="btn btn-sm btn-outline-teal rounded-pill" style="border-color: #0d9488; color: #0d9488;">
+                                    <i class="fa-solid fa-plus me-1"></i>Chọn DV
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-secondary-subtle text-secondary font-monospace">DV003</span></td>
+                            <td>
+                                <strong class="d-block text-dark">Siêu Âm Tim Màu Doppler</strong>
+                                <small class="text-muted">Khảo sát chức năng tim & các van tim</small>
+                            </td>
+                            <td><span class="badge bg-warning-subtle text-warning">Siêu Âm</span></td>
+                            <td>Trả kết quả sau 20 phút</td>
+                            <td class="text-end fw-bold text-teal" style="color: #0d9488;">450.000 VNĐ</td>
+                            <td class="text-center">
+                                <a th:href="@{/patient/booking}" class="btn btn-sm btn-outline-teal rounded-pill" style="border-color: #0d9488; color: #0d9488;">
+                                    <i class="fa-solid fa-plus me-1"></i>Chọn DV
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-secondary-subtle text-secondary font-monospace">DV004</span></td>
+                            <td>
+                                <strong class="d-block text-dark">Chụp X-Quang Ngực Thẳng</strong>
+                                <small class="text-muted">Đánh giá tổn thương nhu mô phổi & tim</small>
+                            </td>
+                            <td><span class="badge bg-danger-subtle text-danger">X-Quang</span></td>
+                            <td>Trả kết quả sau 15 phút</td>
+                            <td class="text-end fw-bold text-teal" style="color: #0d9488;">220.000 VNĐ</td>
+                            <td class="text-center">
+                                <a th:href="@{/patient/booking}" class="btn btn-sm btn-outline-teal rounded-pill" style="border-color: #0d9488; color: #0d9488;">
+                                    <i class="fa-solid fa-plus me-1"></i>Chọn DV
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-secondary-subtle text-secondary font-monospace">DV005</span></td>
+                            <td>
+                                <strong class="d-block text-dark">Xét Nghiệm Đường Huyết Lúc Đói (Glucose)</strong>
+                                <small class="text-muted">Tầm soát và theo dõi bệnh đái tháo đường</small>
+                            </td>
+                            <td><span class="badge bg-info-subtle text-info">Xét Nghiệm</span></td>
+                            <td>Trả kết quả sau 30 phút</td>
+                            <td class="text-end fw-bold text-teal" style="color: #0d9488;">90.000 VNĐ</td>
+                            <td class="text-center">
+                                <a th:href="@{/patient/booking}" class="btn btn-sm btn-outline-teal rounded-pill" style="border-color: #0d9488; color: #0d9488;">
+                                    <i class="fa-solid fa-plus me-1"></i>Chọn DV
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Fragment -->
+    <footer th:replace="~{layout/footer :: footer}"></footer>
+</body>
+</html>

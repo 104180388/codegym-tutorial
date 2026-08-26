@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Danh Sách Bác Sĩ & Chuyên Khoa - MedCare')}">
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Navbar Fragment -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <!-- Header Title Banner -->
+    <div class="bg-dark text-white py-4 mb-4" style="background: linear-gradient(135deg, #0f172a, #0f766e);">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-1"><i class="fa-solid fa-user-md me-2 text-info"></i>Đội Ngũ Bác Sĩ Chuyên Khoa</h2>
+                    <p class="text-light opacity-75 small mb-0">Tìm kiếm và lựa chọn bác sĩ uy tín phù hợp với nhu cầu khám chữa bệnh của bạn</p>
+                </div>
+                <a th:href="@{/patient/booking}" class="btn btn-teal rounded-pill px-4" style="background-color: #0d9488; color: white;">
+                    <i class="fa-solid fa-calendar-plus me-1"></i>Đặt Lịch Ngay
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mb-5">
+        <!-- Search & Filter Bar -->
+        <div class="card-medcare p-4 mb-4">
+            <form class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label fw-medium small text-muted"><i class="fa-solid fa-magnifying-glass me-1"></i>Tìm Theo Tên Bác Sĩ</label>
+                    <input type="text" class="form-control" placeholder="Nhập tên bác sĩ...">
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label fw-medium small text-muted"><i class="fa-solid fa-hospital-user me-1"></i>Chọn Chuyên Khoa</label>
+                    <select class="form-select">
+                        <option value="">-- Tất cả chuyên khoa --</option>
+                        <option value="1">Khoa Tim Mạch</option>
+                        <option value="2">Khoa Thần Kinh</option>
+                        <option value="3">Khoa Cơ Xương Khớp</option>
+                        <option value="4">Khoa Nội Tổng Quát</option>
+                        <option value="5">Khoa Nhi</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary-medcare w-100"><i class="fa-solid fa-filter me-1"></i>Lọc Kết Quả</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Doctor Cards Grid -->
+        <div class="row g-4">
+            <!-- Doctor 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card-medcare h-100 p-4 text-center d-flex flex-column">
+                    <div class="position-relative d-inline-block mx-auto mb-3">
+                        <div class="w-24 h-24 rounded-circle bg-teal bg-opacity-10 d-flex align-items-center justify-content-center mx-auto" style="width:90px; height:90px; background-color: #ccfbf1;">
+                            <i class="fa-solid fa-user-doctor fs-1 text-teal" style="color: #0d9488;"></i>
+                        </div>
+                        <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success border border-white">Hoạt động</span>
+                    </div>
+                    <h5 class="fw-bold mb-1">TS.BS Nguyễn Văn An</h5>
+                    <span class="badge bg-teal-subtle text-teal border mb-2 align-self-center" style="color: #0d9488; background-color: #ccfbf1;">Chuyên Khoa Tim Mạch</span>
+                    <p class="text-muted small mb-3">Trưởng khoa Tim Mạch, hơn 18 năm kinh nghiệm trong chẩn đoán và điều trị bệnh lý mạch vành.</p>
+                    <div class="mt-auto border-top pt-3 text-start small">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Kinh nghiệm:</span>
+                            <strong class="text-dark">18 năm</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">Giá khám:</span>
+                            <strong class="text-teal fw-bold" style="color: #0d9488;">300.000 VNĐ</strong>
+                        </div>
+                        <a th:href="@{/patient/booking}" class="btn btn-outline-teal w-100 rounded-pill btn-sm fw-bold" style="border-color: #0d9488; color: #0d9488;">
+                            <i class="fa-solid fa-calendar-check me-1"></i>Đặt Lịch Với Bác Sĩ
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card-medcare h-100 p-4 text-center d-flex flex-column">
+                    <div class="position-relative d-inline-block mx-auto mb-3">
+                        <div class="w-24 h-24 rounded-circle bg-info bg-opacity-10 d-flex align-items-center justify-content-center mx-auto" style="width:90px; height:90px;">
+                            <i class="fa-solid fa-user-doctor fs-1 text-info"></i>
+                        </div>
+                        <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success border border-white">Hoạt động</span>
+                    </div>
+                    <h5 class="fw-bold mb-1">ThS.BS Trịnh Thị Bích</h5>
+                    <span class="badge bg-info-subtle text-info border mb-2 align-self-center">Chuyên Khoa Thần Kinh</span>
+                    <p class="text-muted small mb-3">Chuyên gia thần kinh học, tư vấn và điều trị thành công hàng ngàn ca đau đầu, rối loạn giấc ngủ.</p>
+                    <div class="mt-auto border-top pt-3 text-start small">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Kinh nghiệm:</span>
+                            <strong class="text-dark">12 năm</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">Giá khám:</span>
+                            <strong class="text-teal fw-bold" style="color: #0d9488;">250.000 VNĐ</strong>
+                        </div>
+                        <a th:href="@{/patient/booking}" class="btn btn-outline-teal w-100 rounded-pill btn-sm fw-bold" style="border-color: #0d9488; color: #0d9488;">
+                            <i class="fa-solid fa-calendar-check me-1"></i>Đặt Lịch Với Bác Sĩ
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor 3 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card-medcare h-100 p-4 text-center d-flex flex-column">
+                    <div class="position-relative d-inline-block mx-auto mb-3">
+                        <div class="w-24 h-24 rounded-circle bg-success bg-opacity-10 d-flex align-items-center justify-content-center mx-auto" style="width:90px; height:90px;">
+                            <i class="fa-solid fa-user-doctor fs-1 text-success"></i>
+                        </div>
+                        <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success border border-white">Hoạt động</span>
+                    </div>
+                    <h5 class="fw-bold mb-1">BS.CKII Lê Hoàng Cường</h5>
+                    <span class="badge bg-success-subtle text-success border mb-2 align-self-center">Chuyên Khoa Cơ Xương Khớp</span>
+                    <p class="text-muted small mb-3">Phó Trưởng khoa Xương Khớp, giàu kinh nghiệm trị liệu thoái hóa cột sống và tiêm nội khớp.</p>
+                    <div class="mt-auto border-top pt-3 text-start small">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Kinh nghiệm:</span>
+                            <strong class="text-dark">15 năm</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">Giá khám:</span>
+                            <strong class="text-teal fw-bold" style="color: #0d9488;">280.000 VNĐ</strong>
+                        </div>
+                        <a th:href="@{/patient/booking}" class="btn btn-outline-teal w-100 rounded-pill btn-sm fw-bold" style="border-color: #0d9488; color: #0d9488;">
+                            <i class="fa-solid fa-calendar-check me-1"></i>Đặt Lịch Với Bác Sĩ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Fragment -->
+    <footer th:replace="~{layout/footer :: footer}"></footer>
+</body>
+</html>

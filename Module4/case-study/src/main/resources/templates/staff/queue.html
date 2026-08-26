@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Hàng Chờ Khám Bệnh - MedCare Staff')}">
+</head>
+<body class="bg-light">
+    <!-- Top Navbar -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Fragment -->
+        <aside th:replace="~{layout/sidebar :: sidebar('staff-queue')}"></aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <div class="container-fluid">
+                <!-- Flash Alerts -->
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i><span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i><span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Page Title -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1"><i class="fa-solid fa-list-ol text-primary me-2"></i>Hàng Chờ Khám & Tiếp Nhận Bệnh Nhân</h4>
+                        <p class="text-muted small mb-0">Quản lý số thứ tự lượt khám, duyệt lịch đặt trực tuyến và tiếp nhận bệnh nhân</p>
+                    </div>
+                    <a th:href="@{/staff/queue}" class="btn btn-sm btn-primary rounded-pill px-3"><i class="fa-solid fa-sync me-1"></i>Làm Mới Hàng Chờ</a>
+                </div>
+
+                <!-- Queue Table Card -->
+                <div class="card-medcare p-4 mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-medcare align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 70px;">Mã LH</th>
+                                    <th>Họ & Tên Bệnh Nhân</th>
+                                    <th>Bác Sĩ Phụ Trách</th>
+                                    <th>Chuyên Khoa</th>
+                                    <th>Ngày & Giờ Khám</th>
+                                    <th>Trạng Thái Hiện Tại</th>
+                                    <th class="text-center">Thao Tác Xử Lý</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="app : ${appointments}" th:classappend="${app.status.name() == 'CHECKED_IN'} ? 'table-warning bg-opacity-10' : ''">
+                                    <td><span class="badge bg-secondary-subtle text-secondary font-monospace" th:text="'LH-' + ${app.id}">LH-01</span></td>
+                                    <td>
+                                        <strong class="d-block text-dark" th:text="${app.patient != null ? app.patient.fullName : 'Bệnh nhân'}">Trần Văn Nam</strong>
+                                        <small class="text-muted"><i class="fa-solid fa-phone me-1"></i><span th:text="${app.patient != null ? app.patient.phone : 'N/A'}">0905 123 456</span></small>
+                                    </td>
+                                    <td><strong class="text-dark small" th:text="${app.doctor != null && app.doctor.account != null ? app.doctor.account.fullName : 'Bác sĩ phụ trách'}">TS.BS Nguyễn Văn An</strong></td>
+                                    <td><span class="badge bg-teal-subtle text-teal" style="color: #0d9488; background-color: #ccfbf1;" th:text="${app.doctor != null && app.doctor.specialty != null ? app.doctor.specialty.name : 'Nội khoa'}">Tim Mạch</span></td>
+                                    <td>
+                                        <span th:text="${app.appointmentDate}">28/08/2026</span>
+                                        <small class="d-block text-muted" th:text="${app.appointmentTime}">08:30 - 09:30</small>
+                                    </td>
+                                    <td>
+                                        <span th:if="${app.status.name() == 'PENDING'}" class="badge badge-status-pending px-3 py-1 rounded-pill"><i class="fa-solid fa-hourglass-half me-1"></i>Chờ duyệt</span>
+                                        <span th:if="${app.status.name() == 'CONFIRMED'}" class="badge badge-status-confirmed px-3 py-1 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i>Đã duyệt</span>
+                                        <span th:if="${app.status.name() == 'CHECKED_IN'}" class="badge bg-warning text-dark px-3 py-1 rounded-pill"><i class="fa-solid fa-person-walking-arrow-right me-1"></i>Đã tiếp nhận</span>
+                                        <span th:if="${app.status.name() == 'IN_PROGRESS'}" class="badge badge-status-in-progress px-3 py-1 rounded-pill"><i class="fa-solid fa-stethoscope me-1"></i>Đang khám</span>
+                                        <span th:if="${app.status.name() == 'COMPLETED'}" class="badge badge-status-completed px-3 py-1 rounded-pill"><i class="fa-solid fa-check me-1"></i>Hoàn thành</span>
+                                        <span th:if="${app.status.name() == 'CANCELLED'}" class="badge badge-status-cancelled px-3 py-1 rounded-pill"><i class="fa-solid fa-xmark me-1"></i>Đã hủy</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex gap-1 justify-content-center">
+                                            <!-- Nút Duyệt Lịch CONFIRMED -->
+                                            <a th:if="${app.status.name() == 'PENDING'}" 
+                                               th:href="@{/staff/confirm/{id}(id=${app.id})}" 
+                                               class="btn btn-sm btn-outline-info rounded-pill px-2">
+                                                <i class="fa-solid fa-circle-check me-1"></i>Duyệt Lịch
+                                            </a>
+
+                                            <!-- Nút Tiếp Nhận CHECKED_IN -->
+                                            <a th:if="${app.status.name() == 'CONFIRMED'}" 
+                                               th:href="@{/staff/checkin/{id}(id=${app.id})}" 
+                                               class="btn btn-sm btn-warning rounded-pill text-dark px-2">
+                                                <i class="fa-solid fa-arrow-right-to-bracket me-1"></i>Tiếp Nhận
+                                            </a>
+
+                                            <!-- Nút Vào Khám Examination -->
+                                            <a th:if="${app.status.name() == 'CHECKED_IN' || app.status.name() == 'CONFIRMED' || app.status.name() == 'IN_PROGRESS'}" 
+                                               th:href="@{/staff/examination/{id}(id=${app.id})}" 
+                                               class="btn btn-sm btn-primary rounded-pill px-3">
+                                                <i class="fa-solid fa-stethoscope me-1"></i>Vào Khám
+                                            </a>
+
+                                            <span th:if="${app.status.name() == 'COMPLETED'}" class="text-success small fw-bold"><i class="fa-solid fa-check-double me-1"></i>Đã xong</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(appointments)}">
+                                    <td colspan="7" class="text-center text-muted py-4">Hiện tại không có lượt khám nào trong danh sách.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

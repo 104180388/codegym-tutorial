@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Quản Lý Chuyên Khoa - MedCare Admin')}">
+</head>
+<body class="bg-light">
+    <!-- Top Navbar -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Fragment -->
+        <aside th:replace="~{layout/sidebar :: sidebar('admin-specialties')}"></aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <div class="container-fluid">
+                <!-- Flash Messages -->
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i><span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i><span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Page Title Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1"><i class="fa-solid fa-hospital-user text-danger me-2"></i>Quản Lý Danh Mục Chuyên Khoa</h4>
+                        <p class="text-muted small mb-0">Quản lý các chuyên khoa phòng khám trong hệ thống MedCare</p>
+                    </div>
+                    <button class="btn btn-primary-medcare rounded-pill btn-sm px-3" data-bs-toggle="modal" data-bs-target="#specialtyModal">
+                        <i class="fa-solid fa-plus me-1"></i>Thêm Chuyên Khoa
+                    </button>
+                </div>
+
+                <!-- Table Card -->
+                <div class="card-medcare p-4 mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-medcare align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 70px;">ID</th>
+                                    <th>Tên Chuyên Khoa Y Tế</th>
+                                    <th>Mô Tả Chức Năng</th>
+                                    <th class="text-center">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="spec : ${specialties}">
+                                    <td><span class="badge bg-secondary-subtle text-secondary font-monospace" th:text="${spec.id}">1</span></td>
+                                    <td><strong class="text-dark" th:text="${spec.name}">Khoa Tim Mạch</strong></td>
+                                    <td th:text="${spec.description}">Chẩn đoán và điều trị bệnh tim mạch</td>
+                                    <td class="text-center">
+                                        <a th:href="@{/admin/specialties/edit/{id}(id=${spec.id})}" class="btn btn-sm btn-outline-primary rounded-pill me-1"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
+                                        <a th:href="@{/admin/specialties/delete/{id}(id=${spec.id})}" class="btn btn-sm btn-outline-danger rounded-pill" onclick="return confirm('Bạn có chắc chắn muốn xóa chuyên khoa này?')"><i class="fa-solid fa-trash"></i> Xóa</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(specialties)}">
+                                    <td colspan="4" class="text-center text-muted py-4">Chưa có chuyên khoa nào trong hệ thống.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Form Card Edit mode if selected -->
+                <div th:if="${isEdit}" class="card-medcare p-4 border-teal" style="border-color: #0d9488;">
+                    <h5 class="fw-bold text-teal mb-3"><i class="fa-solid fa-pen me-2"></i>Cập Nhật Chuyên Khoa #<span th:text="${specialtyForm.id}"></span></h5>
+                    <form th:action="@{/admin/specialties/save}" th:object="${specialtyForm}" method="post">
+                        <input type="hidden" th:field="*{id}">
+                        <div class="mb-3">
+                            <label class="form-label fw-medium small">Tên Chuyên Khoa <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{name}" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-medium small">Mô Tả Chuyên Khoa</label>
+                            <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a th:href="@{/admin/specialties}" class="btn btn-light rounded-pill">Hủy Bỏ</a>
+                            <button type="submit" class="btn btn-primary-medcare rounded-pill">Cập Nhật</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Specialty Modal (Create) -->
+    <div class="modal fade" id="specialtyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/admin/specialties/save}" th:object="${specialtyForm}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-hospital-user text-teal me-2" style="color:#0d9488;"></i>Thêm Chuyên Khoa Mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-medium small">Tên Chuyên Khoa <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{name}" class="form-control" placeholder="Nhập tên chuyên khoa..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-medium small">Mô Tả Chuyên Khoa</label>
+                            <textarea th:field="*{description}" class="form-control" rows="3" placeholder="Nhập tóm tắt mô tả chức năng..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary-medcare rounded-pill">Lưu Chuyên Khoa</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

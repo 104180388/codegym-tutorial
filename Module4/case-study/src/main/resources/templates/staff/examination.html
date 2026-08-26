@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Màn Hình Khám & Kê Đơn - MedCare Doctor')}">
+</head>
+<body class="bg-light">
+    <!-- Top Navbar -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Fragment -->
+        <aside th:replace="~{layout/sidebar :: sidebar('staff-examination')}"></aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <div class="container-fluid">
+                <!-- Patient Banner -->
+                <div class="card-medcare p-3 mb-4 bg-white border-start border-4 border-teal" style="border-color: #0d9488 !important;">
+                    <div class="row align-items-center">
+                        <div class="col-md-5 border-end">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="w-12 h-12 rounded-circle bg-teal text-white d-flex align-items-center justify-content-center fs-3" style="width:48px; height:48px; background-color: #0d9488;">
+                                    <i class="fa-solid fa-hospital-user"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-0 text-dark">
+                                        Bệnh Nhân: <span th:text="${appointment.patient != null ? appointment.patient.fullName : 'Chưa cập nhật'}">Trần Văn Nam</span>
+                                    </h5>
+                                    <small class="text-muted">
+                                        Mã LH: LH-<span th:text="${appointment.id}">01</span> | 
+                                        Giới tính: <span th:text="${appointment.patient != null ? appointment.patient.gender : 'Nam'}">Nam</span> | 
+                                        SĐT: <span th:text="${appointment.patient != null ? appointment.patient.phone : '0905...'}">0905...</span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 border-end">
+                            <div class="small">
+                                <span class="d-block text-muted">Bác Sĩ Khám: <strong class="text-dark" th:text="${appointment.doctor != null && appointment.doctor.account != null ? appointment.doctor.account.fullName : 'Bác sĩ'}">TS.BS Nguyễn Văn An</strong></span>
+                                <span class="d-block text-muted">Chuyên Khoa: <span class="badge bg-teal-subtle text-teal" style="color:#0d9488; background-color:#ccfbf1;" th:text="${appointment.doctor != null && appointment.doctor.specialty != null ? appointment.doctor.specialty.name : 'Nội khoa'}">Tim Mạch</span></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <span class="badge badge-status-in-progress fs-6 px-3 py-2 rounded-pill">Đang Khám</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Form Grid -->
+                <form th:action="@{/staff/examination/save}" th:object="${examinationDTO}" method="post" id="examinationForm">
+                    <input type="hidden" th:field="*{appointmentId}">
+
+                    <div class="row g-4">
+                        <!-- Column 1: Diagnosis & Paraclinical orders -->
+                        <div class="col-lg-6">
+                            <!-- Chẩn đoán bệnh -->
+                            <div class="card-medcare p-4 mb-4">
+                                <h6 class="fw-bold text-teal border-bottom pb-2 mb-3" style="color: #0d9488;">
+                                    <i class="fa-solid fa-stethoscope me-2"></i>1. Khám Lâm Sàng & Chẩn Đoán Bệnh
+                                </h6>
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small">Lý Do Khám & Triệu Chứng Ban Đầu (Bệnh Nhân Nhập)</label>
+                                    <textarea class="form-control" th:field="*{symptoms}" rows="2" placeholder="Triệu chứng khám..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small">Chẩn Đoán Xác Định Của Bác Sĩ <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" th:field="*{diagnosis}" placeholder="VD: I20 - Cơn đau thắt ngực (Angina Pectoris)..." required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small">Kế Hoạch Điều Trị & Lời Dặn Bác Sĩ</label>
+                                    <textarea class="form-control" th:field="*{treatmentPlan}" rows="3" placeholder="Chế độ nghỉ ngơi, dinh dưỡng, tái khám sau 7 ngày..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small">Ngày Tái Khám Dự Kiến</label>
+                                    <input type="date" class="form-control" th:field="*{reexaminationDate}">
+                                </div>
+                            </div>
+
+                            <!-- Dịch vụ cận lâm sàng đã đặt trước & chỉ định thêm -->
+                            <div class="card-medcare p-4">
+                                <h6 class="fw-bold text-teal border-bottom pb-2 mb-3" style="color: #0d9488;">
+                                    <i class="fa-solid fa-vial-virus me-2"></i>2. Dịch Vụ Cận Lâm Sàng
+                                </h6>
+                                <!-- Đã chọn trước -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small text-muted">Dịch Vụ Bệnh Nhân Đã Đặt Trước:</label>
+                                    <ul class="list-group list-group-flush small" th:if="${not #lists.isEmpty(attachedServices)}">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1" th:each="att : ${attachedServices}">
+                                            <span><i class="fa-solid fa-check text-success me-2"></i><span th:text="${att.service != null ? att.service.name : 'Dịch vụ'}">Xét nghiệm</span></span>
+                                            <strong class="text-teal" style="color:#0d9488;" th:text="${att.price != null ? #numbers.formatDecimal(att.price, 0, 'COMMA', 0, 'POINT') + 'đ' : '0đ'}">180.000đ</strong>
+                                        </li>
+                                    </ul>
+                                    <p class="text-muted small mb-0" th:if="${#lists.isEmpty(attachedServices)}">Bệnh nhân chưa chọn trước dịch vụ cận lâm sàng nào.</p>
+                                </div>
+                                <!-- Chỉ định thêm -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small">Chỉ Định Thêm Dịch Vụ Phát Sinh (Nếu có):</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-6" th:each="srv : ${allServices}">
+                                            <div class="form-check p-2 border rounded bg-white">
+                                                <input class="form-check-input" type="checkbox" th:value="${srv.id}" th:field="*{addServiceIds}" th:id="${'addSrv_' + srv.id}">
+                                                <label class="form-check-label small" th:for="${'addSrv_' + srv.id}">
+                                                    <span th:text="${srv.name}">Xét nghiệm CBC</span> 
+                                                    (<span class="text-teal" style="color:#0d9488;" th:text="${srv.price != null ? #numbers.formatDecimal(srv.price, 0, 'COMMA', 0, 'POINT') + 'đ' : '0đ'}">180k</span>)
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Prescription Table -->
+                        <div class="col-lg-6">
+                            <div class="card-medcare p-4 mb-4">
+                                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                                    <h6 class="fw-bold text-teal mb-0" style="color: #0d9488;">
+                                        <i class="fa-solid fa-pills me-2"></i>3. Kê Đơn Thuốc Cho Bệnh Nhân
+                                    </h6>
+                                    <button type="button" class="btn btn-sm btn-teal text-white rounded-pill px-3" style="background-color: #0d9488;" id="btnAddMedicineRow">
+                                        <i class="fa-solid fa-plus me-1"></i>Thêm Dòng Thuốc
+                                    </button>
+                                </div>
+
+                                <div class="table-responsive mb-3">
+                                    <table class="table table-bordered table-sm align-middle small" id="medicinePrescriptionTable">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Tên Thuốc (Danh Mục)</th>
+                                                <th style="width: 70px;">SL</th>
+                                                <th>Cách Dùng / Liều Dùng</th>
+                                                <th class="text-center" style="width: 40px;">#</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="medicineTableBody">
+                                            <!-- Dòng thuốc 1 mặc định -->
+                                            <tr>
+                                                <td>
+                                                    <select name="medicineIds" class="form-select form-select-sm">
+                                                        <option value="">-- Chọn thuốc --</option>
+                                                        <option th:each="med : ${allMedicines}" th:value="${med.id}" th:text="${med.name + ' (' + med.unit + ' - ' + #numbers.formatDecimal(med.price, 0, 'COMMA', 0, 'POINT') + 'đ)'}"></option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="number" name="quantities" class="form-control form-control-sm text-center" value="1" min="1"></td>
+                                                <td><input type="text" name="dosages" class="form-control form-control-sm" placeholder="VD: Sáng 1 viên sau ăn"></td>
+                                                <td class="text-center"><button type="button" class="btn btn-link btn-sm text-danger p-0 btn-remove-row"><i class="fa-solid fa-trash"></i></button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium small">Hướng Dẫn / Lời Dặn Kê Đơn Tổng Quát</label>
+                                    <textarea th:field="*{instructions}" class="form-control" rows="2" placeholder="Dùng thuốc đúng giờ, tránh uống khi bụng đói..."></textarea>
+                                </div>
+
+                                <!-- Prescription Actions -->
+                                <div class="d-flex flex-wrap gap-2 justify-content-end pt-3 border-top">
+                                    <a th:href="@{/staff/queue}" class="btn btn-outline-secondary rounded-pill px-3">Trở Về Hàng Chờ</a>
+                                    <button type="submit" class="btn btn-primary-medcare rounded-pill px-4">
+                                        <i class="fa-solid fa-floppy-disk me-1"></i>Lưu Hồ Sơ Khám & Kê Đơn
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script thêm/xóa dòng kê đơn thuốc động -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnAddRow = document.getElementById('btnAddMedicineRow');
+            const tbody = document.getElementById('medicineTableBody');
+
+            if (btnAddRow && tbody) {
+                btnAddRow.addEventListener('click', function() {
+                    const firstRow = tbody.querySelector('tr');
+                    if (firstRow) {
+                        const newRow = firstRow.cloneNode(true);
+                        newRow.querySelector('select').selectedIndex = 0;
+                        newRow.querySelector('input[type="number"]').value = 1;
+                        newRow.querySelector('input[type="text"]').value = '';
+                        tbody.appendChild(newRow);
+                    }
+                });
+
+                tbody.addEventListener('click', function(e) {
+                    if (e.target.closest('.btn-remove-row')) {
+                        const rows = tbody.querySelectorAll('tr');
+                        if (rows.length > 1) {
+                            e.target.closest('tr').remove();
+                        } else {
+                            alert('Phải giữ ít nhất 1 dòng kê đơn thuốc!');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

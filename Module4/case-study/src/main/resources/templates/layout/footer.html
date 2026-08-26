@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <footer th:fragment="footer" class="footer-medcare pt-5 pb-4 mt-auto">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <!-- Column 1: Brand Info -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="navbar-brand-logo">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <span class="fs-4 fw-extrabold text-white" style="font-family: 'Plus Jakarta Sans', sans-serif;">MedCare Clinic</span>
+                    </div>
+                    <p class="text-secondary small leading-relaxed mb-4">
+                        Hệ thống phòng khám đa khoa quốc tế kết nối bệnh nhân và đội ngũ y bác sĩ hàng đầu. Đặt lịch khám trực tuyến 24/7, quản lý hồ sơ bệnh án điện tử an toàn và minh bạch.
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="footer-social-icon" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="footer-social-icon" title="Youtube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" class="footer-social-icon" title="Zalo"><i class="fa-solid fa-comment-dots"></i></a>
+                        <a href="#" class="footer-social-icon" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <!-- Column 2: Navigation Links -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white fw-bold mb-3 text-uppercase small" style="letter-spacing:0.06em;">Điều Hướng</h6>
+                    <ul class="list-unstyled small text-secondary mb-0">
+                        <li class="mb-2"><a href="/" class="text-secondary text-decoration-none transition-all"><i class="fa-solid fa-angle-right me-1.5 text-teal" style="color:#0d9488;"></i>Trang Chủ</a></li>
+                        <li class="mb-2"><a href="/doctors" class="text-secondary text-decoration-none transition-all"><i class="fa-solid fa-angle-right me-1.5 text-teal" style="color:#0d9488;"></i>Đội Ngũ Bác Sĩ</a></li>
+                        <li class="mb-2"><a href="/services" class="text-secondary text-decoration-none transition-all"><i class="fa-solid fa-angle-right me-1.5 text-teal" style="color:#0d9488;"></i>Giá Dịch Vụ</a></li>
+                        <li class="mb-2"><a href="/patient/booking" class="text-secondary text-decoration-none transition-all"><i class="fa-solid fa-angle-right me-1.5 text-teal" style="color:#0d9488;"></i>Đặt Lịch Khám</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Specialties -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-3 text-uppercase small" style="letter-spacing:0.06em;">Chuyên Khoa Nổi Bật</h6>
+                    <ul class="list-unstyled small text-secondary mb-0">
+                        <li class="mb-2"><i class="fa-solid fa-heart-pulse me-2 text-danger"></i>Khoa Tim Mạch & Mạch Máu</li>
+                        <li class="mb-2"><i class="fa-solid fa-brain me-2 text-info"></i>Khoa Thần Kinh Học</li>
+                        <li class="mb-2"><i class="fa-solid fa-bone me-2 text-warning"></i>Khoa Cơ Xương Khớp</li>
+                        <li class="mb-2"><i class="fa-solid fa-stethoscopes me-2 text-teal" style="color:#0d9488;"></i>Khoa Nội Tổng Quát</li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Hotline & Emergency -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-3 text-uppercase small" style="letter-spacing:0.06em;">Tổng Đài Đặt Lịch 24/7</h6>
+                    <div class="p-3 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10 mb-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="w-10 h-10 rounded-circle bg-success text-white d-flex align-items-center justify-content-center fs-4" style="width:40px; height:40px;">
+                                <i class="fa-solid fa-phone-volume fa-bounce"></i>
+                            </div>
+                            <div>
+                                <span class="d-block text-secondary small">Hotline Cấp Cứu & Tư Vấn</span>
+                                <strong class="fs-5 text-white font-monospace">1900 - 6868</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="small text-secondary mb-0">
+                        <i class="fa-solid fa-location-dot me-1.5 text-danger"></i>123 Đường Y Học, Q. Thanh Khê, TP. Đà Nẵng
+                    </p>
+                </div>
+            </div>
+
+            <hr class="border-secondary border-opacity-25 my-4">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-secondary gap-2">
+                <div>&copy; 2026 <strong>MedCare Healthcare System</strong>. All rights reserved.</div>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-secondary text-decoration-none">Chính sách bảo mật</a>
+                    <span>|</span>
+                    <a href="#" class="text-secondary text-decoration-none">Điều khoản dịch vụ</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- jQuery 3.7.1 CDN -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <!-- Bootstrap 5.3 JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Custom MedCare AJAX App Script -->
+        <script th:src="@{/js/app.js}"></script>
+    </footer>
+</body>
+</html>

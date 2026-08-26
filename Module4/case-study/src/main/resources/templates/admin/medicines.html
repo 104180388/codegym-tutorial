@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Quản Lý Danh Mục Thuốc - MedCare Admin')}">
+</head>
+<body class="bg-light">
+    <!-- Top Navbar -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Fragment -->
+        <aside th:replace="~{layout/sidebar :: sidebar('admin-medicines')}"></aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <div class="container-fluid">
+                <!-- Flash Messages -->
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i><span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i><span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Page Title -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1"><i class="fa-solid fa-pills text-danger me-2"></i>Quản Lý Danh Mục Thuốc & Dược Phẩm</h4>
+                        <p class="text-muted small mb-0">Quản lý kho danh mục thuốc kê đơn, hoạt chất, đơn vị tính (Viên, Lọ, Vỉ) và giá niêm yết</p>
+                    </div>
+                    <button class="btn btn-primary-medcare rounded-pill btn-sm px-3" data-bs-toggle="modal" data-bs-target="#medicineModal">
+                        <i class="fa-solid fa-plus me-1"></i>Thêm Thuốc Mới
+                    </button>
+                </div>
+
+                <!-- Table Card -->
+                <div class="card-medcare p-4 mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-medcare align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Mã Thuốc</th>
+                                    <th>Tên Dược Phẩm / Thuốc</th>
+                                    <th>Hoạt Chất Chính</th>
+                                    <th>Đơn Vị Tính</th>
+                                    <th>Đơn Giá / Đơn Vị</th>
+                                    <th>Hướng Dẫn Sử Dụng</th>
+                                    <th class="text-center">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="med : ${medicines}">
+                                    <td><span class="badge bg-secondary-subtle text-secondary font-monospace" th:text="${med.code}">TH-001</span></td>
+                                    <td><strong class="text-dark" th:text="${med.name}">Amlodipine 5mg</strong></td>
+                                    <td th:text="${med.activeIngredient}">Amlodipine besylate</td>
+                                    <td><span class="badge bg-light text-dark border" th:text="${med.unit}">Viên</span></td>
+                                    <td class="fw-bold text-teal" style="color:#0d9488;" th:text="${#numbers.formatDecimal(med.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">3.500 VNĐ</td>
+                                    <td th:text="${med.usageInstruction}">Uống sau khi ăn</td>
+                                    <td class="text-center">
+                                        <a th:href="@{/admin/medicines/edit/{id}(id=${med.id})}" class="btn btn-sm btn-outline-primary rounded-pill me-1"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
+                                        <a th:href="@{/admin/medicines/delete/{id}(id=${med.id})}" class="btn btn-sm btn-outline-danger rounded-pill" onclick="return confirm('Bạn có chắc chắn muốn xóa thuốc này?')"><i class="fa-solid fa-trash"></i> Xóa</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(medicines)}">
+                                    <td colspan="7" class="text-center text-muted py-4">Chưa có thuốc nào trong danh mục.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Form Card Edit mode if selected -->
+                <div th:if="${isEdit}" class="card-medcare p-4 border-teal" style="border-color: #0d9488;">
+                    <h5 class="fw-bold text-teal mb-3"><i class="fa-solid fa-pen me-2"></i>Cập Nhật Thông Tin Thuốc #<span th:text="${medicineForm.id}"></span></h5>
+                    <form th:action="@{/admin/medicines/save}" th:object="${medicineForm}" method="post" class="row g-3">
+                        <input type="hidden" th:field="*{id}">
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Mã Thuốc <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{code}" class="form-control" required>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-medium small">Tên Dược Phẩm / Thuốc <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{name}" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Hoạt Chất Chính</label>
+                            <input type="text" th:field="*{activeIngredient}" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Đơn Vị Tính <span class="text-danger">*</span></label>
+                            <select th:field="*{unit}" class="form-select" required>
+                                <option value="Viên">Viên</option>
+                                <option value="Lọ">Lọ</option>
+                                <option value="Vỉ">Vỉ</option>
+                                <option value="Chai">Chai</option>
+                                <option value="Hộp">Hộp</option>
+                                <option value="Ống">Ống</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Đơn Giá / Đơn Vị (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" step="500" th:field="*{price}" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium small">Hướng Dẫn Sử Dụng Mẫu</label>
+                            <input type="text" th:field="*{usageInstruction}" class="form-control">
+                        </div>
+                        <div class="col-12 d-flex gap-2 justify-content-end">
+                            <a th:href="@{/admin/medicines}" class="btn btn-light rounded-pill">Hủy Bỏ</a>
+                            <button type="submit" class="btn btn-primary-medcare rounded-pill">Cập Nhật Thuốc</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Medicine Modal (Create) -->
+    <div class="modal fade" id="medicineModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/admin/medicines/save}" th:object="${medicineForm}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-pills text-teal me-2" style="color:#0d9488;"></i>Thêm Thuốc Mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium small">Mã Thuốc <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{code}" class="form-control" placeholder="TH-001" required>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-medium small">Tên Thuốc <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{name}" class="form-control" placeholder="Nhập tên thuốc..." required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Hoạt Chất</label>
+                            <input type="text" th:field="*{activeIngredient}" class="form-control" placeholder="Tên hoạt chất chính...">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Đơn Vị Tính <span class="text-danger">*</span></label>
+                            <select th:field="*{unit}" class="form-select" required>
+                                <option value="Viên">Viên</option>
+                                <option value="Lọ">Lọ</option>
+                                <option value="Vỉ">Vỉ</option>
+                                <option value="Chai">Chai</option>
+                                <option value="Hộp">Hộp</option>
+                                <option value="Ống">Ống</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-medium small">Đơn Giá Niêm Yết (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" step="500" th:field="*{price}" class="form-control" placeholder="VD: 3500" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium small">Hướng Dẫn Sử Dụng Mẫu</label>
+                            <textarea th:field="*{usageInstruction}" class="form-control" rows="2" placeholder="HDSD liều lượng chuẩn..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary-medcare rounded-pill">Lưu Thuốc</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

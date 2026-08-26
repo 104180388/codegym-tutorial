@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header :: header('Quản Lý Dịch Vụ - MedCare Admin')}">
+</head>
+<body class="bg-light">
+    <!-- Top Navbar -->
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar Fragment -->
+        <aside th:replace="~{layout/sidebar :: sidebar('admin-services')}"></aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <div class="container-fluid">
+                <!-- Flash Messages -->
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i><span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i><span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Page Title -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1"><i class="fa-solid fa-vial-virus text-danger me-2"></i>Quản Lý Dịch Vụ Y Tế & Cận Lâm Sàng</h4>
+                        <p class="text-muted small mb-0">Thiết lập bảng giá niêm yết các loại xét nghiệm, siêu âm, chụp hình ảnh</p>
+                    </div>
+                    <button class="btn btn-primary-medcare rounded-pill btn-sm px-3" data-bs-toggle="modal" data-bs-target="#serviceModal">
+                        <i class="fa-solid fa-plus me-1"></i>Thêm Dịch Vụ Mới
+                    </button>
+                </div>
+
+                <!-- Table Card -->
+                <div class="card-medcare p-4 mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-medcare align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên Dịch Vụ Y Tế</th>
+                                    <th>Chuyên Khoa Liên Quan</th>
+                                    <th>Đơn Giá Niêm Yết</th>
+                                    <th>Mô Tả</th>
+                                    <th class="text-center">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="srv : ${services}">
+                                    <td><span class="badge bg-secondary-subtle text-secondary font-monospace" th:text="${srv.id}">1</span></td>
+                                    <td><strong class="text-dark" th:text="${srv.name}">Khám Chuyên Khoa</strong></td>
+                                    <td>
+                                        <span class="badge bg-teal-subtle text-teal" style="color:#0d9488; background-color:#ccfbf1;" th:text="${srv.specialty != null ? srv.specialty.name : 'Nội khoa tổng hợp'}">Nội khoa</span>
+                                    </td>
+                                    <td class="fw-bold text-teal" style="color:#0d9488;" th:text="${#numbers.formatDecimal(srv.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">300.000 VNĐ</td>
+                                    <td th:text="${srv.description}">Mô tả dịch vụ</td>
+                                    <td class="text-center">
+                                        <a th:href="@{/admin/services/edit/{id}(id=${srv.id})}" class="btn btn-sm btn-outline-primary rounded-pill me-1"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
+                                        <a th:href="@{/admin/services/delete/{id}(id=${srv.id})}" class="btn btn-sm btn-outline-danger rounded-pill" onclick="return confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')"><i class="fa-solid fa-trash"></i> Xóa</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(services)}">
+                                    <td colspan="6" class="text-center text-muted py-4">Chưa có dịch vụ nào trong hệ thống.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Form Card Edit mode if selected -->
+                <div th:if="${isEdit}" class="card-medcare p-4 border-teal" style="border-color: #0d9488;">
+                    <h5 class="fw-bold text-teal mb-3"><i class="fa-solid fa-pen me-2"></i>Cập Nhật Dịch Vụ Y Tế #<span th:text="${serviceForm.id}"></span></h5>
+                    <form th:action="@{/admin/services/save}" th:object="${serviceForm}" method="post" class="row g-3">
+                        <input type="hidden" th:field="*{id}">
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Tên Dịch Vụ <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{name}" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Chuyên Khoa Liên Quan</label>
+                            <select th:field="*{specialty.id}" class="form-select">
+                                <option value="">-- Thuộc Chuyên Khoa --</option>
+                                <option th:each="spec : ${specialties}" th:value="${spec.id}" th:text="${spec.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Đơn Giá Niêm Yết (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" step="1000" th:field="*{price}" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Mô Tả Dịch Vụ</label>
+                            <input type="text" th:field="*{description}" class="form-control">
+                        </div>
+                        <div class="col-12 d-flex gap-2 justify-content-end">
+                            <a th:href="@{/admin/services}" class="btn btn-light rounded-pill">Hủy Bỏ</a>
+                            <button type="submit" class="btn btn-primary-medcare rounded-pill">Cập Nhật Dịch Vụ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Service Modal (Create) -->
+    <div class="modal fade" id="serviceModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/admin/services/save}" th:object="${serviceForm}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-vial-virus text-teal me-2" style="color:#0d9488;"></i>Thêm Dịch Vụ Mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-medium small">Tên Dịch Vụ <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{name}" class="form-control" placeholder="Nhập tên dịch vụ..." required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Chuyên Khoa Liên Quan</label>
+                            <select th:field="*{specialty.id}" class="form-select">
+                                <option value="">-- Thuộc Chuyên Khoa --</option>
+                                <option th:each="spec : ${specialties}" th:value="${spec.id}" th:text="${spec.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium small">Đơn Giá Niêm Yết (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" step="1000" th:field="*{price}" class="form-control" placeholder="VD: 180000" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium small">Mô Tả Dịch Vụ</label>
+                            <textarea th:field="*{description}" class="form-control" rows="2" placeholder="Nhập mô tả quy trình/thời gian trả kết quả..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary-medcare rounded-pill">Lưu Dịch Vụ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

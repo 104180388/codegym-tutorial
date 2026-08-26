@@ -27,6 +27,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
             .authorizeHttpRequests(auth -> auth
                 // Permitted public endpoints
                 .requestMatchers(
@@ -40,7 +41,8 @@ public class SecurityConfig {
                     "/error",
                     "/specialties/**",
                     "/doctors/**",
-                    "/services/**"
+                    "/services/**",
+                    "/api/**"
                 ).permitAll()
                 // Role-based authorization
                 .requestMatchers("/patient/**").hasAuthority("ROLE_PATIENT")
