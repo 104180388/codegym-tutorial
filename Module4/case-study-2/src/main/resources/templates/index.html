@@ -17,46 +17,127 @@
     <div class="main-container">
         <div th:replace="~{fragments/layout :: alerts}"></div>
 
-        <!-- Services Section -->
-        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center; color: var(--dark);">
-            <i class="fa-solid fa-stethoscope" style="color:var(--primary);"></i> 7 Dịch Vụ Y Tế Trọng Tâm
-        </h2>
-
-        <div class="grid-cards" style="margin-bottom: 3rem;">
-            <div th:each="service : ${services}" class="card">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div class="card-title" th:text="${service.name}">Tên dịch vụ</div>
-                    <span class="user-badge" th:text="${#numbers.formatDecimal(service.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">150.000 VNĐ</span>
+        <!-- 1. TIN TỨC & SỰ KIỆN SECTION -->
+        <section class="news-section">
+            <div class="news-header">
+                <div>
+                    <span class="news-badge-tag">TIN TỨC & SỰ KIỆN</span>
+                    <h2 class="news-header-title">Tin tức</h2>
                 </div>
-                <p style="color:var(--slate); font-size:0.9rem; margin-top:0.5rem; margin-bottom:1rem;" th:text="${service.description}">Mô tả ngắn dịch vụ...</p>
-                <div style="font-size:0.85rem; color:#0f766e; background:#f0fdf4; padding:0.5rem 0.75rem; border-radius:6px; margin-bottom:1rem;" th:if="${service.preparationGuide}">
-                    <i class="fa-solid fa-circle-info"></i> <strong>Lưu ý:</strong> <span th:text="${service.preparationGuide}"></span>
-                </div>
-                <a th:href="@{/patient/booking}" class="btn btn-primary btn-sm" style="width:100%;"><i class="fa-solid fa-calendar-check"></i> Đặt lịch hẹn</a>
+                <ul class="news-nav-tabs">
+                    <li><a href="#" class="news-nav-tab active">Tin tức mới nhất</a></li>
+                    <li><a href="#" class="news-nav-tab">Đào tạo, chỉ đạo tuyến</a></li>
+                    <li><a href="#" class="news-nav-tab">Y học thường thức</a></li>
+                    <li><a href="#" class="news-nav-tab">Bài viết chuyên môn</a></li>
+                    <li><a href="#" class="news-nav-tab">Tin hoạt động Bệnh viện</a></li>
+                </ul>
             </div>
-        </div>
 
-        <!-- Doctors Section -->
-        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center; color: var(--dark);">
-            <i class="fa-solid fa-user-md" style="color:var(--secondary);"></i> Đội Ngũ Bác Sĩ Tiêu Biểu
-        </h2>
+            <!-- 6 News Cards Grid (2 rows x 3 columns) -->
+            <div class="news-grid">
+                <!-- Card 1 (Hero Overlay Style) -->
+                <a href="#" class="news-card-hero" th:style="'background-image: url(' + @{/images/news_conference_medical_1788368970735.jpg} + ');'">
+                    <div class="news-card-hero-content">
+                        <h3 class="news-card-hero-title">Khi tình yêu thương hóa thân vào nhịp đập sự sống</h3>
+                        <span class="news-card-hero-date">28/08/2026</span>
+                    </div>
+                </a>
 
-        <div class="grid-cards">
-            <div th:each="doctor : ${doctors}" class="card">
-                <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
-                    <div class="stat-icon" style="background:#e0f2fe; color:#0284c7; width:64px; height:64px; border-radius:50%;">
-                        <i class="fa-solid fa-user-doctor" style="font-size:1.75rem;"></i>
+                <!-- Card 2 -->
+                <a href="#" class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img th:src="@{/images/news_conference_medical_1788368970735.jpg}" alt="Tin tức" class="news-card-img">
                     </div>
-                    <div>
-                        <h3 class="card-title" style="margin-bottom:0.2rem;" th:text="${doctor.user.fullName}">BS. Lê Minh Tuấn</h3>
-                        <p style="font-size:0.85rem; font-weight:600; color:var(--primary);" th:text="${doctor.degree}">Bác sĩ Chuyên khoa I</p>
-                        <p style="font-size:0.8rem; color:var(--slate);"><i class="fa-solid fa-award"></i> <span th:text="${doctor.experienceYears}">10</span> năm kinh nghiệm</p>
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">Phòng khám ra mắt Mạng lưới Văn phòng, hướng tới quản trị chuyên nghiệp, hiệu quả</h3>
+                        <span class="news-card-date">28/08/2026</span>
                     </div>
-                </div>
-                <p style="font-size:0.85rem; color:var(--slate); margin-bottom:1rem;" th:text="${doctor.bio}">Tóm tắt kinh nghiệm chuyên môn...</p>
-                <a th:href="@{/patient/booking}" class="btn btn-outline btn-sm" style="width:100%;"><i class="fa-solid fa-calendar-day"></i> Chọn Bác sĩ này</a>
+                </a>
+
+                <!-- Card 3 -->
+                <a href="#" class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img th:src="@{/images/surgery_team_medical_1788368990598.jpg}" alt="Tin tức" class="news-card-img">
+                    </div>
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">Phẫu thuật thành công cứu sống người bệnh 97 tuổi mắc nhiều bệnh lý nặng</h3>
+                        <span class="news-card-date">28/08/2026</span>
+                    </div>
+                </a>
+
+                <!-- Card 4 -->
+                <a href="#" class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img th:src="@{/images/ct_scan_hospital_room_1788369029007.jpg}" alt="Tin tức" class="news-card-img">
+                    </div>
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">Phòng khám đảm bảo khám, chữa bệnh liên tục, an toàn trong nghỉ lễ Quốc khánh 2/9</h3>
+                        <span class="news-card-date">27/08/2026</span>
+                    </div>
+                </a>
+
+                <!-- Card 5 -->
+                <a href="#" class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img th:src="@{/images/news_conference_medical_1788368970735.jpg}" alt="Tin tức" class="news-card-img">
+                    </div>
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">Một quyết định, một sự sống: Lời hiệu triệu từ trái tim của Giám đốc phòng khám về đăng ký hiến mô, tạng</h3>
+                        <span class="news-card-date">27/08/2026</span>
+                    </div>
+                </a>
+
+                <!-- Card 6 -->
+                <a href="#" class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img th:src="@{/images/surgery_team_medical_1788368990598.jpg}" alt="Tin tức" class="news-card-img">
+                    </div>
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">Nơi những trái tim tiếp tục nhịp đập: Bản hùng ca của sự sống và lòng trắc ẩn</h3>
+                        <span class="news-card-date">27/08/2026</span>
+                    </div>
+                </a>
             </div>
-        </div>
+        </section>
+
+        <!-- 2. SỰ KIỆN NỔI BẬT SECTION -->
+        <section class="events-container-section">
+            <span class="news-badge-tag">TIN TỨC & SỰ KIỆN</span>
+            <h2 class="events-header-title">Sự kiện nổi bật</h2>
+
+            <div class="events-grid">
+                <!-- Event Card 1 (Hero Overlay Style) -->
+                <a href="#" class="news-card-hero" th:style="'background-image: url(' + @{/images/surgery_team_medical_1788368990598.jpg} + '); min-height: 330px;'">
+                    <div class="news-card-hero-content">
+                        <h3 class="news-card-hero-title">Hôn mê vì chảy máu tiểu não, người đàn ông vượt hơn 1.000 km từ Lào về phòng khám giành lại sự sống</h3>
+                        <span class="news-card-hero-date">04/08/2026</span>
+                    </div>
+                </a>
+
+                <!-- Event Card 2 -->
+                <a href="#" class="news-card">
+                    <div class="news-card-img-wrap" style="height: 220px;">
+                        <img th:src="@{/images/surgery_team_medical_1788368990598.jpg}" alt="Sự kiện" class="news-card-img">
+                    </div>
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">Chuyến xe 5 giờ sáng xuyên màn mưa và giọt nước mắt nghẹn ngào của người cha ở Ninh Bình</h3>
+                        <span class="news-card-date">29/07/2026</span>
+                    </div>
+                </a>
+
+                <!-- Event Card 3 -->
+                <a href="#" class="news-card">
+                    <div class="news-card-img-wrap" style="height: 220px;">
+                        <img th:src="@{/images/ct_scan_hospital_room_1788369029007.jpg}" alt="Sự kiện" class="news-card-img">
+                    </div>
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">Phòng khám cơ sở Ninh Bình: Đưa y tế tuyến cuối, chất lượng cao đến gần với người dân</h3>
+                        <span class="news-card-date">24/07/2026</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
     </div>
 
     <footer th:replace="~{fragments/layout :: footer}"></footer>

@@ -3,6 +3,7 @@ package com.example.case_study_2.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -15,7 +16,9 @@ public class RegisterDto {
     private LocalDate dob;
 
     @NotBlank(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "^0\\d{9}$", message = "Số điện thoại phải bao gồm đúng 10 chữ số (bắt đầu bằng số 0, ví dụ: 0909999888)")
     private String phone;
+
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không đúng định dạng")

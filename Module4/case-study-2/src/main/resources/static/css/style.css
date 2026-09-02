@@ -750,3 +750,215 @@ footer a {
 .gcal-event-del-btn:hover {
     background: rgba(220, 38, 38, 0.9);
 }
+
+/* ==========================================================
+   News & Events Portal UI System
+   ========================================================== */
+.news-section {
+    margin-bottom: 3.5rem;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.news-badge-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #0f766e;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.35rem;
+    display: block;
+}
+
+.news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.news-header-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+.news-nav-tabs {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    list-style: none;
+    flex-wrap: wrap;
+}
+
+.news-nav-tab {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b;
+    text-decoration: none;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.news-nav-tab:hover,
+.news-nav-tab.active {
+    color: #0f172a;
+    border-bottom-color: #0f172a;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.news-card {
+    background: #f8fafc;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.25 ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid #e2e8f0;
+}
+
+.news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08);
+}
+
+.news-card-img-wrap {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.news-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.news-card:hover .news-card-img {
+    transform: scale(1.04);
+}
+
+.news-card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.news-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.45;
+    margin-bottom: 0.75rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-card-date {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+/* Special Hero Card with Gradient Overlay */
+.news-card-hero {
+    position: relative;
+    height: 100%;
+    min-height: 310px;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #ffffff;
+    display: flex;
+    align-items: flex-end;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.news-card-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(13, 148, 136, 0.92) 0%, rgba(13, 148, 136, 0.4) 50%, rgba(0, 0, 0, 0.05) 100%);
+    transition: opacity 0.3s ease;
+}
+
+.news-card-hero:hover::before {
+    background: linear-gradient(to top, rgba(2, 132, 199, 0.95) 0%, rgba(2, 132, 199, 0.45) 50%, rgba(0, 0, 0, 0.05) 100%);
+}
+
+.news-card-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 1.5rem;
+}
+
+.news-card-hero-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+}
+
+.news-card-hero-date {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+}
+
+/* Featured Events Container Section */
+.events-container-section {
+    background: #fdfbf7;
+    border: 1px solid #f3ebd8;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 3.5rem;
+}
+
+.events-header-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+}

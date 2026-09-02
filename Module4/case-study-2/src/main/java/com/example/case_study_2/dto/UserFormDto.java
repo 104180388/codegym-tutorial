@@ -3,6 +3,7 @@ package com.example.case_study_2.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class UserFormDto {
 
@@ -18,7 +19,9 @@ public class UserFormDto {
     private String email;
 
     @NotBlank(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "^0\\d{9}$", message = "Số điện thoại phải bao gồm đúng 10 chữ số (bắt đầu bằng số 0)")
     private String phone;
+
 
     @NotBlank(message = "Họ và tên không được để trống")
     private String fullName;

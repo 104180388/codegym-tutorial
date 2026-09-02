@@ -37,6 +37,9 @@ public class AuthService {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
             throw new IllegalArgumentException("Mật khẩu và xác nhận mật khẩu không khớp");
         }
+        if (dto.getPhone() == null || !dto.getPhone().matches("^0\\d{9}$")) {
+            throw new IllegalArgumentException("Số điện thoại phải bao gồm đúng 10 chữ số (bắt đầu bằng số 0, ví dụ: 0909999888)");
+        }
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new IllegalArgumentException("Tên đăng nhập đã được sử dụng");
         }
@@ -46,6 +49,7 @@ public class AuthService {
         if (userRepository.existsByPhone(dto.getPhone())) {
             throw new IllegalArgumentException("Số điện thoại đã được đăng ký");
         }
+
 
         Role patientRole = roleRepository.findByName("ROLE_PATIENT")
                 .orElseThrow(() -> new IllegalStateException("Không tìm thấy vai trò ROLE_PATIENT"));
