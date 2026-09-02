@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin - Thêm tài khoản nội bộ')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <a th:href="@{/admin/users}" class="btn btn-outline btn-sm" style="margin-bottom:0.5rem;"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</a>
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-user-plus" style="color:var(--primary);"></i> Thêm Tài Khoản Nội Bộ Mới
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Khởi tạo tài khoản nhân viên Bác sĩ hoặc Lễ tân cho phòng khám.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="card">
+                    <form th:action="@{/admin/users/create}" th:object="${userFormDto}" method="post">
+
+                        <div class="form-group">
+                            <label class="form-label" for="roleId">1. Vai trò tài khoản (Role) *</label>
+                            <select id="roleId" th:field="*{roleId}" class="form-select" required>
+                                <option value="">-- Chọn vai trò --</option>
+                                <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name} + ' - ' + ${r.description}"></option>
+                            </select>
+                            <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}"></p>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="username">Tên đăng nhập *</label>
+                                <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="dr_tuan, staff02..." required>
+                                <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="password">Mật khẩu khởi tạo</label>
+                                <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Mặc định: Password@123">
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="fullName">Họ và tên *</label>
+                                <input type="text" id="fullName" th:field="*{fullName}" class="form-control" placeholder="Nguyễn Văn A" required>
+                                <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email *</label>
+                                <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="user@clinic.vn" required>
+                                <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="phone">Số điện thoại *</label>
+                                <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="0901234567" required>
+                                <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+                            </div>
+                        </div>
+
+                        <!-- Doctor specific fields -->
+                        <div style="background:#f8fafc; padding:1.25rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1.5rem;">
+                            <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.75rem;"><i class="fa-solid fa-user-doctor"></i> Bổ sung thông tin Bác sĩ (nếu chọn ROLE_DOCTOR)</h3>
+                            <div style="display:grid; grid-template-columns:2fr 1fr; gap:1rem;">
+                                <div class="form-group">
+                                    <label class="form-label" for="degree">Học hàm / Học vị</label>
+                                    <input type="text" id="degree" th:field="*{degree}" class="form-control" placeholder="BS. CKI Nội tổng quát">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="experienceYears">Số năm kinh nghiệm</label>
+                                    <input type="number" id="experienceYears" th:field="*{experienceYears}" class="form-control" value="5" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="bio">Tiểu sử tóm tắt</label>
+                                <textarea id="bio" th:field="*{bio}" class="form-control" rows="2" placeholder="Giới thiệu quá trình công tác..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Staff specific fields -->
+                        <div style="background:#f8fafc; padding:1.25rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1.5rem;">
+                            <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.75rem;"><i class="fa-solid fa-clipboard-user"></i> Bổ sung thông tin Lễ tân (nếu chọn ROLE_STAFF)</h3>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label" for="staffCode">Mã nhân viên</label>
+                                    <input type="text" id="staffCode" th:field="*{staffCode}" class="form-control" placeholder="STF-002">
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label" for="department">Bộ phận công tác</label>
+                                    <input type="text" id="department" th:field="*{department}" class="form-control" value="Lễ tân & Thu ngân tiếp đón">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width:100%; font-size:1.05rem;">
+                            <i class="fa-solid fa-user-plus"></i> Khởi Tạo Tài Khoản Mới
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

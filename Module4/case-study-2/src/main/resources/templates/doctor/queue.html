@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Bác sĩ - Hàng đợi chờ khám')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: doctorSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-hospital-user" style="color:var(--primary);"></i> Hàng Đợi Bệnh Nhân Chờ Khám Hôm Nay
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Danh sách bệnh nhân đã qua quầy tiếp đón (CHECKED_IN), sắp xếp theo số thứ tự (STT).</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>STT Khám</th>
+                                <th>Mã lịch hẹn</th>
+                                <th>Họ và tên bệnh nhân</th>
+                                <th>Năm sinh / Giới tính</th>
+                                <th>Dịch vụ đăng ký</th>
+                                <th>Triệu chứng ban đầu</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(queue)}">
+                                <td colspan="8" style="text-align:center; color:var(--slate); padding:2.5rem;">Hiện không có bệnh nhân nào trong hàng đợi chờ khám.</td>
+                            </tr>
+                            <tr th:each="app : ${queue}">
+                                <td>
+                                    <span style="font-size:1.4rem; font-weight:800; color:var(--primary);" th:text="'#' + ${app.queueNumber}">#1</span>
+                                </td>
+                                <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
+                                <td style="font-weight:700; color:var(--dark);" th:text="${app.patient.fullName}">Trần Văn Nam</td>
+                                <td>
+                                    <span th:text="${#temporals.format(app.patient.dob, 'yyyy')}">1998</span> /
+                                    <span th:text="${app.patient.gender.name()}">MALE</span>
+                                </td>
+                                <td style="font-weight:600;" th:text="${app.service.name}">Khám nội tổng quát</td>
+                                <td style="font-size:0.85rem; color:var(--slate);" th:text="${app.symptoms != null and !app.symptoms.isEmpty() ? app.symptoms : 'Không ghi nhận'}">Đau đầu, sốt nhẹ...</td>
+                                <td>
+                                    <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.name()}">CHECKED_IN</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/doctor/examination/{id}(id=${app.id})}" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-stethoscope"></i> Mở Phòng Khám
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

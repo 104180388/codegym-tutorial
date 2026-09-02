@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin - Quản lý dịch vụ y tế')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-briefcase-medical" style="color:var(--primary);"></i> Quản Lý Danh Mục Dịch Vụ Y Tế
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Cập nhật giá niêm yết, thời lượng khám dự kiến và lưu ý hướng dẫn cho 7 dịch vụ y tế.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Mã DV</th>
+                                <th>Tên dịch vụ</th>
+                                <th>Thời lượng</th>
+                                <th>Giá niêm yết</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="s : ${services}">
+                                <td th:text="${s.id}">1</td>
+                                <td><span class="user-badge" th:text="${s.serviceCode}">GENERAL_INTERNAL</span></td>
+                                <td style="font-weight:700; color:var(--dark);" th:text="${s.name}">Khám nội tổng quát</td>
+                                <td th:text="${s.estimatedDurationMin} + ' phút'">20 phút</td>
+                                <td style="font-weight:800; color:var(--primary);" th:text="${#numbers.formatDecimal(s.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">150.000 đ</td>
+                                <td>
+                                    <span th:if="${s.isActive}" class="badge badge-completed">ĐANG MỞ</span>
+                                    <span th:if="${!s.isActive}" class="badge badge-cancelled">TẮT</span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline btn-sm" th:onclick="'toggleServiceModal(' + ${s.id} + ')'">
+                                        <i class="fa-solid fa-pen-to-square"></i> Cập nhật
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Update Modal for Service -->
+                <div th:each="s : ${services}" th:id="'serviceModal-' + ${s.id}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+                    <div class="card" style="width:100%; max-width:600px; padding:2rem;">
+                        <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:1rem;" th:text="'Cập Nhật Dịch Vụ: ' + ${s.name}">Cập nhật dịch vụ</h3>
+                        <form th:action="@{/admin/services/save}" method="post">
+                            <input type="hidden" name="id" th:value="${s.id}">
+                            <input type="hidden" name="serviceCode" th:value="${s.serviceCode}">
+
+                            <div class="form-group">
+                                <label class="form-label">Tên dịch vụ *</label>
+                                <input type="text" name="name" class="form-control" th:value="${s.name}" required>
+                            </div>
+
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Giá niêm yết (VND) *</label>
+                                    <input type="number" name="price" class="form-control" th:value="${s.price}" step="1000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Thời lượng dự kiến (Phút) *</label>
+                                    <input type="number" name="estimatedDurationMin" class="form-control" th:value="${s.estimatedDurationMin}" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Mô tả dịch vụ</label>
+                                <textarea name="description" class="form-control" rows="2" th:text="${s.description}"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Hướng dẫn chuẩn bị bệnh nhân</label>
+                                <textarea name="preparationGuide" class="form-control" rows="2" th:text="${s.preparationGuide}"></textarea>
+                            </div>
+
+                            <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1rem;">
+                                <button type="button" class="btn btn-outline" th:onclick="'toggleServiceModal(' + ${s.id} + ')'">Đóng</button>
+                                <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script>
+        function toggleServiceModal(id) {
+            const modal = document.getElementById('serviceModal-' + id);
+            if (modal) {
+                modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+            }
+        }
+    </script>
+</body>
+</html>

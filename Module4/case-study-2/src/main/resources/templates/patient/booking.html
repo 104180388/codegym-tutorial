@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Đặt lịch khám bệnh')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: patientSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-calendar-plus" style="color:var(--primary);"></i> Đặt Lịch Khám Bệnh Trực Tuyến
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Chọn dịch vụ y tế, bác sĩ chuyên khoa và khung giờ khám phù hợp với bạn.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="card">
+                    <form th:action="@{/patient/booking}" th:object="${bookingDto}" method="post">
+
+                        <div style="background:#f8fafc; padding:1rem 1.25rem; border-radius:8px; margin-bottom:1.5rem; border:1px solid var(--border);">
+                            <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.5rem;"><i class="fa-solid fa-id-card-clip"></i> Thông tin bệnh nhân</h3>
+                            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; font-size:0.9rem;">
+                                <div><strong>Họ và tên:</strong> <span th:text="${patient.fullName}">Trần Văn Nam</span></div>
+                                <div><strong>Ngày sinh:</strong> <span th:text="${#temporals.format(patient.dob, 'dd/MM/yyyy')}">15/05/1998</span></div>
+                                <div><strong>Số điện thoại:</strong> <span th:text="${patient.phone}">0909999888</span></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="serviceId">1. Chọn Dịch vụ y tế *</label>
+                            <select id="serviceId" th:field="*{serviceId}" class="form-select" required>
+                                <option value="">-- Chọn 1 trong 7 dịch vụ y tế --</option>
+                                <option th:each="svc : ${services}"
+                                        th:value="${svc.id}"
+                                        th:data-prep="${svc.preparationGuide}"
+                                        th:text="${svc.name} + ' (' + ${#numbers.formatDecimal(svc.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ)'">
+                                </option>
+                            </select>
+                            <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('serviceId')}" th:errors="*{serviceId}"></p>
+                        </div>
+
+                        <!-- Preparation guide dynamic alert -->
+                        <div id="prepGuideBox" style="display:none; background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:0.85rem 1rem; border-radius:8px; margin-bottom:1.25rem; font-size:0.9rem;">
+                            <i class="fa-solid fa-circle-info"></i> <strong>Lưu ý chuẩn bị trước khi khám:</strong>
+                            <div id="prepGuideText" style="margin-top:0.25rem; font-weight:500;"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="doctorId">2. Chọn Bác sĩ phụ trách *</label>
+                            <select id="doctorId" th:field="*{doctorId}" class="form-select" required>
+                                <option value="">-- Chọn bác sĩ --</option>
+                                <option th:each="doc : ${doctors}"
+                                        th:value="${doc.id}"
+                                        th:text="${doc.user.fullName} + ' (' + ${doc.degree} + ')'">
+                                </option>
+                            </select>
+                            <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('doctorId')}" th:errors="*{doctorId}"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="appointmentDate">3. Chọn Ngày khám (Hôm nay đến 3 ngày tới) *</label>
+                            <input type="date" id="appointmentDate" th:field="*{appointmentDate}" class="form-control"
+                                   th:min="${minDate}" th:max="${maxDate}" required>
+                            <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('appointmentDate')}" th:errors="*{appointmentDate}"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">4. Chọn Khung giờ khám trống (AJAX Dynamic Slots) *</label>
+                            <input type="hidden" id="appointmentTime" th:field="*{appointmentTime}" required>
+                            <div id="slotContainer">
+                                <p class="text-slate" style="font-size:0.9rem;">Vui lòng chọn Bác sĩ và Ngày khám ở trên để hiển thị các khung giờ khả dụng.</p>
+                            </div>
+                            <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('appointmentTime')}" th:errors="*{appointmentTime}"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="symptoms">5. Triệu chứng ban đầu & Ghi chú</label>
+                            <textarea id="symptoms" th:field="*{symptoms}" class="form-control" rows="3" placeholder="Mô tả ngắn gọn các triệu chứng bạn đang gặp phải..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem; font-size:1.05rem;">
+                            <i class="fa-solid fa-paper-plane"></i> Xác Nhận Đặt Lịch Hẹn Khám
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script th:src="@{/js/booking.js}"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Trang chủ - Phòng khám y tế')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="hero-section">
+        <h1 class="hero-title"><i class="fa-solid fa-heart-pulse"></i> Chăm Sóc Sức Khỏe Toàn Diện</h1>
+        <p class="hero-subtitle">Đặt lịch khám bệnh trực tuyến nhanh chóng, chủ động chọn bác sĩ chuyên khoa và khung giờ linh hoạt.</p>
+        <div style="display:flex; justify-content:center; gap:1rem;">
+            <a th:href="@{/patient/booking}" class="btn btn-secondary"><i class="fa-solid fa-calendar-plus"></i> Đặt lịch khám ngay</a>
+            <a th:href="@{/services}" class="btn btn-outline" style="color:white; border-color:white;"><i class="fa-solid fa-list-check"></i> Xem bảng giá dịch vụ</a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div th:replace="~{fragments/layout :: alerts}"></div>
+
+        <!-- Services Section -->
+        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center; color: var(--dark);">
+            <i class="fa-solid fa-stethoscope" style="color:var(--primary);"></i> 7 Dịch Vụ Y Tế Trọng Tâm
+        </h2>
+
+        <div class="grid-cards" style="margin-bottom: 3rem;">
+            <div th:each="service : ${services}" class="card">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div class="card-title" th:text="${service.name}">Tên dịch vụ</div>
+                    <span class="user-badge" th:text="${#numbers.formatDecimal(service.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">150.000 VNĐ</span>
+                </div>
+                <p style="color:var(--slate); font-size:0.9rem; margin-top:0.5rem; margin-bottom:1rem;" th:text="${service.description}">Mô tả ngắn dịch vụ...</p>
+                <div style="font-size:0.85rem; color:#0f766e; background:#f0fdf4; padding:0.5rem 0.75rem; border-radius:6px; margin-bottom:1rem;" th:if="${service.preparationGuide}">
+                    <i class="fa-solid fa-circle-info"></i> <strong>Lưu ý:</strong> <span th:text="${service.preparationGuide}"></span>
+                </div>
+                <a th:href="@{/patient/booking}" class="btn btn-primary btn-sm" style="width:100%;"><i class="fa-solid fa-calendar-check"></i> Đặt lịch hẹn</a>
+            </div>
+        </div>
+
+        <!-- Doctors Section -->
+        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center; color: var(--dark);">
+            <i class="fa-solid fa-user-md" style="color:var(--secondary);"></i> Đội Ngũ Bác Sĩ Tiêu Biểu
+        </h2>
+
+        <div class="grid-cards">
+            <div th:each="doctor : ${doctors}" class="card">
+                <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+                    <div class="stat-icon" style="background:#e0f2fe; color:#0284c7; width:64px; height:64px; border-radius:50%;">
+                        <i class="fa-solid fa-user-doctor" style="font-size:1.75rem;"></i>
+                    </div>
+                    <div>
+                        <h3 class="card-title" style="margin-bottom:0.2rem;" th:text="${doctor.user.fullName}">BS. Lê Minh Tuấn</h3>
+                        <p style="font-size:0.85rem; font-weight:600; color:var(--primary);" th:text="${doctor.degree}">Bác sĩ Chuyên khoa I</p>
+                        <p style="font-size:0.8rem; color:var(--slate);"><i class="fa-solid fa-award"></i> <span th:text="${doctor.experienceYears}">10</span> năm kinh nghiệm</p>
+                    </div>
+                </div>
+                <p style="font-size:0.85rem; color:var(--slate); margin-bottom:1rem;" th:text="${doctor.bio}">Tóm tắt kinh nghiệm chuyên môn...</p>
+                <a th:href="@{/patient/booking}" class="btn btn-outline btn-sm" style="width:100%;"><i class="fa-solid fa-calendar-day"></i> Chọn Bác sĩ này</a>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

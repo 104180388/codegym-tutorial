@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Bác sĩ - Hồ sơ chuyên môn')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: doctorSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-user-doctor" style="color:var(--primary);"></i> Cập Nhật Hồ Sơ Chuyên Môn
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Thông tin học hàm, học vị và tiểu sử sẽ hiển thị công khai trên danh sách bác sĩ phòng khám.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="card">
+                    <form th:action="@{/doctor/profile}" method="post">
+                        <div class="form-group">
+                            <label class="form-label" for="fullName">Họ và tên *</label>
+                            <input type="text" id="fullName" name="fullName" class="form-control" th:value="${doctor.user.fullName}" required>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email liên hệ *</label>
+                                <input type="email" id="email" name="email" class="form-control" th:value="${doctor.user.email}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="phone">Số điện thoại *</label>
+                                <input type="tel" id="phone" name="phone" class="form-control" th:value="${doctor.user.phone}" required>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="degree">Học hàm / Học vị / Chuyên khoa *</label>
+                                <input type="text" id="degree" name="degree" class="form-control" th:value="${doctor.degree}" placeholder="Ví dụ: Thạc sĩ, Bác sĩ CKI Tai Mũi Họng" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="experienceYears">Số năm kinh nghiệm *</label>
+                                <input type="number" id="experienceYears" name="experienceYears" class="form-control" th:value="${doctor.experienceYears}" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="bio">Tiểu sử & Giới thiệu kinh nghiệm công tác</label>
+                            <textarea id="bio" name="bio" class="form-control" rows="4" th:text="${doctor.bio}" placeholder="Mô tả quá trình học tập, kinh nghiệm điều trị và các chứng chỉ chuyên môn..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Cập Nhật Hồ Sơ Công Khai</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

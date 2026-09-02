@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Đăng nhập hệ thống')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container" style="display:flex; justify-content:center; align-items:center; min-height: calc(100vh - 200px);">
+        <div class="card" style="width: 100%; max-width: 420px; padding: 2rem;">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-user-lock" style="font-size: 2.5rem; color: var(--primary);"></i>
+                <h2 style="font-size: 1.5rem; font-weight: 800; margin-top: 0.5rem; color: var(--dark);">Đăng Nhập Hệ Thống</h2>
+                <p style="font-size: 0.85rem; color: var(--slate);">Nhập tài khoản để tiếp tục vào trang cá nhân</p>
+            </div>
+
+            <div th:replace="~{fragments/layout :: alerts}"></div>
+
+            <div th:if="${param.error}" class="alert alert-danger">
+                Tên đăng nhập hoặc mật khẩu không chính xác!
+            </div>
+            <div th:if="${param.logout}" class="alert alert-info">
+                Bạn đã đăng xuất khỏi hệ thống thành công.
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="username"><i class="fa-solid fa-user"></i> Tên đăng nhập / Email / SĐT</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Nhập username, email hoặc SĐT..." required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password"><i class="fa-solid fa-key"></i> Mật khẩu</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu..." required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+                </button>
+            </form>
+
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--slate);">
+                Chưa có tài khoản Bệnh nhân? <a th:href="@{/register}" style="color: var(--primary); font-weight: 600; text-decoration: none;">Đăng ký ngay</a>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

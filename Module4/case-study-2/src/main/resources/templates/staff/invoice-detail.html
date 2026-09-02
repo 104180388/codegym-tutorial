@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Thu ngân - Chi tiết hóa đơn')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: staffSidebar}"></aside>
+
+            <main>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                            <i class="fa-solid fa-receipt" style="color:var(--primary);"></i> Chi Tiết Hóa Đơn Dịch Vụ & Thanh Toán
+                        </h1>
+                        <p style="color:var(--slate); font-size:0.9rem;">Mã hóa đơn: <span class="user-badge" th:text="${invoice.invoiceCode}">INV-123456</span></p>
+                    </div>
+                    <div>
+                        <button type="button" onclick="window.print();" class="btn btn-outline btn-sm"><i class="fa-solid fa-print"></i> In Phiếu Thu</button>
+                        <a th:href="@{/staff/billing}" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-left"></i> Quay lại</a>
+                    </div>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="card" style="padding:2rem;">
+                    <div style="text-align:center; border-bottom:2px solid var(--border); padding-bottom:1rem; margin-bottom:1.5rem;">
+                        <h2 style="font-size:1.5rem; font-weight:800; color:var(--dark);">PHIẾU THU TIỀN DỊCH VỤ Y TẾ</h2>
+                        <p style="font-size:0.85rem; color:var(--slate);">Phòng Khám Đa Khoa ClinicCare | Thu ngân tiếp đón</p>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; font-size:0.95rem;">
+                        <div>
+                            <p><strong>Bệnh nhân:</strong> <span th:text="${appointment.patient.fullName}">Trần Văn Nam</span></p>
+                            <p><strong>Số điện thoại:</strong> <span th:text="${appointment.patient.phone}">0909999888</span></p>
+                            <p><strong>Địa chỉ:</strong> <span th:text="${appointment.patient.address != null ? appointment.patient.address : 'Hà Nội'}">Hà Nội</span></p>
+                        </div>
+                        <div>
+                            <p><strong>Bác sĩ khám:</strong> <span th:text="${appointment.doctor.user.fullName}">BS. Lê Minh Tuấn</span></p>
+                            <p><strong>Mã lịch hẹn:</strong> <span th:text="${appointment.appointmentCode}">APT-123456</span></p>
+                            <p><strong>Ngày khám:</strong> <span th:text="${#temporals.format(appointment.appointmentDate, 'dd/MM/yyyy')}">15/05/2026</span></p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/staff/invoices/{id}/pay(id=${appointment.id})}" method="post">
+                        <div class="table-responsive" style="margin-bottom:1.5rem;">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Hạng mục dịch vụ</th>
+                                        <th>Đơn giá gốc</th>
+                                        <th>Phụ thu (VND)</th>
+                                        <th>Giảm giá / Ưu đãi (VND)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-weight:700; color:var(--dark);" th:text="${appointment.service.name}">Khám nội tổng quát</td>
+                                        <td style="font-weight:700;">
+                                            <input type="number" id="serviceFee" name="serviceFee" th:value="${invoice.serviceFee}" class="form-control" style="width:140px;" readonly required>
+                                        </td>
+                                        <td>
+                                            <input type="number" id="surcharge" name="surcharge" th:value="${invoice.surcharge}" class="form-control" style="width:140px;" min="0">
+                                        </td>
+                                        <td>
+                                            <input type="number" id="discount" name="discount" th:value="${invoice.discount}" class="form-control" style="width:140px;" min="0">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="background:#f8fafc; padding:1.5rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1.5rem;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                                <span style="font-size:1.1rem; font-weight:700; color:var(--dark);">TỔNG THÀNH TIỀN CẦN THU:</span>
+                                <span id="totalAmountDisplay" style="font-size:1.8rem; font-weight:800; color:var(--primary);"
+                                      th:text="${#numbers.formatDecimal(invoice.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">150.000 VNĐ</span>
+                            </div>
+
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                                <div class="form-group">
+                                    <label class="form-label" for="paymentMethod">Hình thức thanh toán *</label>
+                                    <select id="paymentMethod" name="paymentMethod" class="form-select" required>
+                                        <option value="CASH" th:selected="${invoice.paymentMethod.name() == 'CASH'}">Tiền mặt (CASH)</option>
+                                        <option value="BANK_TRANSFER" th:selected="${invoice.paymentMethod.name() == 'BANK_TRANSFER'}">Chuyển khoản Ngân hàng (BANK_TRANSFER)</option>
+                                        <option value="VNPAY" th:selected="${invoice.paymentMethod.name() == 'VNPAY'}">Ví VNPay (VNPAY)</option>
+                                        <option value="MOMO" th:selected="${invoice.paymentMethod.name() == 'MOMO'}">Ví MoMo (MOMO)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Trạng thái hiện tại</label>
+                                    <div>
+                                        <span class="badge" th:classappend="${invoice.paymentStatus.name() == 'PAID'} ? 'badge-completed' : 'badge-pending'"
+                                              th:text="${invoice.paymentStatus.name()}">UNPAID</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary" style="width:100%; font-size:1.1rem;" th:disabled="${invoice.paymentStatus.name() == 'PAID'}">
+                            <i class="fa-solid fa-check-double"></i> Xác Nhận Đã Thu Tiền & Completing Appointment
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

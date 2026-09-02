@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Admin - Phân ca trực bác sĩ (Google Calendar View)')}"></head>
+
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-calendar-check" style="color:var(--primary);"></i> Quản Lý & Phân Ca Trực Bác Sĩ
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Giao diện lịch ca trực dạng Google Calendar cho phép phân ca, sửa ca và xóa ca trực trực tiếp trên lịch.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Doctor Selection Filter Card -->
+                <div class="card" style="margin-bottom:1.5rem; background:#f8fafc; border:1px solid var(--border);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+                        <div style="display:flex; align-items:center; gap:0.75rem; flex:1;">
+                            <label for="adminDoctorFilter" style="font-weight:700; color:var(--dark); white-space:nowrap;">
+                                <i class="fa-solid fa-filter" style="color:var(--primary);"></i> Lọc Lịch Theo Bác Sĩ:
+                            </label>
+                            <select id="adminDoctorFilter" class="form-select" style="max-width:380px;">
+                                <option th:each="d : ${doctors}" th:value="${d.id}"
+                                    th:text="${d.user.fullName} + ' (' + ${d.degree} + ')'"></option>
+                            </select>
+                        </div>
+                        <div style="font-size:0.85rem; color:var(--slate);">
+                            <i class="fa-solid fa-circle-info"></i> Chọn bác sĩ cụ thể để xem và quản lý lịch phân ca trực.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Creation Form Card -->
+                <div class="card" style="margin-bottom:1.5rem;">
+                    <h3 style="font-size:1.1rem; font-weight:700; color:var(--dark); margin-bottom:1rem;">
+                        <i class="fa-solid fa-calendar-plus" style="color:var(--secondary);"></i> Phân Ca Trực Mới Cho Bác Sĩ
+                    </h3>
+                    <form th:action="@{/admin/schedules/save}" method="post">
+                        <div style="display:grid; grid-template-columns: 2fr 1.5fr 1.5fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="doctorId">Bác sĩ chuyên khoa *</label>
+                                <select id="doctorId" name="doctorId" class="form-select" required>
+                                    <option value="">-- Chọn bác sĩ --</option>
+                                    <option th:each="d : ${doctors}" th:value="${d.id}"
+                                        th:text="${d.user.fullName} + ' (' + ${d.degree} + ')'"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="workDate">Ngày làm việc *</label>
+                                <input type="date" id="workDate" name="workDate" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="shift">Ca trực *</label>
+                                <select id="shift" name="shift" class="form-select" required>
+                                    <option value="MORNING">CA SÁNG (08:00 - 11:30)</option>
+                                    <option value="AFTERNOON">CA CHIỀU (13:30 - 16:30)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu Ca Trực Lên Lịch
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Google Calendar Weekly View -->
+                <div id="googleCalendarAdminApp"></div>
+
+                <!-- Hidden Delete Form for JS trigger -->
+                <form id="adminDeleteScheduleForm" action="" method="post" style="display:none;"></form>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script th:src="@{/js/calendar.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            const rawSchedules = /*[[${schedules}]]*/ [];
+            
+            const schedulesData = rawSchedules.map(s => ({
+                id: s.id,
+                doctorId: s.doctor ? s.doctor.id : null,
+                doctorName: s.doctor && s.doctor.user ? s.doctor.user.fullName : 'Bác sĩ',
+                workDate: s.workDate, // ISO string YYYY-MM-DD
+                shift: s.shift
+            }));
+
+            const filterSelect = document.getElementById('adminDoctorFilter');
+            const formDoctorSelect = document.getElementById('doctorId');
+            const initialDoctorId = filterSelect && filterSelect.value ? filterSelect.value : null;
+
+            if (formDoctorSelect && initialDoctorId) {
+                formDoctorSelect.value = initialDoctorId;
+            }
+
+            const calendarView = new GoogleCalendarView('googleCalendarAdminApp', {
+                schedules: schedulesData,
+                isAdmin: true,
+                selectedDoctorId: initialDoctorId,
+                onDeleteShift: function(scheduleId) {
+                    const form = document.getElementById('adminDeleteScheduleForm');
+                    form.action = '/admin/schedules/delete/' + scheduleId;
+                    form.submit();
+                }
+            });
+
+            // Handle Doctor Filter Dropdown Change
+            if (filterSelect) {
+                filterSelect.addEventListener('change', function() {
+                    const val = filterSelect.value;
+                    calendarView.setDoctorFilter(val);
+                    if (formDoctorSelect) {
+                        formDoctorSelect.value = val;
+                    }
+                });
+            }
+        });
+        /*]]>*/
+    </script>
+
+</body>
+
+</html>

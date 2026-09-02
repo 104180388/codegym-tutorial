@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Lễ tân - Tiếp đón & Check-in')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: staffSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-door-open" style="color:var(--primary);"></i> Quầy Tiếp Đón Bệnh Nhân & Cấp STT Khám
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Check-in cho khách hẹn trước hoặc tạo phiếu tiếp đón trực tiếp tại quầy (Walk-in).</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Tabs: Check-in Online vs Walk-in -->
+                <div class="card" style="margin-bottom:2rem;">
+                    <h2 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin-bottom:1rem;">
+                        <i class="fa-solid fa-user-plus" style="color:var(--secondary);"></i> 1. Tiếp Đón Khách Vãng Lai Trực Tiếp Tại Quầy (Walk-in)
+                    </h2>
+                    <form th:action="@{/staff/checkin/walk-in}" method="post">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="fullName">Họ và tên bệnh nhân *</label>
+                                <input type="text" id="fullName" name="fullName" class="form-control" placeholder="Nguyễn Văn A" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="phone">Số điện thoại *</label>
+                                <input type="tel" id="phone" name="phone" class="form-control" placeholder="0912345678" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="dob">Ngày sinh *</label>
+                                <input type="date" id="dob" name="dob" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="gender">Giới tính *</label>
+                                <select id="gender" name="gender" class="form-select" required>
+                                    <option value="MALE">Nam</option>
+                                    <option value="FEMALE">Nữ</option>
+                                    <option value="OTHER">Khác</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="address">Địa chỉ thường trú</label>
+                                <input type="text" id="address" name="address" class="form-control" placeholder="Số nhà, Tên đường, Quận/Huyện...">
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="serviceId">Chọn Dịch vụ y tế *</label>
+                                <select id="serviceId" name="serviceId" class="form-select" required>
+                                    <option value="">-- Chọn dịch vụ --</option>
+                                    <option th:each="s : ${services}" th:value="${s.id}" th:text="${s.name} + ' (' + ${#numbers.formatDecimal(s.price, 0, 'COMMA', 0, 'POINT')} + ' đ)'"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="doctorId">Chọn Bác sĩ khám *</label>
+                                <select id="doctorId" name="doctorId" class="form-select" required>
+                                    <option value="">-- Chọn bác sĩ --</option>
+                                    <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.user.fullName} + ' (' + ${d.degree} + ')'"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="symptoms">Triệu chứng ban đầu</label>
+                            <input type="text" id="symptoms" name="symptoms" class="form-control" placeholder="Ghi chú triệu chứng nếu có...">
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-ticket"></i> Đăng Ký Walk-in & Cấp Số STT Khám</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin-bottom:1rem;">
+                        <i class="fa-solid fa-list-check" style="color:var(--primary);"></i> 2. Danh Sách Lịch Hẹn Đã Đặt (Chờ Check-in)
+                    </h2>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã lịch hẹn</th>
+                                    <th>Bệnh nhân</th>
+                                    <th>SĐT</th>
+                                    <th>Bác sĩ</th>
+                                    <th>Dịch vụ</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác Check-in</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="app : ${appointments}" th:if="${app.status.name() == 'PENDING' or app.status.name() == 'CONFIRMED'}">
+                                    <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
+                                    <td style="font-weight:700;" th:text="${app.patient.fullName}">Trần Văn Nam</td>
+                                    <td th:text="${app.patient.phone}">0909999888</td>
+                                    <td th:text="${app.doctor.user.fullName}">BS. Lê Minh Tuấn</td>
+                                    <td th:text="${app.service.name}">Khám nội tổng quát</td>
+                                    <td><span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.name()}">CONFIRMED</span></td>
+                                    <td>
+                                        <form th:action="@{/staff/checkin/{id}(id=${app.id})}" method="post">
+                                            <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-clipboard-check"></i> Cấp STT Khám</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

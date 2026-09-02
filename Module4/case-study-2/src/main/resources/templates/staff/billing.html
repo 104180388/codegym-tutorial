@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Thu ngân - Quản lý hóa đơn')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: staffSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-file-invoice-dollar" style="color:var(--primary);"></i> Quản Lý Danh Sách Hóa Đơn Chờ Thu Tiền
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Các ca khám đã xong bước chẩn đoán từ bác sĩ (AWAITING_PAYMENT), đang chờ thu ngân phát hành hóa đơn và tính tiền.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Mã hẹn</th>
+                                <th>Bệnh nhân</th>
+                                <th>SĐT</th>
+                                <th>Dịch vụ y tế</th>
+                                <th>Bác sĩ khám</th>
+                                <th>Phí dịch vụ gốc</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(appointments)}">
+                                <td colspan="8" style="text-align:center; color:var(--slate); padding:2.5rem;">Hiện không có ca khám nào đang chờ thanh toán.</td>
+                            </tr>
+                            <tr th:each="app : ${appointments}">
+                                <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
+                                <td style="font-weight:700; color:var(--dark);" th:text="${app.patient.fullName}">Trần Văn Nam</td>
+                                <td th:text="${app.patient.phone}">0909999888</td>
+                                <td style="font-weight:600;" th:text="${app.service.name}">Khám nội tổng quát</td>
+                                <td th:text="${app.doctor.user.fullName}">BS. Lê Minh Tuấn</td>
+                                <td style="font-weight:700; color:var(--primary);" th:text="${#numbers.formatDecimal(app.service.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">150.000 đ</td>
+                                <td><span class="badge badge-awaiting-payment">AWAITING_PAYMENT</span></td>
+                                <td>
+                                    <a th:href="@{/staff/invoices/{id}(id=${app.id})}" class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-calculator"></i> Tính Tiền & Thu Ngân
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

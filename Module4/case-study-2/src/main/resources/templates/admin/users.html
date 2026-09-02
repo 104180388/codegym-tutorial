@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin - Quản lý tài khoản')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
+
+            <main>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                            <i class="fa-solid fa-users-gear" style="color:var(--primary);"></i> Quản Lý Tài Khoản Hệ Thống
+                        </h1>
+                        <p style="color:var(--slate); font-size:0.9rem;">Danh sách tài khoản Admin, Bác sĩ, Lễ tân và Bệnh nhân.</p>
+                    </div>
+                    <a th:href="@{/admin/users/create}" class="btn btn-primary btn-sm"><i class="fa-solid fa-user-plus"></i> Thêm Tài Khoản Mới</a>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Tên đăng nhập</th>
+                                <th>Họ và tên</th>
+                                <th>Email</th>
+                                <th>Số điện thoại</th>
+                                <th>Vai trò (Role)</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}">
+                                <td th:text="${user.id}">1</td>
+                                <td><span class="user-badge" th:text="${user.username}">admin</span></td>
+                                <td style="font-weight:700; color:var(--dark);" th:text="${user.fullName}">Quản Trị Viên</td>
+                                <td th:text="${user.email}">admin@clinic.vn</td>
+                                <td th:text="${user.phone}">0901000001</td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${user.role.name == 'ROLE_ADMIN'} ? 'badge-cancelled' : (${user.role.name == 'ROLE_DOCTOR'} ? 'badge-confirmed' : (${user.role.name == 'ROLE_STAFF'} ? 'badge-awaiting-payment' : 'badge-completed'))"
+                                          th:text="${user.role.name}">ROLE_ADMIN</span>
+                                </td>
+                                <td>
+                                    <span th:if="${user.isActive}" class="badge badge-completed">HOẠT ĐỘNG</span>
+                                    <span th:if="${!user.isActive}" class="badge badge-cancelled">BỊ KHÓA</span>
+                                </td>
+                                <td>
+                                    <form th:action="@{/admin/users/toggle/{id}(id=${user.id})}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-outline btn-sm" th:style="${user.isActive} ? 'color:var(--danger); border-color:var(--danger);' : 'color:var(--success); border-color:var(--success);'">
+                                            <i class="fa-solid" th:classappend="${user.isActive} ? 'fa-lock' : 'fa-lock-open'"></i>
+                                            <span th:text="${user.isActive} ? 'Khóa' : 'Mở khóa'">Khóa</span>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin - Thống kê tổng quan')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-chart-column" style="color:var(--primary);"></i> Thống Kê Tổng Quan Quản Trị Hệ Thống
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Báo cáo tổng quan doanh thu, tỷ lệ đặt/hủy lịch và số lượng tài khoản.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Stats Widgets -->
+                <div class="grid-cards" style="margin-bottom:2rem;">
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#dcfce7; color:#15803d;"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div>
+                            <div class="stat-value" style="font-size:1.4rem;" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+                            <div class="stat-label">Tổng doanh thu thực thu</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#e0f2fe; color:#0369a1;"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${totalAppointments}">0</div>
+                            <div class="stat-label">Tổng số lượt đăng ký khám</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#fae8ff; color:#86198f;"><i class="fa-solid fa-hospital-user"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${totalPatients}">0</div>
+                            <div class="stat-label">Hồ sơ bệnh nhân</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#e0e7ff; color:#4338ca;"><i class="fa-solid fa-user-doctor"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${totalDoctors}">0</div>
+                            <div class="stat-label">Bác sĩ chuyên khoa</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+                    <div class="card">
+                        <h3 class="card-title"><i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Phân Tích Trạng Thái Lịch Hẹn</h3>
+                        <div style="margin-top:1rem; font-size:0.95rem;">
+                            <p style="margin-bottom:0.5rem;"><strong>Đang chờ duyệt (PENDING):</strong> <span class="badge badge-pending" th:text="${pendingAppointments}">0</span></p>
+                            <p style="margin-bottom:0.5rem;"><strong>Đã khám hoàn thành (COMPLETED):</strong> <span class="badge badge-completed" th:text="${completedAppointments}">0</span></p>
+                            <p style="margin-bottom:0.5rem;"><strong>Đã hủy (CANCELLED):</strong> <span class="badge badge-cancelled" th:text="${cancelledAppointments}">0</span></p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title"><i class="fa-solid fa-list-check" style="color:var(--secondary);"></i> Lượt Khám Theo 7 Dịch Vụ Y Tế</h3>
+                        <div class="table-responsive" style="margin-top:0.5rem;">
+                            <table class="table" style="font-size:0.9rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Tên dịch vụ</th>
+                                        <th>Số lượt khám</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="row : ${serviceStats}">
+                                        <td th:text="${row[0]}">Khám nội tổng quát</td>
+                                        <td style="font-weight:700; color:var(--primary);" th:text="${row[1]}">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Chi tiết đơn thuốc')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: patientSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <a th:href="@{/patient/medical-history}" class="btn btn-outline btn-sm" style="margin-bottom:0.5rem;"><i class="fa-solid fa-arrow-left"></i> Quay lại lịch sử khám</a>
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-pills" style="color:var(--primary);"></i> Chi Tiết Đơn Thuốc Chỉ Định
+                    </h1>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="card" style="padding:2rem;">
+                    <div style="text-align:center; border-bottom:2px dashed var(--border); padding-bottom:1.5rem; margin-bottom:1.5rem;">
+                        <h2 style="font-size:1.4rem; font-weight:800; color:var(--dark);">ĐƠN THUỐC & LỜI DẶN BÁC SĨ</h2>
+                        <p style="font-size:0.85rem; color:var(--slate);">Mã lịch hẹn: <span class="user-badge" th:text="${record.appointment.appointmentCode}">APT-123456</span> | Ngày khám: <strong th:text="${#temporals.format(record.appointment.appointmentDate, 'dd/MM/yyyy')}">15/05/2026</strong></p>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; font-size:0.95rem;">
+                        <div>
+                            <p><strong>Bệnh nhân:</strong> <span th:text="${record.appointment.patient.fullName}">Trần Văn Nam</span></p>
+                            <p><strong>Ngày sinh:</strong> <span th:text="${#temporals.format(record.appointment.patient.dob, 'dd/MM/yyyy')}">15/05/1998</span></p>
+                        </div>
+                        <div>
+                            <p><strong>Bác sĩ kê đơn:</strong> <span th:text="${record.appointment.doctor.user.fullName}">BS. Lê Minh Tuấn</span></p>
+                            <p><strong>Dịch vụ:</strong> <span th:text="${record.appointment.service.name}">Khám nội tổng quát</span></p>
+                        </div>
+                    </div>
+
+                    <div style="background:#f8fafc; padding:1.25rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1.5rem;">
+                        <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.5rem;"><i class="fa-solid fa-notes-medical"></i> Chẩn đoán bệnh:</h3>
+                        <p style="font-size:1rem; font-weight:600; color:var(--primary);" th:text="${record.diagnosis}">Nội dung chẩn đoán bệnh...</p>
+                    </div>
+
+                    <div style="margin-bottom:1.5rem;">
+                        <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.75rem;"><i class="fa-solid fa-capsules"></i> Danh mục thuốc khuyên dùng & Liều dùng:</h3>
+                        <div style="white-space: pre-line; background:#fff; border:1px solid var(--border); padding:1rem; border-radius:8px; font-size:0.95rem; line-height:1.6;" th:text="${record.prescriptionAdvice}">
+                            1. Paracetamol 500mg - Uống 1 viên khi sốt trên 38.5 độ C
+                            2. Amoxicillin 500mg - Uống 1 viên x 2 lần/ngày sau ăn
+                        </div>
+                    </div>
+
+                    <div style="background:#fff7ed; color:#c2410c; border:1px solid #ffedd5; padding:1rem; border-radius:8px; font-size:0.9rem;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> <strong>Lời dặn của bác sĩ:</strong>
+                        <p style="margin-top:0.25rem;" th:text="${record.doctorNotes}">Tái khám sau 7 ngày hoặc khi có dấu hiệu bất thường.</p>
+                        <p style="font-size:0.8rem; margin-top:0.5rem; color:#9a3412;">* Lưu ý: Đơn thuốc có giá trị tự mua tại các nhà thuốc chuẩn GPP trên toàn quốc.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

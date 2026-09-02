@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Lịch sử khám bệnh')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: patientSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-file-medical" style="color:var(--primary);"></i> Lịch Sử Khám Bệnh & Kết Quả
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Tra cứu chẩn đoán, file kết quả xét nghiệm/siêu âm và đơn thuốc từ bác sĩ.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div th:if="${#lists.isEmpty(records)}" class="card" style="text-align:center; padding:3rem; color:var(--slate);">
+                    <i class="fa-solid fa-notes-medical" style="font-size:3rem; color:var(--border); margin-bottom:1rem;"></i>
+                    <p>Chưa có hồ sơ khám bệnh nào hoàn thành.</p>
+                </div>
+
+                <div class="grid-cards" style="grid-template-columns: 1fr;">
+                    <div th:each="record : ${records}" class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1rem;">
+                            <div>
+                                <span class="user-badge" th:text="${record.appointment.appointmentCode}">APT-123456</span>
+                                <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin-top:0.25rem;" th:text="${record.appointment.service.name}">Khám nội tổng quát</h3>
+                                <p style="font-size:0.85rem; color:var(--slate);">Bác sĩ khám: <strong th:text="${record.appointment.doctor.user.fullName}">BS. Lê Minh Tuấn</strong></p>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-weight:700; color:var(--primary);" th:text="${#temporals.format(record.appointment.appointmentDate, 'dd/MM/yyyy')}">15/05/2026</div>
+                                <span class="badge badge-completed">ĐÃ KHÁM</span>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1rem;">
+                            <div>
+                                <h4 style="font-size:0.9rem; font-weight:700; color:var(--dark);"><i class="fa-solid fa-stethoscope"></i> Chẩn đoán lâm sàng:</h4>
+                                <p style="font-size:0.95rem; color:var(--dark); background:#f8fafc; padding:0.6rem; border-radius:6px; border:1px solid var(--border);" th:text="${record.diagnosis}">Nội dung chẩn đoán...</p>
+                            </div>
+                            <div>
+                                <h4 style="font-size:0.9rem; font-weight:700; color:var(--dark);"><i class="fa-solid fa-list-ol"></i> Hướng điều trị & Phác đồ:</h4>
+                                <p style="font-size:0.95rem; color:var(--dark); background:#f8fafc; padding:0.6rem; border-radius:6px; border:1px solid var(--border);" th:text="${record.treatmentPlan}">Phương án điều trị...</p>
+                            </div>
+                        </div>
+
+                        <div th:if="${record.resultAttachmentUrl}" style="margin-bottom:1rem;">
+                            <a th:href="@{${record.resultAttachmentUrl}}" target="_blank" class="btn btn-outline btn-sm">
+                                <i class="fa-solid fa-paperclip"></i> Xem phiếu kết quả đính kèm (Xét nghiệm / Siêu âm)
+                            </a>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:0.75rem;">
+                            <span style="font-size:0.85rem; color:var(--slate);" th:if="${record.doctorNotes}"><i class="fa-solid fa-comment-medical"></i> Dặn dò: <span th:text="${record.doctorNotes}"></span></span>
+                            <a th:href="@{/patient/prescriptions/{id}(id=${record.id})}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pills"></i> Xem Chi Tiết Đơn Thuốc</a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

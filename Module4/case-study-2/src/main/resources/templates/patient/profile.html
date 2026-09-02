@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Hồ sơ cá nhân')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: patientSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-id-card" style="color:var(--primary);"></i> Quản Lý Hồ Sơ Cá Nhân
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Cập nhật thông tin thông tin liên hệ và ngày sinh để tiếp đón chính xác.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="card">
+                    <form th:action="@{/patient/profile}" method="post">
+                        <div class="form-group">
+                            <label class="form-label" for="fullName">Họ và tên *</label>
+                            <input type="text" id="fullName" name="fullName" class="form-control" th:value="${patient.fullName}" required>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="dob">Ngày sinh *</label>
+                                <input type="date" id="dob" name="dob" class="form-control" th:value="${patient.dob}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="gender">Giới tính *</label>
+                                <select id="gender" name="gender" class="form-select" required>
+                                    <option value="MALE" th:selected="${patient.gender.name() == 'MALE'}">Nam</option>
+                                    <option value="FEMALE" th:selected="${patient.gender.name() == 'FEMALE'}">Nữ</option>
+                                    <option value="OTHER" th:selected="${patient.gender.name() == 'OTHER'}">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label" for="phone">Số điện thoại *</label>
+                                <input type="tel" id="phone" name="phone" class="form-control" th:value="${patient.phone}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="email">Địa chỉ Email</label>
+                                <input type="email" id="email" class="form-control" th:value="${user.email}" readonly style="background:#f1f5f9;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="address">Địa chỉ thường trú</label>
+                            <input type="text" id="address" name="address" class="form-control" th:value="${patient.address}" placeholder="Số nhà, Tên đường, Phường/Xã, Quận/Huyện...">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Lưu Thay Đổi</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Bác sĩ - Phòng khám bệnh & Trả kết quả')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: doctorSidebar}"></aside>
+
+            <main>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                            <i class="fa-solid fa-stethoscope" style="color:var(--primary);"></i> Giao Diện Thăm Khám & Trả Kết Quả
+                        </h1>
+                        <p style="color:var(--slate); font-size:0.9rem;">Mã lịch hẹn: <span class="user-badge" th:text="${appointment.appointmentCode}">APT-123456</span> | STT: <strong th:text="'#' + ${appointment.queueNumber}">#1</strong></p>
+                    </div>
+                    <a th:href="@{/doctor/queue}" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-left"></i> Quay lại hàng đợi</a>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Patient Profile Card -->
+                <div class="card" style="margin-bottom:1.5rem; background:#f8fafc;">
+                    <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.75rem;"><i class="fa-solid fa-id-card"></i> Thông tin bệnh nhân đang thăm khám</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem; font-size:0.95rem;">
+                        <div><strong>Họ và tên:</strong> <span th:text="${appointment.patient.fullName}">Trần Văn Nam</span></div>
+                        <div><strong>Ngày sinh:</strong> <span th:text="${#temporals.format(appointment.patient.dob, 'dd/MM/yyyy')}">15/05/1998</span></div>
+                        <div><strong>Giới tính:</strong> <span th:text="${appointment.patient.gender.name()}">MALE</span></div>
+                        <div><strong>Số điện thoại:</strong> <span th:text="${appointment.patient.phone}">0909999888</span></div>
+                        <div><strong>Dịch vụ chỉ định:</strong> <span style="font-weight:700; color:var(--primary);" th:text="${appointment.service.name}">Khám nội tổng quát</span></div>
+                        <div><strong>Địa chỉ:</strong> <span th:text="${appointment.patient.address != null ? appointment.patient.address : 'Chưa cập nhật'}">Hà Nội</span></div>
+                    </div>
+                    <div style="margin-top:0.75rem; font-size:0.9rem; color:#b45309; background:#fffbe8; padding:0.5rem 0.75rem; border-radius:6px;">
+                        <i class="fa-solid fa-comment-medical"></i> <strong>Triệu chứng ban đầu do bệnh nhân khai báo:</strong>
+                        <span th:text="${appointment.symptoms != null and !appointment.symptoms.isEmpty() ? appointment.symptoms : 'Không ghi nhận'}">Đau đầu, sốt nhẹ</span>
+                    </div>
+                </div>
+
+                <!-- Medical Examination Entry Form -->
+                <div class="card">
+                    <form th:action="@{/doctor/examination/{id}(id=${appointment.id})}" th:object="${examinationDto}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:field="*{appointmentId}">
+
+                        <div class="form-group">
+                            <label class="form-label" for="diagnosis">1. Chẩn đoán của bác sĩ *</label>
+                            <textarea id="diagnosis" th:field="*{diagnosis}" class="form-control" rows="3" placeholder="Nhập chẩn đoán lâm sàng chi tiết..." required></textarea>
+                            <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('diagnosis')}" th:errors="*{diagnosis}"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="treatmentPlan">2. Hướng điều trị & Phác đồ</label>
+                            <textarea id="treatmentPlan" th:field="*{treatmentPlan}" class="form-control" rows="3" placeholder="Hướng điều trị, theo dõi cận lâm sàng hoặc chuyển tuyến..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="prescriptionAdvice">3. Toa thuốc khuyên dùng & Liều lượng (Dặn dò tự mua tại nhà thuốc ngoài)</label>
+                            <textarea id="prescriptionAdvice" th:field="*{prescriptionAdvice}" class="form-control" rows="4" placeholder="Tên thuốc, hàm lượng, số lượng, liều dùng (ví dụ: Paracetamol 500mg - Uống 1 viên x 2 lần/ngày)..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="attachmentFile">4. Đính kèm File/Phiếu kết quả (Xét nghiệm / Siêu âm / X-Quang)</label>
+                            <input type="file" id="attachmentFile" name="attachmentFile" class="form-control" accept="image/*,.pdf,.doc,.docx">
+                            <div th:if="${existingRecord != null and existingRecord.resultAttachmentUrl != null}" style="margin-top:0.5rem; font-size:0.85rem;">
+                                File hiện tại: <a th:href="@{${existingRecord.resultAttachmentUrl}}" target="_blank">Xem đính kèm</a>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="doctorNotes">5. Lời dặn tái khám / Ghi chú khác</label>
+                            <input type="text" id="doctorNotes" th:field="*{doctorNotes}" class="form-control" placeholder="Ví dụ: Tái khám sau 7 ngày hoặc khi sốt cao không hạ...">
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary" style="width:100%; font-size:1.05rem; margin-top:1rem;">
+                            <i class="fa-solid fa-file-export"></i> Lưu Kết Quả Khám & Chuyển Thu Ngân Thanh Toán
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

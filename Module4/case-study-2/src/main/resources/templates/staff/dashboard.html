@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Lễ tân - Dashboard')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: staffSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Dashboard Lễ Tân & Thu Ngân
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Tổng quan hoạt động tiếp đón, duyệt lịch hẹn và thu tiền dịch vụ trong ngày.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="grid-cards" style="margin-bottom:2rem;">
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#fef3c7; color:#b45309;"><i class="fa-solid fa-hourglass-half"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${pendingCount}">0</div>
+                            <div class="stat-label">Lịch hẹn online cần duyệt</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#e0e7ff; color:#4338ca;"><i class="fa-solid fa-chair"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${checkedInCount}">0</div>
+                            <div class="stat-label">Bệnh nhân đang chờ tại sảnh</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#ffedd5; color:#c2410c;"><i class="fa-solid fa-receipt"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${awaitingPaymentCount}">0</div>
+                            <div class="stat-label">Ca khám chờ thanh toán</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#dcfce7; color:#15803d;"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div>
+                            <div class="stat-value" style="font-size:1.4rem;" th:text="${#numbers.formatDecimal(todayRevenue, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+                            <div class="stat-label">Doanh thu thu ngân hôm nay</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+                    <div class="card">
+                        <h3 class="card-title"><i class="fa-solid fa-door-open" style="color:var(--primary);"></i> Tiếp Đón Nhanh</h3>
+                        <p style="font-size:0.85rem; color:var(--slate); margin-bottom:1rem;">Cấp số thứ tự khám cho bệnh nhân hẹn trước hoặc khách vãng lai.</p>
+                        <a th:href="@{/staff/checkin}" class="btn btn-primary btn-sm"><i class="fa-solid fa-right-to-bracket"></i> Mở Trang Check-in</a>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title"><i class="fa-solid fa-calculator" style="color:var(--secondary);"></i> Quản Lý Quầy Thu Ngân</h3>
+                        <p style="font-size:0.85rem; color:var(--slate); margin-bottom:1rem;">Xử lý hóa đơn tiền công khám + dịch vụ cho bệnh nhân.</p>
+                        <a th:href="@{/staff/billing}" class="btn btn-secondary btn-sm"><i class="fa-solid fa-file-invoice-dollar"></i> Mở Trang Thu Ngân</a>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

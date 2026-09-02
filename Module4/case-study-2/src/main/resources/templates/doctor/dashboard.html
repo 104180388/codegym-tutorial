@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Bác sĩ - Dashboard')}"></head>
+
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: doctorSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-chart-line" style="color:var(--primary);"></i> Tổng Quan Ca Trực Bác Sĩ
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Xin chào <strong><span
+                                th:text="${doctor.user.fullName}">BS. Lê Minh Tuấn</span></strong> (<span
+                            th:text="${doctor.degree}">Bác sĩ CKI</span>)</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Stats Widgets -->
+                <div class="grid-cards" style="margin-bottom:2rem;">
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#e0e7ff; color:#4338ca;"><i
+                                class="fa-solid fa-clock"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${waitingCount}">0</div>
+                            <div class="stat-label">Bệnh nhân chờ khám</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#fae8ff; color:#86198f;"><i
+                                class="fa-solid fa-stethoscope"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${inProgressCount}">0</div>
+                            <div class="stat-label">Đang thăm khám</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background:#dcfce7; color:#15803d;"><i
+                                class="fa-solid fa-circle-check"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${completedCount}">0</div>
+                            <div class="stat-label">Đã hoàn thành ca khám</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <h2 style="font-size:1.25rem; font-weight:700; color:var(--dark);"><i
+                            class="fa-solid fa-hospital-user"></i> Tối ưu luồng khám bệnh</h2>
+                    <a th:href="@{/doctor/queue}" class="btn btn-primary btn-sm"><i class="fa-solid fa-circle-play"></i>
+                        Vào Hàng Đợi Gọi Khám</a>
+                </div>
+
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                        <h3 style="font-size:1rem; font-weight:700;"><i class="fa-solid fa-calendar-days"></i> Ca trực được phân công gần đây:</h3>
+                        <a th:href="@{/doctor/schedule}" class="btn btn-outline btn-sm"><i class="fa-solid fa-calendar-week"></i> Xem Giao Diện Lịch Ca Trực Google Calendar</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ngày trực</th>
+                                    <th>Ca trực</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(schedules)}">
+                                    <td colspan="2" style="text-align:center; color:var(--slate);">Chưa có ca trực nào được phân công.</td>
+                                </tr>
+                                <tr th:each="s : ${schedules}">
+                                    <td style="font-weight:700;" th:text="${#temporals.format(s.workDate, 'EEEE, dd/MM/yyyy')}">15/05/2026</td>
+                                    <td>
+                                        <span class="badge badge-confirmed" th:text="${s.shift.name() == 'MORNING'} ? 'CA SÁNG (08:00 - 11:30)' : 'CA CHIỀU (13:30 - 16:30)'">CA SÁNG</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+
+</html>

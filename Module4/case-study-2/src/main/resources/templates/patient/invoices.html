@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Hóa đơn thanh toán')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: patientSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-receipt" style="color:var(--primary);"></i> Lịch Sử Hóa Đơn Thanh Toán
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Danh sách các phiếu thu dịch vụ y tế đã được thu ngân xử lý thanh toán.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Mã hóa đơn</th>
+                                <th>Mã lịch hẹn</th>
+                                <th>Dịch vụ khám</th>
+                                <th>Phí dịch vụ</th>
+                                <th>Phụ thu / Giảm giá</th>
+                                <th>Tổng tiền</th>
+                                <th>Hình thức</th>
+                                <th>Trạng thái</th>
+                                <th>Thời gian thanh toán</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(invoices)}">
+                                <td colspan="9" style="text-align:center; color:var(--slate); padding:2rem;">Bạn chưa có hóa đơn thanh toán nào.</td>
+                            </tr>
+                            <tr th:each="inv : ${invoices}">
+                                <td><span class="user-badge" th:text="${inv.invoiceCode}">INV-123456</span></td>
+                                <td th:text="${inv.appointment.appointmentCode}">APT-123456</td>
+                                <td style="font-weight:600;" th:text="${inv.appointment.service.name}">Khám nội tổng quát</td>
+                                <td th:text="${#numbers.formatDecimal(inv.serviceFee, 0, 'COMMA', 0, 'POINT')} + ' đ'">150.000 đ</td>
+                                <td style="font-size:0.85rem; color:var(--slate);">
+                                    +<span th:text="${#numbers.formatDecimal(inv.surcharge, 0, 'COMMA', 0, 'POINT')}">0</span> đ /
+                                    -<span th:text="${#numbers.formatDecimal(inv.discount, 0, 'COMMA', 0, 'POINT')}">0</span> đ
+                                </td>
+                                <td style="font-weight:800; color:var(--primary); font-size:1.05rem;" th:text="${#numbers.formatDecimal(inv.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">150.000 VNĐ</td>
+                                <td><span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${inv.paymentMethod.name()}">CASH</span></td>
+                                <td>
+                                    <span class="badge" th:classappend="${inv.paymentStatus.name() == 'PAID'} ? 'badge-completed' : 'badge-pending'" th:text="${inv.paymentStatus.name()}">PAID</span>
+                                </td>
+                                <td style="font-size:0.85rem; color:var(--slate);" th:text="${inv.paymentTime != null ? #temporals.format(inv.paymentTime, 'HH:mm dd/MM/yyyy') : 'Chưa thanh toán'}">10:15 15/05/2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Bác sĩ - Lịch ca trực (Google Calendar View)')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: doctorSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-calendar-days" style="color:var(--primary);"></i> Lịch Phân Ca Trực Cá Nhân
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Giao diện lịch ca trực theo khung giờ chuẩn Google Calendar (Ca Sáng: 8:00 - 11:30 AM | Ca Chiều: 1:30 - 4:30 PM).</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Google Calendar Component Container -->
+                <div id="googleCalendarApp"></div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script th:src="@{/js/calendar.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            const rawSchedules = /*[[${schedules}]]*/ [];
+            
+            const schedulesData = rawSchedules.map(s => ({
+                id: s.id,
+                workDate: s.workDate, // ISO string YYYY-MM-DD
+                shift: s.shift
+            }));
+
+            new GoogleCalendarView('googleCalendarApp', {
+                schedules: schedulesData,
+                isAdmin: false
+            });
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>

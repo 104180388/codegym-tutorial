@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Lễ tân - Tra cứu hồ sơ bệnh nhân')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: staffSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-users" style="color:var(--primary);"></i> Tra Cứu Hồ Sơ Bệnh Nhân
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">Tìm kiếm hồ sơ người bệnh theo Tên hoặc Số điện thoại liên hệ.</p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Search Box -->
+                <div class="card" style="margin-bottom:1.5rem; padding:1.25rem;">
+                    <form th:action="@{/staff/patients}" method="get" style="display:flex; gap:1rem;">
+                        <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Nhập tên bệnh nhân hoặc số điện thoại..." style="flex:1;">
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                        <a th:href="@{/staff/patients}" class="btn btn-outline"><i class="fa-solid fa-rotate-left"></i> Đặt lại</a>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Họ và tên</th>
+                                <th>Số điện thoại</th>
+                                <th>Ngày sinh</th>
+                                <th>Giới tính</th>
+                                <th>Địa chỉ</th>
+                                <th>Loại tài khoản</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(patients)}">
+                                <td colspan="7" style="text-align:center; color:var(--slate); padding:2rem;">Không tìm thấy kết quả bệnh nhân phù hợp.</td>
+                            </tr>
+                            <tr th:each="p : ${patients}">
+                                <td th:text="${p.id}">1</td>
+                                <td style="font-weight:700; color:var(--dark);" th:text="${p.fullName}">Trần Văn Nam</td>
+                                <td th:text="${p.phone}">0909999888</td>
+                                <td th:text="${#temporals.format(p.dob, 'dd/MM/yyyy')}">15/05/1998</td>
+                                <td><span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${p.gender.name()}">MALE</span></td>
+                                <td style="font-size:0.9rem;" th:text="${p.address != null ? p.address : 'Chưa nhập'}">Hà Nội</td>
+                                <td>
+                                    <span th:if="${p.user != null}" class="badge badge-completed"><i class="fa-solid fa-globe"></i> Online Account</span>
+                                    <span th:if="${p.user == null}" class="badge badge-pending"><i class="fa-solid fa-person-walking"></i> Walk-in (Vãng lai)</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

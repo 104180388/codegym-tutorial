@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' - Healthcare Clinic'">Healthcare Clinic</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header Navbar -->
+    <nav th:fragment="navbar" class="navbar">
+        <a th:href="@{/}" class="navbar-brand">
+            <i class="fa-solid fa-notes-medical"></i> Clinic<span>Care</span>
+        </a>
+        <ul class="nav-links">
+            <li><a th:href="@{/}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/'} ? 'active'">Trang chủ</a></li>
+            <li><a th:href="@{/services}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/services'} ? 'active'">Dịch vụ</a></li>
+            <li><a th:href="@{/doctors}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctors'} ? 'active'">Bác sĩ</a></li>
+
+            <!-- Patient Links (Visible only when logged in as Patient) -->
+            <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/booking}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/booking'} ? 'active'">Đặt lịch khám</a></li>
+            <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/appointments}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/appointments'} ? 'active'">Lịch hẹn của tôi</a></li>
+            <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/profile}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/profile'} ? 'active'"><i class="fa-solid fa-user"></i> Tài khoản</a></li>
+
+            <!-- Doctor Link (Visible only when logged in as Doctor) -->
+            <li sec:authorize="hasAuthority('ROLE_DOCTOR')"><a th:href="@{/doctor/dashboard}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/doctor')} ? 'active'">Dashboard Bác sĩ</a></li>
+
+            <!-- Staff Link (Visible only when logged in as Staff) -->
+            <li sec:authorize="hasAuthority('ROLE_STAFF')"><a th:href="@{/staff/dashboard}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/staff')} ? 'active'">Dashboard Lễ tân</a></li>
+
+            <!-- Admin Link (Visible only when logged in as Admin) -->
+            <li sec:authorize="hasAuthority('ROLE_ADMIN')"><a th:href="@{/admin/dashboard}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin')} ? 'active'">Dashboard Admin</a></li>
+
+            <!-- Unauthenticated Links (Shows ONLY 5 items: Trang chủ, Dịch vụ, Bác sĩ, Đăng nhập, Đăng ký) -->
+            <li sec:authorize="isAnonymous()"><a th:href="@{/login}" class="btn btn-outline btn-sm">Đăng nhập</a></li>
+            <li sec:authorize="isAnonymous()"><a th:href="@{/register}" class="btn btn-primary btn-sm">Đăng ký</a></li>
+
+            <!-- Authenticated Logout Button (Hides Đăng nhập & Đăng ký) -->
+            <li sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post" style="display:inline-flex; align-items:center; margin:0;">
+                    <button type="submit" class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+
+
+
+    <!-- Alerts Fragment -->
+    <div th:fragment="alerts">
+        <div th:if="${successMessage}" class="alert alert-success">
+            <i class="fa-solid fa-circle-check"></i> <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${errorMessage}"></span>
+        </div>
+    </div>
+
+    <!-- Patient Sidebar -->
+    <aside th:fragment="patientSidebar" class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/patient/booking}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/booking'} ? 'active'"><i
+                        class="fa-solid fa-calendar-plus"></i> Đặt lịch khám</a></li>
+            <li><a th:href="@{/patient/appointments}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/appointments'} ? 'active'"><i
+                        class="fa-solid fa-calendar-check"></i> Lịch hẹn cá nhân</a></li>
+            <li><a th:href="@{/patient/medical-history}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/medical-history'} ? 'active'"><i
+                        class="fa-solid fa-file-medical"></i> Lịch sử khám bệnh</a></li>
+            <li><a th:href="@{/patient/invoices}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/invoices'} ? 'active'"><i
+                        class="fa-solid fa-receipt"></i> Hóa đơn thanh toán</a></li>
+            <li><a th:href="@{/patient/profile}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/profile'} ? 'active'"><i
+                        class="fa-solid fa-id-card"></i> Hồ sơ cá nhân</a></li>
+        </ul>
+    </aside>
+
+    <!-- Doctor Sidebar -->
+    <aside th:fragment="doctorSidebar" class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/doctor/dashboard}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctor/dashboard'} ? 'active'"><i
+                        class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+            <li><a th:href="@{/doctor/queue}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctor/queue'} ? 'active'"><i
+                        class="fa-solid fa-hospital-user"></i> Hàng đợi chờ khám</a></li>
+            <li><a th:href="@{/doctor/schedule}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctor/schedule'} ? 'active'"><i
+                        class="fa-solid fa-calendar-days"></i> Lịch trực cá nhân</a></li>
+            <li><a th:href="@{/doctor/profile}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctor/profile'} ? 'active'"><i
+                        class="fa-solid fa-user-doctor"></i> Hồ sơ chuyên môn</a></li>
+        </ul>
+    </aside>
+
+    <!-- Staff Sidebar -->
+    <aside th:fragment="staffSidebar" class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/staff/dashboard}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/dashboard'} ? 'active'"><i
+                        class="fa-solid fa-chart-pie"></i> Tổng quan</a></li>
+            <li><a th:href="@{/staff/checkin}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/checkin'} ? 'active'"><i
+                        class="fa-solid fa-door-open"></i> Tiếp đón & Check-in</a></li>
+            <li><a th:href="@{/staff/appointments}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/appointments'} ? 'active'"><i
+                        class="fa-solid fa-calendar-days"></i> Quản lý lịch hẹn</a></li>
+            <li><a th:href="@{/staff/billing}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/billing'} ? 'active'"><i
+                        class="fa-solid fa-file-invoice-dollar"></i> Quản lý thu ngân</a></li>
+            <li><a th:href="@{/staff/patients}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/patients'} ? 'active'"><i
+                        class="fa-solid fa-users"></i> Tra cứu bệnh nhân</a></li>
+        </ul>
+    </aside>
+
+    <!-- Admin Sidebar -->
+    <aside th:fragment="adminSidebar" class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a th:href="@{/admin/dashboard}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/dashboard'} ? 'active'"><i
+                        class="fa-solid fa-chart-column"></i> Thống kê tổng quan</a></li>
+            <li><a th:href="@{/admin/users}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/users'} ? 'active'"><i
+                        class="fa-solid fa-users-gear"></i> Quản lý tài khoản</a></li>
+            <li><a th:href="@{/admin/services}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/services'} ? 'active'"><i
+                        class="fa-solid fa-briefcase-medical"></i> Quản lý dịch vụ y tế</a></li>
+            <li><a th:href="@{/admin/schedules}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/schedules'} ? 'active'"><i
+                        class="fa-solid fa-calendar-check"></i> Phân ca trực bác sĩ</a></li>
+            <li><a th:href="@{/admin/reports}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/reports'} ? 'active'"><i
+                        class="fa-solid fa-file-export"></i> Báo cáo doanh thu</a></li>
+        </ul>
+    </aside>
+
+    <!-- Footer Fragment -->
+    <footer th:fragment="footer">
+        <p>&copy; 2026 Hệ thống Quản lý Phòng khám & Đặt lịch khám bệnh. Tất cả quyền được bảo lưu.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">Phát triển bằng Spring Boot 3.x, Thymeleaf, Spring Security &
+            MySQL.</p>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Đăng ký tài khoản Bệnh nhân')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container" style="display:flex; justify-content:center; align-items:center; min-height: calc(100vh - 200px);">
+        <div class="card" style="width: 100%; max-width: 520px; padding: 2rem;">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-user-plus" style="font-size: 2.5rem; color: var(--secondary);"></i>
+                <h2 style="font-size: 1.5rem; font-weight: 800; margin-top: 0.5rem; color: var(--dark);">Đăng Ký Tài Khoản Bệnh Nhân</h2>
+                <p style="font-size: 0.85rem; color: var(--slate);">Điền thông tin để đăng ký lịch hẹn trực tuyến nhanh chóng</p>
+            </div>
+
+            <div th:replace="~{fragments/layout :: alerts}"></div>
+
+            <form th:action="@{/register}" th:object="${registerDto}" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="fullName">Họ và tên *</label>
+                    <input type="text" id="fullName" th:field="*{fullName}" class="form-control" placeholder="Ví dụ: Trần Văn Nam" required>
+                    <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></p>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="dob">Ngày sinh *</label>
+                        <input type="date" id="dob" th:field="*{dob}" class="form-control" required>
+                        <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Số điện thoại *</label>
+                        <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="090XXXXXXX" required>
+                        <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Địa chỉ Email *</label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="name@domain.com" required>
+                    <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="username">Tên đăng nhập *</label>
+                    <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Nhập tên đăng nhập..." required>
+                    <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="password">Mật khẩu *</label>
+                        <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Tối thiểu 6 ký tự..." required>
+                        <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Xác nhận mật khẩu *</label>
+                        <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" placeholder="Nhập lại mật khẩu..." required>
+                        <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 0.5rem;">
+                    <i class="fa-solid fa-user-check"></i> Hoàn Tất Đăng Ký
+                </button>
+            </form>
+
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--slate);">
+                Đã có tài khoản? <a th:href="@{/login}" style="color: var(--secondary); font-weight: 600; text-decoration: none;">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>
