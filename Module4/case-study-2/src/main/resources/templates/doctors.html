@@ -9,33 +9,225 @@
         <div th:replace="~{fragments/layout :: alerts}"></div>
 
         <div style="text-align: center; margin-bottom: 2.5rem;">
-            <h1 style="font-size: 2rem; font-weight: 800; color: var(--dark); margin-bottom: 0.5rem;">
+            <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--dark); margin-bottom: 0.5rem;">
                 <i class="fa-solid fa-user-doctor" style="color:var(--primary);"></i> Đội Ngũ Bác Sĩ Chuyên Khoa
             </h1>
-            <p style="color:var(--slate);">Các bác sĩ tận tâm, giàu kinh nghiệm sẵn sàng lắng nghe và thăm khám cho bạn.</p>
+            <p style="color:var(--slate); font-size:1.05rem; max-width:650px; margin:0 auto;">
+                Các bác sĩ đầu ngành tận tâm, giàu kinh nghiệm sẵn sàng lắng nghe và chăm sóc sức khỏe cho bạn. Nhấp vào thẻ bác sĩ để xem thông tin chi tiết.
+            </p>
         </div>
 
-        <div class="grid-cards">
-            <div th:each="doctor : ${doctors}" class="card">
-                <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
-                    <div class="stat-icon" style="background:#e0f2fe; color:#0284c7; width:64px; height:64px; border-radius:50%;">
-                        <i class="fa-solid fa-stethoscope" style="font-size:1.75rem;"></i>
-                    </div>
+        <!-- Lưới thẻ Bác sĩ (ảnh + tên) -->
+        <div class="doctors-grid">
+            <article th:each="doctor : ${doctors}"
+                     class="doctor-item-card"
+                     tabindex="0"
+                     role="button"
+                     aria-haspopup="dialog"
+                     th:attr="data-id=${doctor.id},
+                              data-name=${doctor.user.fullName},
+                              data-degree=${doctor.degree},
+                              data-exp=${doctor.experienceYears},
+                              data-bio=${doctor.bio},
+                              data-phone=${doctor.user.phone},
+                              data-email=${doctor.user.email},
+                              data-image=@{'/images/doctors/doctor-' + ${doctor.id} + '.jpg'},
+                              data-booking-url=@{'/patient/booking?doctorId=' + ${doctor.id}}">
+                
+                <div class="doctor-card-thumb">
+                    <img th:src="@{'/images/doctors/doctor-' + ${doctor.id} + '.jpg'}"
+                         th:alt="${doctor.user.fullName}"
+                         onerror="this.onerror=null; this.src='/images/doctors/default-doctor.jpg';"
+                         loading="lazy">
+                    <span class="doctor-card-badge" th:text="${doctor.experienceYears} + ' năm KN'">10 năm KN</span>
+                </div>
+
+                <div class="doctor-card-info">
                     <div>
-                        <h3 class="card-title" style="margin-bottom:0.2rem;" th:text="${doctor.user.fullName}">Tên bác sĩ</h3>
-                        <p style="font-size:0.85rem; font-weight:600; color:var(--primary);" th:text="${doctor.degree}">Học hàm / Học vị</p>
-                        <p style="font-size:0.8rem; color:var(--slate);"><i class="fa-solid fa-briefcase"></i> <span th:text="${doctor.experienceYears}">10</span> năm kinh nghiệm chuyên sâu</p>
+                        <h3 class="doctor-card-name" th:text="${doctor.user.fullName}">Tên bác sĩ</h3>
+                        <p class="doctor-card-degree" th:text="${doctor.degree}">Học hàm / Học vị</p>
                     </div>
+                    <span class="doctor-card-action">
+                        <i class="fa-regular fa-id-card"></i> Xem chi tiết
+                    </span>
                 </div>
-                <p style="font-size:0.9rem; color:var(--slate); margin-bottom:1.25rem; line-height:1.5;" th:text="${doctor.bio}">Tiểu sử bác sĩ...</p>
-                <div style="border-top:1px solid var(--border); padding-top:1rem; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.85rem; color:var(--slate);"><i class="fa-solid fa-phone"></i> Liên hệ / Tư vấn: <span th:text="${doctor.user.phone}">0903000003</span></span>
+
+                <!-- Dữ liệu dịch vụ ẩn phục vụ Modal -->
+                <div class="doctor-services-data" style="display: none;">
+                    <span th:each="srv : ${doctor.services}" class="service-item" th:text="${srv.name}"></span>
                 </div>
-            </div>
+            </article>
         </div>
     </div>
 
+    <!-- Modal Chi Tiết Bác Sĩ (HTML5 Native Dialog) -->
+    <dialog id="doctorDetailModal" class="doctor-dialog" closedby="any" aria-labelledby="modalDoctorName">
+        <div class="doctor-modal-header">
+            <h2><i class="fa-solid fa-user-doctor" style="color:var(--primary);"></i> Thông Tin Chi Tiết Bác Sĩ</h2>
+            <button type="button" class="doctor-modal-close-btn" id="closeModalBtn" aria-label="Đóng cửa sổ">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="doctor-modal-body">
+            <div class="doctor-modal-portrait">
+                <img id="modalDoctorImg" src="" alt="Ảnh bác sĩ" class="doctor-modal-img"
+                     onerror="this.onerror=null; this.src='/images/doctors/default-doctor.jpg';">
+                <span class="doctor-exp-badge">
+                    <i class="fa-solid fa-award"></i> <span id="modalDoctorExp">10</span> năm kinh nghiệm
+                </span>
+            </div>
+
+            <div class="doctor-modal-details">
+                <div>
+                    <h3 id="modalDoctorName" class="doctor-modal-name">Tên bác sĩ</h3>
+                    <p id="modalDoctorDegree" class="doctor-modal-degree">Học hàm / Học vị</p>
+                </div>
+
+                <div class="doctor-detail-section">
+                    <span class="doctor-detail-label"><i class="fa-solid fa-circle-info"></i> Giới thiệu chuyên môn</span>
+                    <p id="modalDoctorBio" class="doctor-detail-bio">Tiểu sử bác sĩ</p>
+                </div>
+
+                <div class="doctor-detail-section" id="modalServicesSection">
+                    <span class="doctor-detail-label"><i class="fa-solid fa-stethoscope"></i> Chuyên khoa & Dịch vụ tiếp nhận</span>
+                    <div id="modalServicesList" class="doctor-services-list">
+                        <!-- Thẻ dịch vụ động -->
+                    </div>
+                </div>
+
+                <div class="doctor-detail-section">
+                    <span class="doctor-detail-label"><i class="fa-solid fa-address-book"></i> Thông tin liên hệ tư vấn</span>
+                    <div class="doctor-contact-row">
+                        <span class="doctor-contact-item">
+                            <i class="fa-solid fa-phone"></i>
+                            <span id="modalDoctorPhone">0903000003</span>
+                        </span>
+                        <span class="doctor-contact-item" id="modalDoctorEmailWrapper">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span id="modalDoctorEmail">doctor@clinic.vn</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="doctor-modal-footer">
+            <button type="button" class="btn btn-outline" id="modalCancelBtn">
+                <i class="fa-solid fa-xmark"></i> Đóng
+            </button>
+            <a id="modalBookingBtn" href="/patient/booking" class="btn btn-primary">
+                <i class="fa-solid fa-calendar-check"></i> Đặt lịch khám với bác sĩ
+            </a>
+        </div>
+    </dialog>
+
     <footer th:replace="~{fragments/layout :: footer}"></footer>
 
+    <!-- Script quản lý Modal hiển thị thông tin chi tiết -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dialog = document.getElementById('doctorDetailModal');
+            if (!dialog) return;
+
+            const cards = document.querySelectorAll('.doctor-item-card');
+            const closeBtn = document.getElementById('closeModalBtn');
+            const cancelBtn = document.getElementById('modalCancelBtn');
+
+            const modalImg = document.getElementById('modalDoctorImg');
+            const modalName = document.getElementById('modalDoctorName');
+            const modalDegree = document.getElementById('modalDoctorDegree');
+            const modalExp = document.getElementById('modalDoctorExp');
+            const modalBio = document.getElementById('modalDoctorBio');
+            const modalPhone = document.getElementById('modalDoctorPhone');
+            const modalEmail = document.getElementById('modalDoctorEmail');
+            const modalServicesList = document.getElementById('modalServicesList');
+            const modalBookingBtn = document.getElementById('modalBookingBtn');
+
+            function openDoctorModal(card) {
+                const id = card.getAttribute('data-id');
+                const name = card.getAttribute('data-name') || '';
+                const degree = card.getAttribute('data-degree') || '';
+                const exp = card.getAttribute('data-exp') || '0';
+                const bio = card.getAttribute('data-bio') || '';
+                const phone = card.getAttribute('data-phone') || '';
+                const email = card.getAttribute('data-email') || '';
+                const image = card.getAttribute('data-image') || '';
+                const bookingUrl = card.getAttribute('data-booking-url') || ('/patient/booking?doctorId=' + id);
+
+                modalImg.src = image;
+                modalImg.alt = name;
+                modalName.textContent = name;
+                modalDegree.textContent = degree;
+                modalExp.textContent = exp;
+                modalBio.textContent = bio || 'Bác sĩ chuyên khoa tận tâm, sẵn sàng hỗ trợ tư vấn và điều trị cho người bệnh.';
+                modalPhone.textContent = phone || '0903000000';
+                modalEmail.textContent = email || 'lienhe@clinic.vn';
+                modalBookingBtn.href = bookingUrl;
+
+                // Cập nhật danh sách dịch vụ
+                modalServicesList.innerHTML = '';
+                const serviceItems = card.querySelectorAll('.doctor-services-data .service-item');
+                if (serviceItems && serviceItems.length > 0) {
+                    serviceItems.forEach(item => {
+                        const pill = document.createElement('span');
+                        pill.className = 'doctor-service-pill';
+                        pill.textContent = item.textContent;
+                        modalServicesList.appendChild(pill);
+                    });
+                } else {
+                    const fallback = document.createElement('span');
+                    fallback.className = 'doctor-service-pill';
+                    fallback.textContent = 'Khám & Tư vấn chuyên khoa tổng quát';
+                    modalServicesList.appendChild(fallback);
+                }
+
+                if (typeof dialog.showModal === 'function') {
+                    dialog.showModal();
+                } else {
+                    dialog.setAttribute('open', '');
+                }
+            }
+
+            function closeDoctorModal() {
+                if (typeof dialog.close === 'function') {
+                    dialog.close();
+                } else {
+                    dialog.removeAttribute('open');
+                }
+            }
+
+            cards.forEach(card => {
+                card.addEventListener('click', () => openDoctorModal(card));
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openDoctorModal(card);
+                    }
+                });
+            });
+
+            if (closeBtn) closeBtn.addEventListener('click', closeDoctorModal);
+            if (cancelBtn) cancelBtn.addEventListener('click', closeDoctorModal);
+
+            // Light-dismiss fallback cho các trình duyệt chưa hỗ trợ closedby
+            if (!('closedBy' in HTMLDialogElement.prototype)) {
+                dialog.addEventListener('click', (event) => {
+                    if (event.target !== dialog) return;
+                    const rect = dialog.getBoundingClientRect();
+                    const isInside = (
+                        rect.top <= event.clientY &&
+                        event.clientY <= rect.top + rect.height &&
+                        rect.left <= event.clientX &&
+                        event.clientX <= rect.left + rect.width
+                    );
+                    if (!isInside) {
+                        closeDoctorModal();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
+

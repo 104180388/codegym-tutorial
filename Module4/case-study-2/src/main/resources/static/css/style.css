@@ -962,3 +962,616 @@ footer a {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================================================================
+   Doctor Cards & Detail Modal
+   ========================================================================== */
+.doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.doctor-item-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    outline: none;
+}
+
+.doctor-item-card:hover,
+.doctor-item-card:focus-visible {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(2, 132, 199, 0.4);
+}
+
+.doctor-card-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #f1f5f9;
+}
+
+.doctor-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+    transition: transform 0.4s ease;
+}
+
+.doctor-item-card:hover .doctor-card-thumb img {
+    transform: scale(1.05);
+}
+
+.doctor-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: 50px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.doctor-card-info {
+    padding: 1.25rem 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.doctor-card-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.35;
+    transition: color 0.2s ease;
+    margin-top: 0.25rem;
+}
+
+.doctor-item-card:hover .doctor-card-name {
+    color: var(--primary);
+}
+
+.doctor-card-degree {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.doctor-card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-top: 0.75rem;
+    padding: 0.4rem 1rem;
+    background: var(--primary-light);
+    border-radius: 50px;
+    transition: all 0.2s ease;
+}
+
+.doctor-item-card:hover .doctor-card-action {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+/* Doctor Detail Modal (HTML5 Dialog) */
+.doctor-dialog {
+    margin: auto;
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    max-width: 720px;
+    width: 90vw;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.doctor-dialog::backdrop {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.doctor-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+    background: #f8fafc;
+}
+
+.doctor-modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.doctor-modal-close-btn {
+    background: none;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--slate);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.doctor-modal-close-btn:hover {
+    background: #e2e8f0;
+    color: var(--dark);
+}
+
+.doctor-modal-body {
+    padding: 1.75rem;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.75rem;
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
+}
+
+@media (max-width: 680px) {
+    .doctor-modal-body {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+}
+
+.doctor-modal-portrait {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+}
+
+.doctor-modal-img {
+    width: 180px;
+    height: 180px;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: var(--shadow);
+    border: 3px solid #ffffff;
+    outline: 2px solid var(--border);
+}
+
+.doctor-exp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--secondary);
+    background: #f0fdfa;
+    border: 1px solid #ccfbf1;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+}
+
+.doctor-modal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.doctor-modal-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 0.2rem;
+}
+
+.doctor-modal-degree {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.doctor-detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.doctor-detail-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--slate);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.doctor-detail-bio {
+    font-size: 0.95rem;
+    color: #334155;
+    line-height: 1.6;
+    background: #f8fafc;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    border-left: 3px solid var(--primary);
+}
+
+.doctor-services-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.doctor-service-pill {
+    background: var(--primary-light);
+    color: var(--primary-hover);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    border-radius: 50px;
+}
+
+.doctor-contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.88rem;
+    color: var(--slate);
+}
+
+.doctor-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.doctor-contact-item i {
+    color: var(--primary);
+}
+
+.doctor-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid var(--border);
+    background: #f8fafc;
+}
+
+/* ==========================================================================
+   Medical Service Cards & Detail Modal
+   ========================================================================== */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.service-item-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    outline: none;
+}
+
+.service-item-card:hover,
+.service-item-card:focus-visible {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(13, 148, 136, 0.4);
+}
+
+.service-card-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #f1f5f9;
+}
+
+.service-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.4s ease;
+}
+
+.service-item-card:hover .service-card-thumb img {
+    transform: scale(1.06);
+}
+
+.service-card-code-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: 50px;
+    letter-spacing: 0.04em;
+}
+
+.service-card-duration-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--secondary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: 50px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.service-card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.service-card-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.4;
+    transition: color 0.2s ease;
+}
+
+.service-item-card:hover .service-card-name {
+    color: var(--secondary);
+}
+
+.service-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    padding-top: 0.85rem;
+    border-top: 1px dashed var(--border);
+}
+
+.service-card-price {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.service-card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--secondary);
+    padding: 0.35rem 0.85rem;
+    background: #f0fdfa;
+    border-radius: 50px;
+    transition: all 0.2s ease;
+}
+
+.service-item-card:hover .service-card-action {
+    background: var(--secondary);
+    color: #ffffff;
+}
+
+/* Service Detail Modal (HTML5 Dialog) */
+.service-dialog {
+    margin: auto;
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    max-width: 780px;
+    width: 90vw;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-dialog::backdrop {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.service-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+    background: #f8fafc;
+}
+
+.service-modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.service-modal-body {
+    padding: 1.75rem;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.75rem;
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .service-modal-body {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+}
+
+.service-modal-thumb {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.service-modal-img {
+    width: 100%;
+    aspect-ratio: 16 / 11;
+    border-radius: 14px;
+    object-fit: cover;
+    box-shadow: var(--shadow);
+    border: 2px solid var(--border);
+}
+
+.service-modal-stats {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.service-stat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.88rem;
+}
+
+.service-stat-label {
+    color: var(--slate);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.service-stat-value {
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.service-stat-value.price {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.service-modal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.service-modal-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.35;
+}
+
+.service-guide-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-left: 4px solid var(--success);
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.service-guide-box-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #166534;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.service-guide-box-text {
+    font-size: 0.92rem;
+    color: #14532d;
+    line-height: 1.5;
+}
+
+.service-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid var(--border);
+    background: #f8fafc;
+}
