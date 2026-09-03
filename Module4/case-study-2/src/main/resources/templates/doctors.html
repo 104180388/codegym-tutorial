@@ -29,8 +29,7 @@
                 </div>
                 <p style="font-size:0.9rem; color:var(--slate); margin-bottom:1.25rem; line-height:1.5;" th:text="${doctor.bio}">Tiểu sử bác sĩ...</p>
                 <div style="border-top:1px solid var(--border); padding-top:1rem; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:0.85rem; color:var(--slate);"><i class="fa-solid fa-phone"></i> <span th:text="${doctor.user.phone}">0903000003</span></span>
-                    <a th:href="@{/patient/booking}" class="btn btn-primary btn-sm"><i class="fa-solid fa-calendar-plus"></i> Đặt lịch ngay</a>
+                    <span style="font-size:0.85rem; color:var(--slate);"><i class="fa-solid fa-phone"></i> Liên hệ / Tư vấn: <span th:text="${doctor.user.phone}">0903000003</span></span>
                 </div>
             </div>
         </div>

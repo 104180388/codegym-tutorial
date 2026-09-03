@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const prepGuideBox = document.getElementById('prepGuideBox');
     const prepGuideText = document.getElementById('prepGuideText');
 
-    function fetchDoctorsByService(serviceId) {
+    function fetchDoctorsByService(serviceId, preselectedDoctorId) {
         if (!doctorSelect) return;
 
         if (!serviceId) {
@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        const initialDoctorId = preselectedDoctorId || (doctorSelect ? doctorSelect.value : null);
         doctorSelect.innerHTML = '<option value="">-- Đang tải danh sách bác sĩ chuyên khoa... --</option>';
 
         fetch(`/api/appointments/doctors-by-service?serviceId=${serviceId}`)
@@ -35,11 +36,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     const opt = document.createElement('option');
                     opt.value = doc.id;
                     opt.textContent = `${doc.fullName} (${doc.degree || 'Bác sĩ chuyên khoa'})`;
+                    if (initialDoctorId && String(initialDoctorId) === String(doc.id)) {
+                        opt.selected = true;
+                    }
                     doctorSelect.appendChild(opt);
                 });
 
-                // Auto select first doctor if available
-                if (doctors.length === 1) {
+                if (doctorSelect.value) {
+                    fetchTimeSlots();
+                } else if (doctors.length === 1) {
                     doctorSelect.value = doctors[0].id;
                     fetchTimeSlots();
                 } else {
@@ -131,7 +136,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Trigger on load if service is pre-selected
         if (serviceSelect.value) {
-            fetchDoctorsByService(serviceSelect.value);
+            const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+            const guide = selectedOption ? selectedOption.getAttribute('data-prep') : '';
+            if (prepGuideBox && prepGuideText) {
+                if (guide && guide.trim() !== '') {
+                    prepGuideText.textContent = guide;
+                    prepGuideBox.style.display = 'block';
+                } else {
+                    prepGuideBox.style.display = 'none';
+                }
+            }
+            const preDoctorId = doctorSelect ? doctorSelect.value : null;
+            fetchDoctorsByService(serviceSelect.value, preDoctorId);
         }
     }
 

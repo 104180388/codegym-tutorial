@@ -27,7 +27,7 @@
                             <label class="form-label" for="roleId">1. Vai trò tài khoản (Role) *</label>
                             <select id="roleId" th:field="*{roleId}" class="form-select" required>
                                 <option value="">-- Chọn vai trò --</option>
-                                <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.name} + ' - ' + ${r.description}"></option>
+                                <option th:each="r : ${roles}" th:value="${r.id}" th:data-role-name="${r.name}" th:text="${r.name} + ' - ' + ${r.description}"></option>
                             </select>
                             <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}"></p>
                         </div>
@@ -63,8 +63,8 @@
                         </div>
 
                         <!-- Doctor specific fields -->
-                        <div style="background:#f8fafc; padding:1.25rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1.5rem;">
-                            <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.75rem;"><i class="fa-solid fa-user-doctor"></i> Bổ sung thông tin Bác sĩ (nếu chọn ROLE_DOCTOR)</h3>
+                        <div id="doctorFieldsGroup" style="background:#f8fafc; padding:1.25rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1.5rem; display:none;">
+                            <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.75rem;"><i class="fa-solid fa-user-doctor"></i> Bổ sung thông tin Bác sĩ</h3>
                             <div style="display:grid; grid-template-columns:2fr 1fr; gap:1rem;">
                                 <div class="form-group">
                                     <label class="form-label" for="degree">Học hàm / Học vị</label>
@@ -82,8 +82,8 @@
                         </div>
 
                         <!-- Staff specific fields -->
-                        <div style="background:#f8fafc; padding:1.25rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1.5rem;">
-                            <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.75rem;"><i class="fa-solid fa-clipboard-user"></i> Bổ sung thông tin Lễ tân (nếu chọn ROLE_STAFF)</h3>
+                        <div id="staffFieldsGroup" style="background:#f8fafc; padding:1.25rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1.5rem; display:none;">
+                            <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.75rem;"><i class="fa-solid fa-clipboard-user"></i> Bổ sung thông tin Lễ tân</h3>
                             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
                                 <div class="form-group" style="margin-bottom:0;">
                                     <label class="form-label" for="staffCode">Mã nhân viên</label>
@@ -106,6 +106,31 @@
     </div>
 
     <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleSelect = document.getElementById('roleId');
+            const doctorGroup = document.getElementById('doctorFieldsGroup');
+            const staffGroup = document.getElementById('staffFieldsGroup');
+
+            function toggleRoleFields() {
+                const selectedOption = roleSelect ? roleSelect.options[roleSelect.selectedIndex] : null;
+                const roleName = selectedOption ? selectedOption.getAttribute('data-role-name') : '';
+
+                if (doctorGroup) {
+                    doctorGroup.style.display = (roleName === 'ROLE_DOCTOR') ? 'block' : 'none';
+                }
+                if (staffGroup) {
+                    staffGroup.style.display = (roleName === 'ROLE_STAFF') ? 'block' : 'none';
+                }
+            }
+
+            if (roleSelect) {
+                roleSelect.addEventListener('change', toggleRoleFields);
+                toggleRoleFields();
+            }
+        });
+    </script>
 
 </body>
 </html>

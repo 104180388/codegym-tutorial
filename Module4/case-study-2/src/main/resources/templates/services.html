@@ -41,7 +41,7 @@
                         <td style="text-align:center; font-weight:600;" th:text="${service.estimatedDurationMin} + ' phút'">30 phút</td>
                         <td style="font-weight: 800; color: var(--primary); font-size: 1.05rem;" th:text="${#numbers.formatDecimal(service.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">150.000 VNĐ</td>
                         <td>
-                            <a th:href="@{/patient/booking}" class="btn btn-primary btn-sm"><i class="fa-solid fa-calendar-check"></i> Đặt lịch</a>
+                            <a th:href="@{/patient/booking(serviceId=${service.id})}" class="btn btn-primary btn-sm"><i class="fa-solid fa-calendar-check"></i> Đặt lịch</a>
                         </td>
                     </tr>
                 </tbody>

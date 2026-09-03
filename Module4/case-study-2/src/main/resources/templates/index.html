@@ -36,10 +36,13 @@
             <!-- 6 News Cards Grid (2 rows x 3 columns) -->
             <div class="news-grid">
                 <!-- Card 1 (Hero Overlay Style) -->
-                <a href="#" class="news-card-hero" th:style="'background-image: url(' + @{/images/news_conference_medical_1788368970735.jpg} + ');'">
-                    <div class="news-card-hero-content">
-                        <h3 class="news-card-hero-title">Khi tình yêu thương hóa thân vào nhịp đập sự sống</h3>
-                        <span class="news-card-hero-date">28/08/2026</span>
+                <a href="#" class="news-card">
+                    <div class="news-card-img-wrap">
+                        <img th:src="@{/images/news_conference_medical_1788368970735.jpg}" alt="Tin tức" class="news-card-img">
+                    </div>
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">Khi tình yêu thương hóa thân vào nhịp đập sự sống</h3>
+                        <span class="news-card-date">28/08/2026</span>
                     </div>
                 </a>
 
@@ -107,10 +110,13 @@
 
             <div class="events-grid">
                 <!-- Event Card 1 (Hero Overlay Style) -->
-                <a href="#" class="news-card-hero" th:style="'background-image: url(' + @{/images/surgery_team_medical_1788368990598.jpg} + '); min-height: 330px;'">
-                    <div class="news-card-hero-content">
-                        <h3 class="news-card-hero-title">Hôn mê vì chảy máu tiểu não, người đàn ông vượt hơn 1.000 km từ Lào về phòng khám giành lại sự sống</h3>
-                        <span class="news-card-hero-date">04/08/2026</span>
+                <a href="#" class="news-card">
+                    <div class="news-card-img-wrap" style="height: 220px;">
+                        <img th:src="@{/images/surgery_team_medical_1788368990598.jpg}" alt="Sự kiện" class="news-card-img">
+                    </div>
+                    <div class="news-card-body">
+                        <h3 class="news-card-title">Hôn mê vì chảy máu tiểu não, người đàn ông vượt hơn 1.000 km từ Lào về phòng khám giành lại sự sống</h3>
+                        <span class="news-card-date">04/08/2026</span>
                     </div>
                 </a>
 

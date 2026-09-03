@@ -40,7 +40,10 @@ public class PatientController {
     private InvoiceService invoiceService;
 
     @GetMapping("/booking")
-    public String bookingForm(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+    public String bookingForm(@AuthenticationPrincipal CustomUserDetails userDetails,
+                              @RequestParam(value = "serviceId", required = false) Long serviceId,
+                              @RequestParam(value = "doctorId", required = false) Long doctorId,
+                              Model model) {
         User user = userDetails.getUser();
         Patient patient = patientService.getPatientByUserId(user.getId());
 
@@ -51,6 +54,12 @@ public class PatientController {
             dto.setPatientPhone(patient.getPhone());
             dto.setPatientEmail(user.getEmail());
             dto.setAppointmentDate(LocalDate.now());
+            if (serviceId != null) {
+                dto.setServiceId(serviceId);
+            }
+            if (doctorId != null) {
+                dto.setDoctorId(doctorId);
+            }
             model.addAttribute("bookingDto", dto);
         }
 
