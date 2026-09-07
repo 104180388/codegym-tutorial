@@ -46,7 +46,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         seedUsersAndProfiles();
         ensureDoctorServicesSeeded();
         ensureWeeklySchedulesSeeded();
-        ensureValidPasswords();
     }
 
     private void ensureWeeklySchedulesSeeded() {
@@ -103,16 +102,6 @@ public class DatabaseSeeder implements CommandLineRunner {
             serviceRepository.findById(sId).ifPresent(s -> doctor.getServices().add(s));
         }
         doctorRepository.save(doctor);
-    }
-
-    private void ensureValidPasswords() {
-        String defaultPassHash = passwordEncoder.encode("Password@123");
-        for (User u : userRepository.findAll()) {
-            if (!passwordEncoder.matches("Password@123", u.getPassword())) {
-                u.setPassword(defaultPassHash);
-                userRepository.save(u);
-            }
-        }
     }
 
 

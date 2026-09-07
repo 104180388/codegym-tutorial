@@ -23,7 +23,6 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Mã hẹn</th>
                                 <th>Bệnh nhân</th>
                                 <th>SĐT</th>
                                 <th>Dịch vụ</th>
@@ -35,10 +34,9 @@
                         </thead>
                         <tbody>
                             <tr th:if="${#lists.isEmpty(appointments)}">
-                                <td colspan="8" style="text-align:center; color:var(--slate); padding:2rem;">Không có lịch hẹn nào.</td>
+                                <td colspan="7" style="text-align:center; color:var(--slate); padding:2rem;">Không có lịch hẹn nào.</td>
                             </tr>
                             <tr th:each="app : ${appointments}">
-                                <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
                                 <td style="font-weight:700;" th:text="${app.patient.fullName}">Trần Văn Nam</td>
                                 <td th:text="${app.patient.phone}">0909999888</td>
                                 <td style="font-weight:600;" th:text="${app.service.name}">Khám nội tổng quát</td>

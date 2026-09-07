@@ -1,5 +1,9 @@
+/* Import Google Fonts - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 /* Modern Healthcare Design System */
 :root {
+    --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --primary: #0284c7;
     --primary-hover: #0369a1;
     --primary-light: #e0f2fe;
@@ -19,20 +23,100 @@
     --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
 }
 
-* {
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-body {
+html, body {
+    font-family: var(--font-family);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
     background-color: var(--light-bg);
     color: var(--dark);
-    line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+input, button, select, textarea, optgroup, table, th, td {
+    font-family: inherit;
+}
+
+/* Ensure Font Awesome Icons Render Correctly */
+.fa, .fas, .far, .fal, .fad, .fab, .fa-solid, .fa-regular, .fa-light, .fa-duotone, .fa-brands, [class*="fa-"] {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "FontAwesome" !important;
+}
+
+.fa-brands, [class*="fa-brands"] {
+    font-family: "Font Awesome 6 Brands" !important;
+}
+
+.fa::before, .fas::before, .far::before, .fal::before, .fad::before, .fab::before,
+.fa-solid::before, .fa-regular::before, .fa-light::before, .fa-duotone::before, .fa-brands::before,
+[class*="fa-"]::before {
+    font-family: inherit !important;
+}
+
+/* Headings Standardization */
+h1, .h1 {
+    font-family: var(--font-family);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--dark);
+    letter-spacing: -0.02em;
+}
+
+h2, .h2 {
+    font-family: var(--font-family);
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--dark);
+    letter-spacing: -0.015em;
+}
+
+h3, .h3 {
+    font-family: var(--font-family);
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--dark);
+    letter-spacing: -0.01em;
+}
+
+h4, .h4 {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--dark);
+}
+
+h5, .h5, h6, .h6 {
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+p {
+    font-family: var(--font-family);
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--slate);
+}
+
+strong, b {
+    font-weight: 600;
+    color: var(--dark);
 }
 
 /* Glassmorphism Navigation */
@@ -52,12 +136,13 @@ body {
 
 .navbar-brand {
     font-size: 1.4rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    letter-spacing: -0.02em;
 }
 
 .navbar-brand span {
@@ -290,7 +375,7 @@ body {
     display: inline-block;
     padding: 0.25rem 0.65rem;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
     border-radius: 50px;
     text-transform: uppercase;
 }
@@ -457,14 +542,14 @@ body {
 
 .stat-value {
     font-size: 1.75rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--dark);
 }
 
 .stat-label {
     font-size: 0.85rem;
     color: var(--slate);
-    font-weight: 600;
+    font-weight: 500;
 }
 
 /* Footer */
@@ -756,12 +841,12 @@ footer a {
    ========================================================== */
 .news-section {
     margin-bottom: 3.5rem;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-family);
 }
 
 .news-badge-tag {
     font-size: 0.75rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #0f766e;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -781,8 +866,8 @@ footer a {
 }
 
 .news-header-title {
-    font-size: 2.25rem;
-    font-weight: 800;
+    font-size: 2rem;
+    font-weight: 700;
     color: #0f172a;
     letter-spacing: -0.02em;
     margin: 0;
@@ -829,7 +914,7 @@ footer a {
     background: #f8fafc;
     border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.25 ease, box-shadow 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     display: flex;
     flex-direction: column;
     text-decoration: none;
@@ -870,7 +955,7 @@ footer a {
 
 .news-card-title {
     font-size: 0.95rem;
-    font-weight: 700;
+    font-weight: 600;
     color: #0f172a;
     line-height: 1.45;
     margin-bottom: 0.75rem;
@@ -883,7 +968,7 @@ footer a {
 .news-card-date {
     font-size: 0.78rem;
     color: #94a3b8;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 /* Special Hero Card with Gradient Overlay */
@@ -922,7 +1007,7 @@ footer a {
 
 .news-card-hero-title {
     font-size: 1.1rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #ffffff;
     line-height: 1.4;
     margin-bottom: 0.5rem;
@@ -931,7 +1016,7 @@ footer a {
 .news-card-hero-date {
     font-size: 0.78rem;
     color: rgba(255, 255, 255, 0.85);
-    font-weight: 600;
+    font-weight: 500;
 }
 
 /* Featured Events Container Section */
@@ -944,8 +1029,8 @@ footer a {
 }
 
 .events-header-title {
-    font-size: 2.25rem;
-    font-weight: 800;
+    font-size: 2rem;
+    font-weight: 700;
     color: #1e293b;
     margin-bottom: 1.5rem;
     letter-spacing: -0.02em;
@@ -1024,7 +1109,7 @@ footer a {
     -webkit-backdrop-filter: blur(8px);
     color: var(--primary);
     font-size: 0.78rem;
-    font-weight: 700;
+    font-weight: 600;
     padding: 0.3rem 0.65rem;
     border-radius: 50px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -1205,7 +1290,7 @@ footer a {
 
 .doctor-modal-name {
     font-size: 1.4rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--dark);
     margin-bottom: 0.2rem;
 }
@@ -1224,7 +1309,7 @@ footer a {
 
 .doctor-detail-label {
     font-size: 0.82rem;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--slate);
@@ -1346,7 +1431,7 @@ footer a {
     -webkit-backdrop-filter: blur(8px);
     color: #ffffff;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
     padding: 0.3rem 0.65rem;
     border-radius: 50px;
     letter-spacing: 0.04em;
@@ -1361,7 +1446,7 @@ footer a {
     -webkit-backdrop-filter: blur(8px);
     color: var(--secondary);
     font-size: 0.78rem;
-    font-weight: 700;
+    font-weight: 600;
     padding: 0.3rem 0.65rem;
     border-radius: 50px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -1378,7 +1463,7 @@ footer a {
 
 .service-card-name {
     font-size: 1.2rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--dark);
     line-height: 1.4;
     transition: color 0.2s ease;
@@ -1399,7 +1484,7 @@ footer a {
 
 .service-card-price {
     font-size: 1.15rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
 }
 
@@ -1518,13 +1603,14 @@ footer a {
 }
 
 .service-stat-value {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--dark);
 }
 
 .service-stat-value.price {
     color: var(--primary);
     font-size: 1.1rem;
+    font-weight: 700;
 }
 
 .service-modal-details {
@@ -1535,7 +1621,7 @@ footer a {
 
 .service-modal-name {
     font-size: 1.4rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--dark);
     line-height: 1.35;
 }
@@ -1553,7 +1639,7 @@ footer a {
 
 .service-guide-box-title {
     font-size: 0.85rem;
-    font-weight: 700;
+    font-weight: 600;
     color: #166534;
     display: flex;
     align-items: center;
@@ -1574,4 +1660,54 @@ footer a {
     padding: 1.25rem 1.75rem;
     border-top: 1px solid var(--border);
     background: #f8fafc;
+}
+
+/* ==========================================================
+   Universal Typography Uniformity Across All Pages
+   ========================================================== */
+h1, .page-header-title, [style*="font-size: 1.75rem"], [style*="font-size: 2rem"], [style*="font-size: 2.5rem"] {
+    font-family: var(--font-family) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+    color: var(--dark);
+}
+
+h2, [style*="font-size: 1.5rem"], [style*="font-size: 1.35rem"] {
+    font-family: var(--font-family) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.015em;
+    color: var(--dark);
+}
+
+h3, [style*="font-size: 1.2rem"], [style*="font-size: 1.1rem"] {
+    font-family: var(--font-family) !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em;
+    color: var(--dark);
+}
+
+h4, [style*="font-size: 1rem"] {
+    font-family: var(--font-family) !important;
+    font-weight: 600 !important;
+    color: var(--dark);
+}
+
+th, .table th {
+    font-family: var(--font-family) !important;
+    font-weight: 600 !important;
+}
+
+.btn, button, input[type="submit"], .btn-primary, .btn-secondary, .btn-outline, .btn-danger {
+    font-family: var(--font-family) !important;
+    font-weight: 600 !important;
+}
+
+label, .form-label {
+    font-family: var(--font-family) !important;
+    font-weight: 600 !important;
+}
+
+.badge, .user-badge {
+    font-family: var(--font-family) !important;
+    font-weight: 600 !important;
 }

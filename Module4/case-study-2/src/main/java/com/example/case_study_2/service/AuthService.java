@@ -32,14 +32,18 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public User registerPatient(RegisterDto dto) {
+    @Autowired
+    private OtpService otpService;
+
+    public void validateRegisterDto(RegisterDto dto) {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
             throw new IllegalArgumentException("Mật khẩu và xác nhận mật khẩu không khớp");
         }
-        if (dto.getPhone() == null || !dto.getPhone().matches("^0\\d{9}$")) {
-            throw new IllegalArgumentException("Số điện thoại phải bao gồm đúng 10 chữ số (bắt đầu bằng số 0, ví dụ: 0909999888)");
+        if (dto.getPhone() == null || !otpService.isVietnamesePhoneNumberValid(dto.getPhone())) {
+            throw new IllegalArgumentException("Số điện thoại không hợp lệ hoặc không thuộc các đầu số nhà mạng tại Việt Nam (Viettel, Mobifone, Vinaphone, Vietnamobile, Gmobile/Wintel/Itelecom).");
         }
+        // Strict real-life Gmail and email validation (naming policies, disposable checks, MX & SMTP checks)
+        otpService.validateRealEmail(dto.getEmail());
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new IllegalArgumentException("Tên đăng nhập đã được sử dụng");
         }
@@ -49,6 +53,11 @@ public class AuthService {
         if (userRepository.existsByPhone(dto.getPhone())) {
             throw new IllegalArgumentException("Số điện thoại đã được đăng ký");
         }
+    }
+
+    @Transactional
+    public User registerPatient(RegisterDto dto) {
+        validateRegisterDto(dto);
 
 
         Role patientRole = roleRepository.findByName("ROLE_PATIENT")

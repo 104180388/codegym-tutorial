@@ -35,7 +35,17 @@ public class RegisterDto {
     @NotBlank(message = "Xác nhận mật khẩu không được để trống")
     private String confirmPassword;
 
+    private String otpChannel = "EMAIL";
+
     public RegisterDto() {
+    }
+
+    public String getOtpChannel() {
+        return otpChannel;
+    }
+
+    public void setOtpChannel(String otpChannel) {
+        this.otpChannel = otpChannel;
     }
 
     public String getFullName() {

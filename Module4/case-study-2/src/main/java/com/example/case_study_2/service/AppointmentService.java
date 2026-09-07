@@ -153,8 +153,12 @@ public class AppointmentService {
         );
     }
 
+    public List<Appointment> getAllAppointmentsForStaff() {
+        return appointmentRepository.findAllForStaffManagement();
+    }
+
     public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+        return appointmentRepository.findAllForStaffManagement();
     }
 
     public Appointment getAppointmentById(Long id) {

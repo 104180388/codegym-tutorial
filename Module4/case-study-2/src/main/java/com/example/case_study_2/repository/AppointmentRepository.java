@@ -18,6 +18,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByPatientIdOrderByAppointmentDateDescAppointmentTimeDesc(Long patientId);
     List<Appointment> findByDoctorIdAndAppointmentDate(Long doctorId, LocalDate appointmentDate);
     List<Appointment> findByDoctorIdAndAppointmentDateAndStatusIn(Long doctorId, LocalDate appointmentDate, List<AppointmentStatus> statuses);
+    
+    @Query("SELECT a FROM Appointment a ORDER BY CASE WHEN a.status = com.example.case_study_2.entity.enums.AppointmentStatus.PENDING THEN 0 ELSE 1 END ASC, a.appointmentDate DESC, a.appointmentTime DESC, a.id DESC")
+    List<Appointment> findAllForStaffManagement();
+
+    List<Appointment> findAllByOrderByAppointmentDateAscAppointmentTimeAsc();
+    List<Appointment> findAllByOrderByIdDesc();
     List<Appointment> findByAppointmentDate(LocalDate appointmentDate);
     List<Appointment> findByStatus(AppointmentStatus status);
 

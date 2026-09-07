@@ -31,7 +31,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 response.sendRedirect("/staff/dashboard");
                 return;
             } else if ("ROLE_PATIENT".equals(role)) {
-                response.sendRedirect("/patient/booking");
+                response.sendRedirect("/");
                 return;
             }
         }
