@@ -33,26 +33,43 @@ public class AppointmentService {
     @Autowired
     private DoctorScheduleRepository scheduleRepository;
 
-    public List<TimeSlotDto> getAvailableTimeSlots(Long doctorId, LocalDate appointmentDate) {
+    public List<TimeSlotDto> getAvailableTimeSlots(Long doctorId, Long serviceId, LocalDate appointmentDate) {
         List<TimeSlotDto> slots = new ArrayList<>();
-        if (doctorId == null || appointmentDate == null) {
+        if (appointmentDate == null) {
             return slots;
         }
 
-        // Fetch schedules for the doctor on that date
-        List<DoctorSchedule> schedules = scheduleRepository.findByDoctorIdAndWorkDate(doctorId, appointmentDate);
+        // If specific doctor is chosen
+        if (doctorId != null) {
+            List<DoctorSchedule> schedules = scheduleRepository.findByDoctorIdAndWorkDate(doctorId, appointmentDate);
 
-        Set<LocalTime> possibleTimes = new TreeSet<>();
-        for (DoctorSchedule sched : schedules) {
-            if (sched.getShift() == Shift.MORNING) {
+            Set<LocalTime> possibleTimes = new TreeSet<>();
+            for (DoctorSchedule sched : schedules) {
+                if (sched.getShift() == Shift.MORNING) {
+                    possibleTimes.add(LocalTime.of(8, 0));
+                    possibleTimes.add(LocalTime.of(8, 30));
+                    possibleTimes.add(LocalTime.of(9, 0));
+                    possibleTimes.add(LocalTime.of(9, 30));
+                    possibleTimes.add(LocalTime.of(10, 0));
+                    possibleTimes.add(LocalTime.of(10, 30));
+                    possibleTimes.add(LocalTime.of(11, 0));
+                } else if (sched.getShift() == Shift.AFTERNOON) {
+                    possibleTimes.add(LocalTime.of(13, 30));
+                    possibleTimes.add(LocalTime.of(14, 0));
+                    possibleTimes.add(LocalTime.of(14, 30));
+                    possibleTimes.add(LocalTime.of(15, 0));
+                    possibleTimes.add(LocalTime.of(15, 30));
+                    possibleTimes.add(LocalTime.of(16, 0));
+                }
+            }
+
+            if (possibleTimes.isEmpty()) {
                 possibleTimes.add(LocalTime.of(8, 0));
                 possibleTimes.add(LocalTime.of(8, 30));
                 possibleTimes.add(LocalTime.of(9, 0));
                 possibleTimes.add(LocalTime.of(9, 30));
                 possibleTimes.add(LocalTime.of(10, 0));
                 possibleTimes.add(LocalTime.of(10, 30));
-                possibleTimes.add(LocalTime.of(11, 0));
-            } else if (sched.getShift() == Shift.AFTERNOON) {
                 possibleTimes.add(LocalTime.of(13, 30));
                 possibleTimes.add(LocalTime.of(14, 0));
                 possibleTimes.add(LocalTime.of(14, 30));
@@ -60,46 +77,106 @@ public class AppointmentService {
                 possibleTimes.add(LocalTime.of(15, 30));
                 possibleTimes.add(LocalTime.of(16, 0));
             }
+
+            LocalDate today = LocalDate.now();
+            LocalTime currentTime = LocalTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+            for (LocalTime time : possibleTimes) {
+                boolean available = true;
+
+                if (appointmentDate.isEqual(today) && time.isBefore(currentTime)) {
+                    available = false;
+                }
+
+                if (available) {
+                    long bookedCount = appointmentRepository.countBookedSlot(doctorId, appointmentDate, time);
+                    if (bookedCount > 0) {
+                        available = false;
+                    }
+                }
+
+                slots.add(new TimeSlotDto(time.format(formatter), time.format(formatter), available));
+            }
+
+            return slots;
         }
 
-        // Default slots if no specific schedule set for demo purpose
-        if (possibleTimes.isEmpty()) {
-            possibleTimes.add(LocalTime.of(8, 0));
-            possibleTimes.add(LocalTime.of(8, 30));
-            possibleTimes.add(LocalTime.of(9, 0));
-            possibleTimes.add(LocalTime.of(9, 30));
-            possibleTimes.add(LocalTime.of(10, 0));
-            possibleTimes.add(LocalTime.of(10, 30));
-            possibleTimes.add(LocalTime.of(13, 30));
-            possibleTimes.add(LocalTime.of(14, 0));
-            possibleTimes.add(LocalTime.of(14, 30));
-            possibleTimes.add(LocalTime.of(15, 0));
-        }
+        // Standard time slots when user selects Service and Date before Doctor
+        List<LocalTime> standardTimes = List.of(
+                LocalTime.of(8, 0),
+                LocalTime.of(8, 30),
+                LocalTime.of(9, 0),
+                LocalTime.of(9, 30),
+                LocalTime.of(10, 0),
+                LocalTime.of(10, 30),
+                LocalTime.of(11, 0),
+                LocalTime.of(13, 30),
+                LocalTime.of(14, 0),
+                LocalTime.of(14, 30),
+                LocalTime.of(15, 0),
+                LocalTime.of(15, 30),
+                LocalTime.of(16, 0)
+        );
 
         LocalDate today = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        for (LocalTime time : possibleTimes) {
+        for (LocalTime time : standardTimes) {
             boolean available = true;
-
-            // If today, filter out past time slots
             if (appointmentDate.isEqual(today) && time.isBefore(currentTime)) {
                 available = false;
-            }
-
-            // Check if slot already booked
-            if (available) {
-                long bookedCount = appointmentRepository.countBookedSlot(doctorId, appointmentDate, time);
-                if (bookedCount > 0) {
+            } else {
+                List<Doctor> docs = getAvailableDoctorsForSlot(serviceId, appointmentDate, time);
+                if (docs.isEmpty()) {
                     available = false;
                 }
             }
-
             slots.add(new TimeSlotDto(time.format(formatter), time.format(formatter), available));
         }
 
         return slots;
+    }
+
+    public List<TimeSlotDto> getAvailableTimeSlots(Long doctorId, LocalDate appointmentDate) {
+        return getAvailableTimeSlots(doctorId, null, appointmentDate);
+    }
+
+    public List<Doctor> getAvailableDoctorsForSlot(Long serviceId, LocalDate appointmentDate, LocalTime appointmentTime) {
+        if (appointmentDate == null || appointmentTime == null) {
+            return Collections.emptyList();
+        }
+
+        List<Doctor> candidateDoctors;
+        if (serviceId != null) {
+            candidateDoctors = doctorRepository.findByServicesId(serviceId);
+        } else {
+            candidateDoctors = doctorRepository.findAll();
+        }
+
+        Shift shift = appointmentTime.isBefore(LocalTime.of(12, 0)) ? Shift.MORNING : Shift.AFTERNOON;
+
+        List<Doctor> available = new ArrayList<>();
+        for (Doctor doc : candidateDoctors) {
+            if (doc == null || doc.getUser() == null) continue;
+
+            List<DoctorSchedule> schedules = scheduleRepository.findByDoctorIdAndWorkDate(doc.getId(), appointmentDate);
+            boolean worksShift = false;
+            if (schedules.isEmpty()) {
+                worksShift = true;
+            } else {
+                worksShift = schedules.stream().anyMatch(s -> s.getShift() == shift);
+            }
+
+            if (worksShift) {
+                long bookedCount = appointmentRepository.countBookedSlot(doc.getId(), appointmentDate, appointmentTime);
+                if (bookedCount == 0) {
+                    available.add(doc);
+                }
+            }
+        }
+        return available;
     }
 
     @Transactional
@@ -138,11 +215,18 @@ public class AppointmentService {
     }
 
     public List<Appointment> getPatientAppointments(Long patientId) {
-        return appointmentRepository.findByPatientIdOrderByAppointmentDateDescAppointmentTimeDesc(patientId);
+        if (patientId == null) return Collections.emptyList();
+        return appointmentRepository.findPatientAppointmentsActiveAndCompleted(patientId);
     }
 
     public List<Appointment> getDoctorAppointmentsForToday(Long doctorId) {
         return appointmentRepository.findByDoctorIdAndAppointmentDate(doctorId, LocalDate.now());
+    }
+
+    public List<Appointment> getDoctorAppointmentsFromDate(Long doctorId, LocalDate startDate) {
+        if (doctorId == null) return Collections.emptyList();
+        LocalDate fromDate = startDate != null ? startDate : LocalDate.now();
+        return appointmentRepository.findDoctorAppointmentsFromDate(doctorId, fromDate);
     }
 
     public List<Appointment> getDoctorQueueToday(Long doctorId) {

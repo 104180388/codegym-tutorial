@@ -3,6 +3,7 @@ package com.example.case_study_2.controller;
 import com.example.case_study_2.dto.RegisterDto;
 import com.example.case_study_2.service.AuthService;
 import com.example.case_study_2.service.DoctorService;
+import com.example.case_study_2.service.NewsService;
 import com.example.case_study_2.service.OtpService;
 import com.example.case_study_2.service.ServiceManagementService;
 import jakarta.servlet.http.HttpSession;
@@ -35,11 +36,32 @@ public class PublicController {
     @Autowired
     private OtpService otpService;
 
+    @Autowired
+    private NewsService newsService;
+
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("services", serviceManagementService.getAllActiveServices());
         model.addAttribute("doctors", doctorService.getAllDoctors());
+        model.addAttribute("latestNews", newsService.getLatestNews(6));
+        model.addAttribute("featuredEvents", newsService.getFeaturedNews(6, 3));
         return "index";
+    }
+
+    @GetMapping("/news")
+    public String newsList(Model model) {
+        model.addAttribute("newsList", newsService.getAllNews());
+        model.addAttribute("featuredNews", newsService.getNewsById(1L).orElse(null));
+        return "news";
+    }
+
+    @GetMapping("/news/{id}")
+    public String newsDetail(@org.springframework.web.bind.annotation.PathVariable("id") Long id, Model model) {
+        com.example.case_study_2.dto.NewsDto news = newsService.getNewsById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy bài viết tin tức yêu cầu"));
+        model.addAttribute("news", news);
+        model.addAttribute("relatedNews", newsService.getRelatedNews(id, 4));
+        return "news-detail";
     }
 
     @GetMapping("/doctors")

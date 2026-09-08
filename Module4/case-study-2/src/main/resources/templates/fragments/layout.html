@@ -24,6 +24,7 @@
             <li><a th:href="@{/}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/'} ? 'active'">Trang chủ</a></li>
             <li><a th:href="@{/services}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/services'} ? 'active'">Dịch vụ</a></li>
             <li><a th:href="@{/doctors}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctors'} ? 'active'">Bác sĩ</a></li>
+            <li><a th:href="@{/news}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/news')} ? 'active'">Tin tức</a></li>
 
             <!-- Patient Links (Visible only when logged in as Patient) -->
             <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/booking}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/booking'} ? 'active'">Đặt lịch khám</a></li>
@@ -94,6 +95,9 @@
             <li><a th:href="@{/doctor/queue}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctor/queue'} ? 'active'"><i
                         class="fa-solid fa-hospital-user"></i> Hàng đợi chờ khám</a></li>
+            <li><a th:href="@{/doctor/appointments}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctor/appointments'} ? 'active'"><i
+                        class="fa-solid fa-calendar-check"></i> Lịch hẹn phụ trách</a></li>
             <li><a th:href="@{/doctor/schedule}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctor/schedule'} ? 'active'"><i
                         class="fa-solid fa-calendar-days"></i> Lịch trực cá nhân</a></li>

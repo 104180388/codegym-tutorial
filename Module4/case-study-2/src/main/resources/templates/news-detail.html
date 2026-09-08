@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${news.title})}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div th:replace="~{fragments/layout :: alerts}"></div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" style="margin-bottom: 1.5rem;">
+            <ol style="display: flex; list-style: none; gap: 0.5rem; font-size: 0.9rem; color: var(--slate); padding: 0; align-items: center; flex-wrap: wrap;">
+                <li><a th:href="@{/}" style="color: var(--primary); text-decoration: none;"><i class="fa-solid fa-house"></i> Trang chủ</a></li>
+                <li><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #cbd5e1;"></i></li>
+                <li><a th:href="@{/news}" style="color: var(--primary); text-decoration: none;">Tin tức y tế</a></li>
+                <li><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: #cbd5e1;"></i></li>
+                <li style="color: var(--slate); font-weight: 500; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" th:text="${news.title}">Chi tiết bài viết</li>
+            </ol>
+        </nav>
+
+        <!-- Article Layout Grid (Main Article + Sidebar) -->
+        <div class="news-detail-layout" style="display: grid; grid-template-columns: 2.2fr 1fr; gap: 2.5rem; align-items: start;">
+            
+            <!-- Main Content Area -->
+            <main class="card" style="padding: 2rem; border-radius: 16px; border: 1px solid var(--border); background: #ffffff;">
+                
+                <!-- Tags / Category Badges -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                    <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:700; padding:0.3rem 0.75rem; border-radius:9999px; font-size:0.8rem;">
+                        <i class="fa-solid fa-newspaper"></i> <span th:text="${news.source}">Tuổi Trẻ</span>
+                    </span>
+                    <span th:each="t : ${news.tags}" class="badge" style="background:#f1f5f9; color:#475569; padding:0.3rem 0.65rem; border-radius:9999px; font-size:0.8rem; font-weight:500;">
+                        #<span th:text="${t}">tag</span>
+                    </span>
+                </div>
+
+                <!-- Article Title -->
+                <h1 style="font-size: 2rem; font-weight: 800; color: var(--dark); line-height: 1.35; margin-bottom: 1rem;" th:text="${news.title}">
+                    Tiêu đề bài viết tin tức
+                </h1>
+
+                <!-- Meta Info (Author, Date, Source) -->
+                <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; padding: 0.85rem 0; margin-bottom: 1.5rem; font-size: 0.88rem; color: var(--slate); flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                        <span><i class="fa-regular fa-user-circle" style="color:var(--primary);"></i> <strong style="color:var(--dark);" th:text="${news.author}">Tác giả</strong></span>
+                        <span><i class="fa-regular fa-calendar-days" style="color:var(--secondary);"></i> <span th:text="${news.publishedTime}">08/09/2026 09:17 GMT+7</span></span>
+                    </div>
+                    <div>
+                        <span style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.8rem;">
+                            <i class="fa-solid fa-globe"></i> Nguồn: <strong th:text="${news.source}">Báo Tuổi Trẻ</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Lead Summary Callout -->
+                <div style="background: #f8fafc; border-left: 4px solid var(--primary); padding: 1.15rem 1.35rem; border-radius: 0 10px 10px 0; margin-bottom: 1.75rem; font-size: 1.05rem; font-weight: 600; color: #1e293b; line-height: 1.6;">
+                    <p style="margin:0;" th:text="${news.summary}">Tóm tắt nội dung bài viết...</p>
+                </div>
+
+                <!-- Main Cover Image -->
+                <figure style="margin: 0 0 2rem 0; border-radius: 12px; overflow: hidden; background: #f1f5f9; border: 1px solid #e2e8f0;">
+                    <img th:src="${news.coverImage}"
+                         th:alt="${news.title}"
+                         style="width: 100%; max-height: 480px; object-fit: cover; display: block;"
+                         onerror="this.onerror=null; this.src='/images/services/default-service.jpg';">
+                    <figcaption th:if="${news.images != null and !#lists.isEmpty(news.images) and news.images[0].caption != null and !#strings.isEmpty(news.images[0].caption)}"
+                                style="padding: 0.65rem 1rem; font-size: 0.85rem; color: #64748b; font-style: italic; background: #fafafa; border-top: 1px solid #f1f5f9; text-align: center;"
+                                th:text="${news.images[0].caption}">
+                        Chú thích ảnh minh họa
+                    </figcaption>
+                </figure>
+
+                <!-- Article Body Paragraphs -->
+                <article class="article-content" style="font-size: 1.05rem; line-height: 1.8; color: #334155;">
+                    <th:block th:each="para : ${news.paragraphs}">
+                        <p style="margin-bottom: 1.25rem;" th:text="${para}"></p>
+                    </th:block>
+                </article>
+
+                <!-- In-article gallery for remaining images if available -->
+                <div th:if="${news.images != null and #lists.size(news.images) > 1}" style="margin: 2rem 0;">
+                    <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem;">
+                        <i class="fa-regular fa-images" style="color:var(--primary);"></i> Hình ảnh tư liệu liên quan
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                        <figure th:each="img, iter : ${news.images}" th:if="${iter.index > 0}" style="margin:0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: #f8fafc;">
+                            <img th:src="${img.url}" th:alt="${img.alt}" style="width: 100%; height: 200px; object-fit: cover; display: block;" onerror="this.onerror=null; this.src='/images/services/default-service.jpg';">
+                            <figcaption th:if="${img.caption != null and !#strings.isEmpty(img.caption)}" style="padding: 0.5rem 0.75rem; font-size: 0.8rem; color: var(--slate); font-style: italic; text-align: center;" th:text="${img.caption}"></figcaption>
+                        </figure>
+                    </div>
+                </div>
+
+                <!-- Footer Source & Copyright Credit -->
+                <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.9rem;">
+                    <div>
+                        <span style="color: var(--slate);">Theo nguồn chính thức:</span>
+                        <a th:href="${news.url}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 700; text-decoration: none; margin-left: 0.35rem;">
+                            Báo Tuổi Trẻ Online <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i>
+                        </a>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <a th:href="@{/news}" class="btn btn-outline btn-sm">
+                            <i class="fa-solid fa-arrow-left"></i> Danh sách tin tức
+                        </a>
+                        <a th:href="@{/patient/booking}" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-calendar-plus"></i> Đặt lịch khám ngay
+                        </a>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- Sidebar -->
+            <aside class="news-sidebar" style="display: flex; flex-direction: column; gap: 1.75rem;">
+                
+                <!-- 1. Quick Booking Card -->
+                <div class="card" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 1.5rem; border-radius: 14px; box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);">
+                    <h3 style="font-size: 1.2rem; font-weight: 800; color: white; margin-bottom: 0.5rem;">
+                        <i class="fa-solid fa-stethoscope"></i> Đặt Lịch Khám Online
+                    </h3>
+                    <p style="font-size: 0.88rem; color: #e0f2fe; margin-bottom: 1.2rem; line-height: 1.5;">
+                        Chủ động chọn bác sĩ chuyên khoa, ngày và giờ khám tiện lợi, không phải chờ đợi.
+                    </p>
+                    <a th:href="@{/patient/booking}" class="btn btn-secondary" style="width: 100%; text-align: center; font-weight: 700;">
+                        <i class="fa-solid fa-calendar-check"></i> Đặt Lịch Ngay
+                    </a>
+                </div>
+
+                <!-- 2. Related News Widget -->
+                <div class="card" style="padding: 1.5rem; border-radius: 14px; border: 1px solid var(--border);">
+                    <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--dark); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-fire" style="color: #ef4444;"></i> Tin Tức Liên Quan
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 1.1rem;">
+                        <a th:each="rel : ${relatedNews}" th:href="@{'/news/' + ${rel.id}}" style="display: flex; gap: 0.85rem; text-decoration: none; color: inherit; align-items: start;" class="sidebar-news-item">
+                            <img th:src="${rel.coverImage}"
+                                 th:alt="${rel.title}"
+                                 style="width: 75px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0;"
+                                 onerror="this.onerror=null; this.src='/images/services/default-service.jpg';">
+                            <div>
+                                <h4 style="font-size: 0.88rem; font-weight: 600; color: #1e293b; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.25rem;" th:text="${rel.title}">
+                                    Tiêu đề tin tức liên quan
+                                </h4>
+                                <span style="font-size: 0.75rem; color: #94a3b8;" th:text="${rel.publishedTime}">08/09/2026</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3. Medical Services Quick Access -->
+                <div class="card" style="padding: 1.5rem; border-radius: 14px; border: 1px solid var(--border); background: #f8fafc;">
+                    <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--dark); margin-bottom: 0.75rem;">
+                        <i class="fa-solid fa-list-check" style="color:var(--secondary);"></i> Dịch Vụ Niêm Yết
+                    </h3>
+                    <p style="font-size: 0.85rem; color: var(--slate); margin-bottom: 1rem;">
+                        Xem bảng giá chi tiết các dịch vụ y tế và hướng dẫn chuẩn bị trước khi khám.
+                    </p>
+                    <a th:href="@{/services}" class="btn btn-outline btn-sm" style="width: 100%; text-align: center;">
+                        Xem bảng giá dịch vụ
+                    </a>
+                </div>
+
+            </aside>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <style>
+        .sidebar-news-item:hover h4 {
+            color: var(--primary) !important;
+            text-decoration: underline;
+        }
+        @media (max-width: 900px) {
+            .news-detail-layout {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+</html>

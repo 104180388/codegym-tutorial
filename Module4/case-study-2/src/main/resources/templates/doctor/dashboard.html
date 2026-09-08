@@ -51,17 +51,85 @@
                             <div class="stat-label">Đã hoàn thành ca khám</div>
                         </div>
                     </div>
+
+                    <a th:href="@{/doctor/appointments}" class="card stat-card" style="text-decoration:none; color:inherit;">
+                        <div class="stat-icon" style="background:#e0f2fe; color:#0284c7;"><i
+                                class="fa-solid fa-calendar-check"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${totalUpcomingCount}">0</div>
+                            <div class="stat-label">Tổng lịch hẹn từ hôm nay</div>
+                        </div>
+                    </a>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                    <h2 style="font-size:1.25rem; font-weight:700; color:var(--dark);"><i
-                            class="fa-solid fa-hospital-user"></i> Tối ưu luồng khám bệnh</h2>
-                    <a th:href="@{/doctor/queue}" class="btn btn-primary btn-sm"><i class="fa-solid fa-circle-play"></i>
-                        Vào Hàng Đợi Gọi Khám</a>
+                <!-- Upcoming Appointments Section -->
+                <div class="card" style="margin-bottom: 2rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+                        <h2 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0;">
+                            <i class="fa-solid fa-calendar-days" style="color:var(--primary);"></i> Lịch Hẹn Khám Sắp Tới (Từ Hôm Nay Đến Tương Lai)
+                        </h2>
+                        <a th:href="@{/doctor/appointments}" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Xem Tất Cả & Bộ Lọc Chi Tiết
+                        </a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ngày & Giờ</th>
+                                    <th>Mã Hẹn</th>
+                                    <th>Bệnh Nhân</th>
+                                    <th>Dịch Vụ Khám</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(upcomingAppointments)}">
+                                    <td colspan="6" style="text-align:center; color:var(--slate); padding:2rem;">
+                                        Không có lịch hẹn nào từ hôm nay trở đi.
+                                    </td>
+                                </tr>
+                                <tr th:each="app, iter : ${upcomingAppointments}" th:if="${iter.index < 5}">
+                                    <td>
+                                        <span th:if="${app.appointmentDate.isEqual(today)}" class="badge" style="background:#dcfce7; color:#15803d; font-weight:700; font-size:0.75rem;">
+                                            HÔM NAY
+                                        </span>
+                                        <span th:unless="${app.appointmentDate.isEqual(today)}" style="font-weight:700; color:var(--dark);" th:text="${#temporals.format(app.appointmentDate, 'dd/MM/yyyy')}">
+                                            15/05/2026
+                                        </span>
+                                        <div style="font-weight:600; color:var(--primary); font-size:0.85rem;" th:text="${#temporals.format(app.appointmentTime, 'HH:mm')}">
+                                            08:30
+                                        </div>
+                                    </td>
+                                    <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
+                                    <td>
+                                        <div style="font-weight:700;" th:text="${app.patient.fullName}">Trần Văn Nam</div>
+                                        <div style="font-size:0.8rem; color:var(--slate);" th:text="${app.patient.phone}">0909999888</div>
+                                    </td>
+                                    <td style="font-weight:600;" th:text="${app.service.name}">Khám Nội Tổng Quát</td>
+                                    <td>
+                                        <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.name()}">
+                                            PENDING
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a th:if="${app.status.name() == 'CHECKED_IN' or app.status.name() == 'IN_PROGRESS'}" th:href="@{/doctor/examination/{id}(id=${app.id})}" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fa-stethoscope"></i> Khám
+                                        </a>
+                                        <span th:unless="${app.status.name() == 'CHECKED_IN' or app.status.name() == 'IN_PROGRESS'}" style="font-size:0.8rem; color:var(--slate); font-style:italic;">
+                                            Chờ khám
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
                         <h3 style="font-size:1rem; font-weight:700;"><i class="fa-solid fa-calendar-days"></i> Ca trực được phân công gần đây:</h3>
                         <a th:href="@{/doctor/schedule}" class="btn btn-outline btn-sm"><i class="fa-solid fa-calendar-week"></i> Xem Giao Diện Lịch Ca Trực Google Calendar</a>
                     </div>

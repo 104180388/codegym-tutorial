@@ -36,7 +36,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Enabled or disabled as appropriate for AJAX/form simplicity
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/doctors", "/services", "/login", "/register", "/verify-otp", "/resend-otp", "/css/**", "/js/**", "/images/**", "/uploads/**", "/api/appointments/**").permitAll()
+                .requestMatchers("/", "/doctors", "/services", "/news", "/news/**", "/login", "/register", "/verify-otp", "/resend-otp", "/css/**", "/js/**", "/images/**", "/uploads/**", "/api/appointments/**").permitAll()
                 .requestMatchers("/patient/**").hasAuthority("ROLE_PATIENT")
                 .requestMatchers("/doctor/**").hasAuthority("ROLE_DOCTOR")
                 .requestMatchers("/staff/**").hasAuthority("ROLE_STAFF")

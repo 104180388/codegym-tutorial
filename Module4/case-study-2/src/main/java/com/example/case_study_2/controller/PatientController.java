@@ -63,6 +63,14 @@ public class PatientController {
             model.addAttribute("bookingDto", dto);
         }
 
+        if (serviceId != null) {
+            try {
+                com.example.case_study_2.entity.ServiceEntity fixedService = serviceManagementService.getServiceById(serviceId);
+                model.addAttribute("fixedService", fixedService);
+            } catch (Exception ignored) {
+            }
+        }
+
         model.addAttribute("patient", patient);
         model.addAttribute("services", serviceManagementService.getAllActiveServices());
         model.addAttribute("doctors", doctorService.getAllDoctors());
@@ -74,12 +82,21 @@ public class PatientController {
 
     @PostMapping("/booking")
     public String processBooking(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                 @RequestParam(value = "fixedServiceId", required = false) Long fixedServiceId,
                                  @Valid @ModelAttribute("bookingDto") BookingDto bookingDto,
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes,
                                  Model model) {
         User user = userDetails.getUser();
         Patient patient = patientService.getPatientByUserId(user.getId());
+
+        if (fixedServiceId != null) {
+            try {
+                com.example.case_study_2.entity.ServiceEntity fixedService = serviceManagementService.getServiceById(fixedServiceId);
+                model.addAttribute("fixedService", fixedService);
+            } catch (Exception ignored) {
+            }
+        }
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("patient", patient);

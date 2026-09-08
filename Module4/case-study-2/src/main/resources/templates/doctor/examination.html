@@ -10,12 +10,16 @@
             <aside th:replace="~{fragments/layout :: doctorSidebar}"></aside>
 
             <main>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; flex-wrap:wrap; gap:0.5rem;">
                     <div>
                         <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
                             <i class="fa-solid fa-stethoscope" style="color:var(--primary);"></i> Giao Diện Thăm Khám & Trả Kết Quả
                         </h1>
-                        <p style="color:var(--slate); font-size:0.9rem;">Mã lịch hẹn: <span class="user-badge" th:text="${appointment.appointmentCode}">APT-123456</span> | STT: <strong th:text="'#' + ${appointment.queueNumber}">#1</strong></p>
+                        <p style="color:var(--slate); font-size:0.9rem;">
+                            Số thứ tự: <strong style="color:var(--primary); font-size:1.05rem;" th:text="'#' + ${appointment.queueNumber}">#1</strong> | 
+                            Ngày khám: <strong th:text="${#temporals.format(appointment.appointmentDate, 'dd/MM/yyyy')}">15/05/2026</strong> 
+                            (<span th:text="${#temporals.format(appointment.appointmentTime, 'HH:mm')}">08:30</span>)
+                        </p>
                     </div>
                     <a th:href="@{/doctor/queue}" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-left"></i> Quay lại hàng đợi</a>
                 </div>
@@ -25,10 +29,10 @@
                 <!-- Patient Profile Card -->
                 <div class="card" style="margin-bottom:1.5rem; background:#f8fafc;">
                     <h3 style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:0.75rem;"><i class="fa-solid fa-id-card"></i> Thông tin bệnh nhân đang thăm khám</h3>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem; font-size:0.95rem;">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; font-size:0.95rem;">
                         <div><strong>Họ và tên:</strong> <span th:text="${appointment.patient.fullName}">Trần Văn Nam</span></div>
                         <div><strong>Ngày sinh:</strong> <span th:text="${#temporals.format(appointment.patient.dob, 'dd/MM/yyyy')}">15/05/1998</span></div>
-                        <div><strong>Giới tính:</strong> <span th:text="${appointment.patient.gender.name()}">MALE</span></div>
+                        <div><strong>Giới tính:</strong> <span th:text="${appointment.patient.gender.name() == 'MALE' ? 'Nam' : (appointment.patient.gender.name() == 'FEMALE' ? 'Nữ' : 'Khác')}">Nam</span></div>
                         <div><strong>Số điện thoại:</strong> <span th:text="${appointment.patient.phone}">0909999888</span></div>
                         <div><strong>Dịch vụ chỉ định:</strong> <span style="font-weight:700; color:var(--primary);" th:text="${appointment.service.name}">Khám nội tổng quát</span></div>
                         <div><strong>Địa chỉ:</strong> <span th:text="${appointment.patient.address != null ? appointment.patient.address : 'Chưa cập nhật'}">Hà Nội</span></div>
@@ -44,36 +48,84 @@
                     <form th:action="@{/doctor/examination/{id}(id=${appointment.id})}" th:object="${examinationDto}" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:field="*{appointmentId}">
 
+                        <!-- AI Symptoms & Auto-Diagnosis Section -->
+                        <div style="margin-bottom: 1.75rem; padding: 1.25rem; border-radius: 12px; background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1.5px solid #0284c7; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.08);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                                <label class="form-label" for="symptomsInput" style="font-weight: 800; color: #0369a1; font-size: 1rem; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fa-solid fa-wand-magic-sparkles" style="color: #0284c7;"></i> Các triệu chứng lâm sàng & Trợ lý A.I
+                                </label>
+                                <span class="badge" style="background: #0284c7; color: #ffffff; font-size: 0.8rem; padding: 0.35rem 0.65rem; border-radius: 9999px;">
+                                    <i class="fa-solid fa-robot"></i> Trợ lý Y Tế AI (Miễn Phí)
+                                </span>
+                            </div>
+                            <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.75rem;">
+                                Bác sĩ có thể bổ sung các triệu chứng thăm khám, sau đó nhấn nút <strong>"Chẩn đoán"</strong> để A.I tự động phân tích và điền phác đồ, toa thuốc và lời dặn dò.
+                            </p>
+                            <div style="display: flex; gap: 0.75rem; align-items: stretch; flex-wrap: wrap;">
+                                <div style="flex: 1; min-width: 280px;">
+                                    <textarea id="symptomsInput" class="form-control" rows="3"
+                                              style="background: #ffffff; border: 1.5px solid #93c5fd; font-size: 0.95rem; line-height: 1.5; border-radius: 8px;"
+                                              placeholder="Ví dụ: Sốt cao 39 độ C, đau rát cổ họng khi nuốt, ho nhiều có đờm, mệt mỏi 2 ngày..."
+                                              th:text="${appointment.symptoms != null ? appointment.symptoms : ''}"></textarea>
+                                </div>
+                                <div style="display: flex; flex-direction: column; justify-content: center;">
+                                    <button type="button" id="btnAiDiagnose" class="btn btn-primary"
+                                            style="height: 100%; min-height: 50px; padding: 0.75rem 1.4rem; font-weight: 700; font-size: 0.95rem; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35); display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 8px; cursor: pointer;">
+                                        <i class="fa-solid fa-wand-magic-sparkles" id="aiIcon"></i>
+                                        <span id="aiBtnText">Chẩn đoán</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Status Alert -->
+                            <div id="aiAlert" style="display: none; margin-top: 0.75rem; padding: 0.6rem 0.9rem; border-radius: 8px; font-size: 0.88rem;"></div>
+                        </div>
+
+                        <!-- Diagnosis Field -->
                         <div class="form-group">
-                            <label class="form-label" for="diagnosis">1. Chẩn đoán của bác sĩ *</label>
-                            <textarea id="diagnosis" th:field="*{diagnosis}" class="form-control" rows="3" placeholder="Nhập chẩn đoán lâm sàng chi tiết..." required></textarea>
+                            <label class="form-label" for="diagnosis" style="font-weight: 700; color: var(--dark);">
+                                1. Chẩn đoán của bác sĩ *
+                            </label>
+                            <textarea id="diagnosis" th:field="*{diagnosis}" class="form-control" rows="3" placeholder="Nhập chẩn đoán lâm sàng chi tiết (hoặc để AI điền tự động)..." required></textarea>
                             <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('diagnosis')}" th:errors="*{diagnosis}"></p>
                         </div>
 
+                        <!-- Treatment Plan Field -->
                         <div class="form-group">
-                            <label class="form-label" for="treatmentPlan">2. Hướng điều trị & Phác đồ</label>
-                            <textarea id="treatmentPlan" th:field="*{treatmentPlan}" class="form-control" rows="3" placeholder="Hướng điều trị, theo dõi cận lâm sàng hoặc chuyển tuyến..."></textarea>
+                            <label class="form-label" for="treatmentPlan" style="font-weight: 700; color: var(--dark);">
+                                2. Hướng điều trị & Phác đồ
+                            </label>
+                            <textarea id="treatmentPlan" th:field="*{treatmentPlan}" class="form-control" rows="4" placeholder="Hướng điều trị, phác đồ dinh dưỡng, theo dõi cận lâm sàng..."></textarea>
                         </div>
 
+                        <!-- Prescription Advice Field -->
                         <div class="form-group">
-                            <label class="form-label" for="prescriptionAdvice">3. Toa thuốc khuyên dùng & Liều lượng (Dặn dò tự mua tại nhà thuốc ngoài)</label>
-                            <textarea id="prescriptionAdvice" th:field="*{prescriptionAdvice}" class="form-control" rows="4" placeholder="Tên thuốc, hàm lượng, số lượng, liều dùng (ví dụ: Paracetamol 500mg - Uống 1 viên x 2 lần/ngày)..."></textarea>
+                            <label class="form-label" for="prescriptionAdvice" style="font-weight: 700; color: var(--dark);">
+                                3. Toa thuốc khuyên dùng & Liều lượng (Dặn dò tự mua tại nhà thuốc ngoài)
+                            </label>
+                            <textarea id="prescriptionAdvice" th:field="*{prescriptionAdvice}" class="form-control" rows="5" placeholder="Tên thuốc, hàm lượng, số lượng, liều dùng chi tiết (ví dụ: Paracetamol 500mg - Uống 1 viên x 2 lần/ngày)..."></textarea>
                         </div>
 
+                        <!-- Attachment File Field -->
                         <div class="form-group">
-                            <label class="form-label" for="attachmentFile">4. Đính kèm File/Phiếu kết quả (Xét nghiệm / Siêu âm / X-Quang)</label>
+                            <label class="form-label" for="attachmentFile" style="font-weight: 700; color: var(--dark);">
+                                4. Đính kèm File/Phiếu kết quả (Xét nghiệm / Siêu âm / X-Quang)
+                            </label>
                             <input type="file" id="attachmentFile" name="attachmentFile" class="form-control" accept="image/*,.pdf,.doc,.docx">
                             <div th:if="${existingRecord != null and existingRecord.resultAttachmentUrl != null}" style="margin-top:0.5rem; font-size:0.85rem;">
                                 File hiện tại: <a th:href="@{${existingRecord.resultAttachmentUrl}}" target="_blank">Xem đính kèm</a>
                             </div>
                         </div>
 
+                        <!-- Doctor Notes Field -->
                         <div class="form-group">
-                            <label class="form-label" for="doctorNotes">5. Lời dặn tái khám / Ghi chú khác</label>
-                            <input type="text" id="doctorNotes" th:field="*{doctorNotes}" class="form-control" placeholder="Ví dụ: Tái khám sau 7 ngày hoặc khi sốt cao không hạ...">
+                            <label class="form-label" for="doctorNotes" style="font-weight: 700; color: var(--dark);">
+                                5. Lời dặn tái khám / Ghi chú khác
+                            </label>
+                            <textarea id="doctorNotes" th:field="*{doctorNotes}" class="form-control" rows="3" placeholder="Ví dụ: Tái khám sau 7 ngày hoặc khi sốt cao không hạ..."></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-secondary" style="width:100%; font-size:1.05rem; margin-top:1rem;">
+                        <button type="submit" class="btn btn-secondary" style="width:100%; font-size:1.05rem; margin-top:1.5rem; padding: 0.8rem; font-weight: 700;">
                             <i class="fa-solid fa-file-export"></i> Lưu Kết Quả Khám & Chuyển Thu Ngân Thanh Toán
                         </button>
                     </form>
@@ -83,6 +135,128 @@
     </div>
 
     <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnAi = document.getElementById('btnAiDiagnose');
+        const aiBtnText = document.getElementById('aiBtnText');
+        const aiIcon = document.getElementById('aiIcon');
+        const symptomsInput = document.getElementById('symptomsInput');
+        const aiAlert = document.getElementById('aiAlert');
+
+        const fieldDiagnosis = document.getElementById('diagnosis');
+        const fieldTreatmentPlan = document.getElementById('treatmentPlan');
+        const fieldPrescription = document.getElementById('prescriptionAdvice');
+        const fieldDoctorNotes = document.getElementById('doctorNotes');
+
+        const appointmentId = /*[[${appointment.id}]]*/ 0;
+        const patientName = /*[[${appointment.patient.fullName}]]*/ '';
+        const gender = /*[[${appointment.patient.gender.name()}]]*/ '';
+        const dob = /*[[${appointment.patient.dob}]]*/ '';
+        const serviceName = /*[[${appointment.service.name}]]*/ '';
+
+        let birthYear = dob ? new Date(dob).getFullYear() : 1995;
+        let currentYear = new Date().getFullYear();
+        let age = currentYear - birthYear;
+
+        btnAi.addEventListener('click', async function() {
+            const symptomsText = symptomsInput.value.trim();
+            if (!symptomsText) {
+                showAlert('Vui lòng nhập các triệu chứng của bệnh nhân trước khi yêu cầu AI chẩn đoán!', 'danger');
+                symptomsInput.focus();
+                return;
+            }
+
+            // Set Loading UI
+            btnAi.disabled = true;
+            aiIcon.className = 'fa-solid fa-spinner fa-spin';
+            aiBtnText.textContent = 'A.I đang phân tích...';
+            showAlert('Trợ lý A.I đang đối chiếu triệu chứng lâm sàng và xây dựng phác đồ điều trị...', 'info');
+
+            try {
+                const payload = {
+                    appointmentId: appointmentId,
+                    symptoms: symptomsText,
+                    patientName: patientName,
+                    gender: gender,
+                    age: age,
+                    serviceName: serviceName
+                };
+
+                const res = await fetch('/doctor/api/ai-diagnose', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    throw new Error('Lỗi máy chủ: ' + res.status);
+                }
+
+                const data = await res.json();
+
+                if (data.success) {
+                    // Populate fields with subtle animation
+                    populateWithAnimation(fieldDiagnosis, data.diagnosis);
+                    populateWithAnimation(fieldTreatmentPlan, data.treatmentPlan);
+                    populateWithAnimation(fieldPrescription, data.prescriptionAdvice);
+                    populateWithAnimation(fieldDoctorNotes, data.doctorNotes);
+
+                    let sourceMsg = data.source === 'AI-Generative-Cloud' 
+                        ? 'AI Cloud' 
+                        : 'Hệ thống Chuyên gia Y khoa AI';
+
+                    showAlert(`A.I (${sourceMsg}) đã phân tích thành công và tự động điền các trường Hướng điều trị, Toa thuốc và Lời dặn dò! Bác sĩ có thể tùy chỉnh trước khi lưu.`, 'success');
+                } else {
+                    showAlert(data.message || 'Không thể tạo gợi ý chẩn đoán tự động.', 'danger');
+                }
+            } catch (err) {
+                console.error('AI Diagnose Error:', err);
+                showAlert('Có lỗi khi kết nối tới AI. Vui lòng thử lại hoặc điền trực tiếp bằng tay.', 'danger');
+            } finally {
+                btnAi.disabled = false;
+                aiIcon.className = 'fa-solid fa-wand-magic-sparkles';
+                aiBtnText.textContent = 'Chẩn đoán';
+            }
+        });
+
+        function populateWithAnimation(element, value) {
+            if (!element || !value) return;
+            element.value = value;
+            element.style.transition = 'background-color 0.4s ease, border-color 0.4s ease';
+            element.style.backgroundColor = '#ecfdf5';
+            element.style.borderColor = '#10b981';
+            setTimeout(() => {
+                element.style.backgroundColor = '#ffffff';
+                element.style.borderColor = '#cbd5e1';
+            }, 1800);
+        }
+
+        function showAlert(msg, type) {
+            aiAlert.style.display = 'block';
+            if (type === 'success') {
+                aiAlert.style.background = '#dcfce7';
+                aiAlert.style.color = '#15803d';
+                aiAlert.style.border = '1px solid #86efac';
+                aiAlert.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${msg}`;
+            } else if (type === 'info') {
+                aiAlert.style.background = '#e0f2fe';
+                aiAlert.style.color = '#0369a1';
+                aiAlert.style.border = '1px solid #7dd3fc';
+                aiAlert.innerHTML = `<i class="fa-solid fa-robot"></i> ${msg}`;
+            } else {
+                aiAlert.style.background = '#fee2e2';
+                aiAlert.style.color = '#b91c1c';
+                aiAlert.style.border = '1px solid #fca5a5';
+                aiAlert.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${msg}`;
+            }
+        }
+    });
+    /*]]>*/
+    </script>
 
 </body>
 </html>

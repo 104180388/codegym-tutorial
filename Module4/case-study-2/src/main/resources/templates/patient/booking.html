@@ -32,50 +32,74 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="serviceId">1. Chọn Dịch vụ y tế *</label>
-                            <select id="serviceId" th:field="*{serviceId}" class="form-select" required>
-                                <option value="">-- Chọn 1 trong 7 dịch vụ y tế --</option>
-                                <option th:each="svc : ${services}"
-                                        th:value="${svc.id}"
-                                        th:data-prep="${svc.preparationGuide}"
-                                        th:text="${svc.name} + ' (' + ${#numbers.formatDecimal(svc.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ)'">
-                                </option>
-                            </select>
-                            <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('serviceId')}" th:errors="*{serviceId}"></p>
+                            <label class="form-label" for="serviceId">1. Dịch vụ y tế *</label>
+                            
+                            <!-- Nếu người dùng đã chọn dịch vụ từ trang dịch vụ thì cố định, không cho chọn lại -->
+                            <th:block th:if="${fixedService != null}">
+                                <input type="hidden" id="serviceId" name="serviceId" th:value="${fixedService.id}" th:data-prep="${fixedService.preparationGuide}" />
+                                <input type="hidden" name="fixedServiceId" th:value="${fixedService.id}" />
+                                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.85rem 1.15rem; display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                                    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                                        <span style="font-weight:700; color:var(--dark); font-size:1.05rem;" th:text="${fixedService.name}">Khám Nội Tổng Quát</span>
+                                        <span style="color:var(--primary); font-weight:700;" th:text="'(' + ${#numbers.formatDecimal(fixedService.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ)'">(150.000 VNĐ)</span>
+                                        <span style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; font-size:0.75rem; font-weight:600; padding:0.2rem 0.55rem; border-radius:9999px;">
+                                            <i class="fa-solid fa-lock"></i> Đã chọn từ trang Dịch vụ
+                                        </span>
+                                    </div>
+                                    <a th:href="@{/services}" class="btn btn-outline btn-sm" style="font-size:0.8rem; padding:0.35rem 0.7rem; border-color:#94a3b8; color:var(--slate);">
+                                        <i class="fa-solid fa-arrow-rotate-left"></i> Đổi dịch vụ khác
+                                    </a>
+                                </div>
+                                <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('serviceId')}" th:errors="*{serviceId}"></p>
+                            </th:block>
+
+                            <!-- Nếu vào trực tiếp trang booking thì hiển thị danh sách để chọn -->
+                            <th:block th:unless="${fixedService != null}">
+                                <select id="serviceId" th:field="*{serviceId}" class="form-select" required>
+                                    <option value="">-- Chọn 1 trong các dịch vụ y tế --</option>
+                                    <option th:each="svc : ${services}"
+                                            th:value="${svc.id}"
+                                            th:data-prep="${svc.preparationGuide}"
+                                            th:text="${svc.name} + ' (' + ${#numbers.formatDecimal(svc.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ)'">
+                                    </option>
+                                </select>
+                                <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('serviceId')}" th:errors="*{serviceId}"></p>
+                            </th:block>
                         </div>
 
                         <!-- Preparation guide dynamic alert -->
-                        <div id="prepGuideBox" style="display:none; background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:0.85rem 1rem; border-radius:8px; margin-bottom:1.25rem; font-size:0.9rem;">
+                        <div id="prepGuideBox"
+                             th:style="${fixedService != null and fixedService.preparationGuide != null and !#strings.isEmpty(fixedService.preparationGuide)} ? 'display:block; background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:0.85rem 1rem; border-radius:8px; margin-bottom:1.25rem; font-size:0.9rem;' : 'display:none; background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:0.85rem 1rem; border-radius:8px; margin-bottom:1.25rem; font-size:0.9rem;'">
                             <i class="fa-solid fa-circle-info"></i> <strong>Lưu ý chuẩn bị trước khi khám:</strong>
-                            <div id="prepGuideText" style="margin-top:0.25rem; font-weight:500;"></div>
+                            <div id="prepGuideText" style="margin-top:0.25rem; font-weight:500;" th:text="${fixedService != null ? fixedService.preparationGuide : ''}"></div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="doctorId">2. Chọn Bác sĩ phụ trách *</label>
-                            <select id="doctorId" th:field="*{doctorId}" class="form-select" required>
-                                <option value="">-- Chọn bác sĩ --</option>
-                                <option th:each="doc : ${doctors}"
-                                        th:value="${doc.id}"
-                                        th:text="${doc.user.fullName} + ' (' + ${doc.degree} + ')'">
-                                </option>
-                            </select>
-                            <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('doctorId')}" th:errors="*{doctorId}"></p>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="appointmentDate">3. Chọn Ngày khám (Hôm nay đến 3 ngày tới) *</label>
+                            <label class="form-label" for="appointmentDate">2. Chọn Ngày khám (Hôm nay đến 3 ngày tới) *</label>
                             <input type="date" id="appointmentDate" th:field="*{appointmentDate}" class="form-control"
                                    th:min="${minDate}" th:max="${maxDate}" required>
                             <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('appointmentDate')}" th:errors="*{appointmentDate}"></p>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">4. Chọn Khung giờ khám trống (AJAX Dynamic Slots) *</label>
+                            <label class="form-label">3. Chọn Khung giờ khám *</label>
                             <input type="hidden" id="appointmentTime" th:field="*{appointmentTime}" required>
                             <div id="slotContainer">
-                                <p class="text-slate" style="font-size:0.9rem;">Vui lòng chọn Bác sĩ và Ngày khám ở trên để hiển thị các khung giờ khả dụng.</p>
+                                <p class="text-slate" style="font-size:0.9rem;">Vui lòng chọn Dịch vụ y tế và Ngày khám ở trên để hiển thị các khung giờ khả dụng.</p>
                             </div>
                             <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('appointmentTime')}" th:errors="*{appointmentTime}"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="doctorId">4. Chọn Bác sĩ phụ trách *</label>
+                            <select id="doctorId" th:field="*{doctorId}" class="form-select" required>
+                                <option value="">-- Vui lòng chọn Khung giờ khám trước --</option>
+                                <option th:each="doc : ${doctors}"
+                                        th:value="${doc.id}"
+                                        th:text="${doc.user.fullName} + ' (' + ${doc.degree} + ')'">
+                                </option>
+                            </select>
+                            <p style="color:var(--danger); font-size:0.8rem;" th:if="${#fields.hasErrors('doctorId')}" th:errors="*{doctorId}"></p>
                         </div>
 
                         <div class="form-group">

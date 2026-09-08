@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Bác sĩ - Danh sách lịch hẹn')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: doctorSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-calendar-check" style="color:var(--primary);"></i> Lịch Hẹn Khám Phụ Trách
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">
+                        Tất cả lịch hẹn khám của bệnh nhân đăng ký với <strong><span th:text="${doctor.user.fullName}">BS. Lê Minh Tuấn</span></strong> từ hôm nay đến các ngày tiếp theo.
+                    </p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Stats / Quick Filter Cards -->
+                <div class="grid-cards" style="margin-bottom: 1.75rem;">
+                    <a th:href="@{/doctor/appointments(filter='ALL')}" class="card stat-card" style="text-decoration:none; color:inherit; border: 2px solid transparent;" th:styleappend="${currentFilter == 'ALL' and customDate == null} ? 'border-color:var(--primary); background:#f0fdf4;' : ''">
+                        <div class="stat-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-calendar-days"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${totalCount}">0</div>
+                            <div class="stat-label">Tổng lịch từ hôm nay</div>
+                        </div>
+                    </a>
+
+                    <a th:href="@{/doctor/appointments(filter='TODAY')}" class="card stat-card" style="text-decoration:none; color:inherit; border: 2px solid transparent;" th:styleappend="${currentFilter == 'TODAY'} ? 'border-color:var(--primary); background:#f0fdf4;' : ''">
+                        <div class="stat-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-clock"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${todayCount}">0</div>
+                            <div class="stat-label">Lịch khám hôm nay</div>
+                        </div>
+                    </a>
+
+                    <a th:href="@{/doctor/appointments(filter='TOMORROW')}" class="card stat-card" style="text-decoration:none; color:inherit; border: 2px solid transparent;" th:styleappend="${currentFilter == 'TOMORROW'} ? 'border-color:var(--primary); background:#f0fdf4;' : ''">
+                        <div class="stat-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-calendar-plus"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${tomorrowCount}">0</div>
+                            <div class="stat-label">Lịch khám ngày mai</div>
+                        </div>
+                    </a>
+
+                    <a th:href="@{/doctor/appointments(filter='NEXT_3_DAYS')}" class="card stat-card" style="text-decoration:none; color:inherit; border: 2px solid transparent;" th:styleappend="${currentFilter == 'NEXT_3_DAYS'} ? 'border-color:var(--primary); background:#f0fdf4;' : ''">
+                        <div class="stat-icon" style="background:#f3e8ff; color:#9333ea;"><i class="fa-solid fa-calendar-week"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${futureCount}">0</div>
+                            <div class="stat-label">Các ngày tiếp theo</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Filter Form Bar -->
+                <div class="card" style="padding: 1rem 1.25rem; margin-bottom: 1.5rem; background: #f8fafc; border: 1px solid var(--border);">
+                    <form th:action="@{/doctor/appointments}" method="get" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+                        <input type="hidden" name="filter" th:value="${currentFilter}" />
+                        
+                        <div>
+                            <label class="form-label" style="font-size: 0.85rem; margin-bottom: 0.3rem;" for="customDate">Chọn ngày cụ thể:</label>
+                            <input type="date" id="customDate" name="date" class="form-control" style="padding: 0.45rem 0.75rem; font-size: 0.9rem;"
+                                   th:value="${customDate != null ? customDate : ''}"
+                                   th:min="${today}">
+                        </div>
+
+                        <div>
+                            <label class="form-label" style="font-size: 0.85rem; margin-bottom: 0.3rem;" for="status">Trạng thái lịch hẹn:</label>
+                            <select id="status" name="status" class="form-select" style="padding: 0.45rem 0.75rem; font-size: 0.9rem;">
+                                <option value="ALL" th:selected="${currentStatus == null or currentStatus == 'ALL'}">-- Tất cả trạng thái --</option>
+                                <option value="PENDING" th:selected="${currentStatus == 'PENDING'}">Chờ duyệt (PENDING)</option>
+                                <option value="CONFIRMED" th:selected="${currentStatus == 'CONFIRMED'}">Đã duyệt (CONFIRMED)</option>
+                                <option value="CHECKED_IN" th:selected="${currentStatus == 'CHECKED_IN'}">Đã tiếp đón (CHECKED_IN)</option>
+                                <option value="IN_PROGRESS" th:selected="${currentStatus == 'IN_PROGRESS'}">Đang khám (IN_PROGRESS)</option>
+                                <option value="COMPLETED" th:selected="${currentStatus == 'COMPLETED'}">Đã hoàn thành (COMPLETED)</option>
+                                <option value="CANCELLED" th:selected="${currentStatus == 'CANCELLED'}">Đã hủy (CANCELLED)</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.55rem 1rem;">
+                                <i class="fa-solid fa-filter"></i> Lọc
+                            </button>
+                            <a th:href="@{/doctor/appointments}" class="btn btn-outline btn-sm" style="padding: 0.55rem 0.85rem;">
+                                <i class="fa-solid fa-rotate-left"></i> Đặt lại
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Appointments Table -->
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                        <h3 style="font-size:1.1rem; font-weight:700; color:var(--dark); margin:0;">
+                            <i class="fa-solid fa-list-check" style="color:var(--primary);"></i> 
+                            Danh Sách Lịch Hẹn (<span th:text="${#lists.size(appointments)}">0</span>)
+                        </h3>
+                        <div style="font-size:0.85rem; color:var(--slate);">
+                            Hiển thị lịch từ <strong th:text="${#temporals.format(today, 'dd/MM/yyyy')}">08/09/2026</strong> trở đi
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ngày & Giờ Khám</th>
+                                    <th>Mã Lịch Hẹn</th>
+                                    <th>Bệnh Nhân</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Dịch Vụ Y Tế</th>
+                                    <th>Triệu Chứng / Ghi Chú</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(appointments)}">
+                                    <td colspan="8" style="text-align:center; color:var(--slate); padding:2.5rem;">
+                                        <i class="fa-regular fa-calendar-xmark" style="font-size:2rem; color:#cbd5e1; margin-bottom:0.5rem; display:block;"></i>
+                                        Không tìm thấy lịch hẹn khám nào phù hợp với bộ lọc.
+                                    </td>
+                                </tr>
+                                <tr th:each="app : ${appointments}">
+                                    <td>
+                                        <div>
+                                            <span th:if="${app.appointmentDate.isEqual(today)}" class="badge" style="background:#dcfce7; color:#15803d; font-weight:700; font-size:0.75rem; margin-bottom:0.2rem; display:inline-block;">
+                                                <i class="fa-solid fa-bell"></i> HÔM NAY
+                                            </span>
+                                            <span th:if="${app.appointmentDate.isEqual(tomorrow)}" class="badge" style="background:#fef3c7; color:#b45309; font-weight:700; font-size:0.75rem; margin-bottom:0.2rem; display:inline-block;">
+                                                NGÀY MAI
+                                            </span>
+                                            <span th:if="${app.appointmentDate.isAfter(tomorrow)}" class="badge" style="background:#f1f5f9; color:#475569; font-size:0.75rem; margin-bottom:0.2rem; display:inline-block;">
+                                                SẮP TỚI
+                                            </span>
+                                        </div>
+                                        <div style="font-weight:700; color:var(--dark);" th:text="${#temporals.format(app.appointmentDate, 'EEEE, dd/MM/yyyy')}">15/05/2026</div>
+                                        <div style="font-weight:600; color:var(--primary); font-size:0.9rem;">
+                                            <i class="fa-regular fa-clock"></i> <span th:text="${#temporals.format(app.appointmentTime, 'HH:mm')}">08:30</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight:700; color:var(--dark);" th:text="${app.patient.fullName}">Trần Văn Nam</div>
+                                        <div style="font-size:0.8rem; color:var(--slate);">
+                                            Năm sinh: <span th:text="${#temporals.format(app.patient.dob, 'yyyy')}">1998</span> | 
+                                            <span th:text="${app.patient.gender.name() == 'MALE' ? 'Nam' : (app.patient.gender.name() == 'FEMALE' ? 'Nữ' : 'Khác')}">Nam</span>
+                                        </div>
+                                    </td>
+                                    <td th:text="${app.patient.phone}">0909999888</td>
+                                    <td>
+                                        <span style="font-weight:600;" th:text="${app.service.name}">Khám Nội Tổng Quát</span>
+                                    </td>
+                                    <td style="font-size:0.85rem; color:var(--slate); max-width:200px;">
+                                        <span th:text="${app.symptoms != null and !app.symptoms.isEmpty() ? app.symptoms : 'Không có ghi chú'}">Đau đầu, sốt nhẹ...</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.name()}">
+                                            PENDING
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div th:if="${app.status.name() == 'CHECKED_IN' or app.status.name() == 'IN_PROGRESS'}">
+                                            <a th:href="@{/doctor/examination/{id}(id=${app.id})}" class="btn btn-primary btn-sm" style="font-size:0.82rem; padding:0.35rem 0.65rem;">
+                                                <i class="fa-solid fa-stethoscope"></i> Khám bệnh
+                                            </a>
+                                        </div>
+                                        <div th:if="${app.status.name() == 'COMPLETED'}">
+                                            <span class="badge badge-success" style="font-size:0.8rem;">
+                                                <i class="fa-solid fa-circle-check"></i> Đã khám xong
+                                            </span>
+                                        </div>
+                                        <div th:if="${app.status.name() == 'PENDING' or app.status.name() == 'CONFIRMED'}">
+                                            <span style="font-size:0.82rem; color:var(--slate); font-style:italic;">
+                                                Chờ tiếp đón
+                                            </span>
+                                        </div>
+                                        <div th:if="${app.status.name() == 'CANCELLED'}">
+                                            <span style="font-size:0.82rem; color:var(--danger); font-style:italic;">
+                                                Đã hủy
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

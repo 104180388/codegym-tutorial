@@ -41,21 +41,93 @@ public class DoctorController {
     @Autowired
     private ExaminationService examinationService;
 
+    @Autowired
+    private com.example.case_study_2.service.AiDiagnosisService aiDiagnosisService;
+
     @GetMapping("/dashboard")
     public String dashboard(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
+        java.time.LocalDate today = java.time.LocalDate.now();
+        List<Appointment> allFromToday = appointmentService.getDoctorAppointmentsFromDate(doctor.getId(), today);
         List<Appointment> todayApps = appointmentService.getDoctorAppointmentsForToday(doctor.getId());
 
         long waitingCount = todayApps.stream().filter(a -> a.getStatus() == AppointmentStatus.CHECKED_IN).count();
         long inProgressCount = todayApps.stream().filter(a -> a.getStatus() == AppointmentStatus.IN_PROGRESS).count();
         long completedCount = todayApps.stream().filter(a -> a.getStatus() == AppointmentStatus.COMPLETED || a.getStatus() == AppointmentStatus.AWAITING_PAYMENT).count();
+        long totalUpcomingCount = allFromToday.size();
 
         model.addAttribute("doctor", doctor);
         model.addAttribute("waitingCount", waitingCount);
         model.addAttribute("inProgressCount", inProgressCount);
         model.addAttribute("completedCount", completedCount);
+        model.addAttribute("totalUpcomingCount", totalUpcomingCount);
+        model.addAttribute("upcomingAppointments", allFromToday);
         model.addAttribute("schedules", doctorService.getDoctorSchedules(doctor.getId()));
+        model.addAttribute("today", today);
         return "doctor/dashboard";
+    }
+
+    @GetMapping("/appointments")
+    public String appointments(@AuthenticationPrincipal CustomUserDetails userDetails,
+                               @RequestParam(value = "filter", required = false, defaultValue = "ALL") String filter,
+                               @RequestParam(value = "date", required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate customDate,
+                               @RequestParam(value = "status", required = false) String statusStr,
+                               Model model) {
+        Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalDate tomorrow = today.plusDays(1);
+
+        List<Appointment> allFromToday = appointmentService.getDoctorAppointmentsFromDate(doctor.getId(), today);
+
+        long todayCount = allFromToday.stream().filter(a -> a.getAppointmentDate().isEqual(today)).count();
+        long tomorrowCount = allFromToday.stream().filter(a -> a.getAppointmentDate().isEqual(tomorrow)).count();
+        long futureCount = allFromToday.stream().filter(a -> a.getAppointmentDate().isAfter(tomorrow)).count();
+        long totalCount = allFromToday.size();
+
+        List<Appointment> filtered = allFromToday;
+
+        if (customDate != null) {
+            filtered = filtered.stream()
+                    .filter(a -> a.getAppointmentDate().isEqual(customDate))
+                    .collect(java.util.stream.Collectors.toList());
+        } else if ("TODAY".equalsIgnoreCase(filter)) {
+            filtered = filtered.stream()
+                    .filter(a -> a.getAppointmentDate().isEqual(today))
+                    .collect(java.util.stream.Collectors.toList());
+        } else if ("TOMORROW".equalsIgnoreCase(filter)) {
+            filtered = filtered.stream()
+                    .filter(a -> a.getAppointmentDate().isEqual(tomorrow))
+                    .collect(java.util.stream.Collectors.toList());
+        } else if ("NEXT_3_DAYS".equalsIgnoreCase(filter)) {
+            java.time.LocalDate plus3 = today.plusDays(3);
+            filtered = filtered.stream()
+                    .filter(a -> !a.getAppointmentDate().isAfter(plus3))
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        if (statusStr != null && !statusStr.trim().isEmpty() && !"ALL".equalsIgnoreCase(statusStr)) {
+            try {
+                AppointmentStatus status = AppointmentStatus.valueOf(statusStr);
+                filtered = filtered.stream()
+                        .filter(a -> a.getStatus() == status)
+                        .collect(java.util.stream.Collectors.toList());
+            } catch (Exception ignored) {
+            }
+        }
+
+        model.addAttribute("doctor", doctor);
+        model.addAttribute("appointments", filtered);
+        model.addAttribute("today", today);
+        model.addAttribute("tomorrow", tomorrow);
+        model.addAttribute("todayCount", todayCount);
+        model.addAttribute("tomorrowCount", tomorrowCount);
+        model.addAttribute("futureCount", futureCount);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("currentFilter", filter);
+        model.addAttribute("currentStatus", statusStr);
+        model.addAttribute("customDate", customDate);
+
+        return "doctor/appointments";
     }
 
     @GetMapping("/schedule")
@@ -157,5 +229,13 @@ public class DoctorController {
         doctorService.updateDoctorProfile(doctor.getId(), fullName, email, phone, degree, experienceYears, bio);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin chuyên môn thành công!");
         return "redirect:/doctor/profile";
+    }
+
+    @PostMapping("/api/ai-diagnose")
+    @ResponseBody
+    public org.springframework.http.ResponseEntity<com.example.case_study_2.dto.AiDiagnoseResponseDto> aiDiagnose(
+            @RequestBody com.example.case_study_2.dto.AiDiagnoseRequestDto request) {
+        com.example.case_study_2.dto.AiDiagnoseResponseDto response = aiDiagnosisService.generateDiagnosis(request);
+        return org.springframework.http.ResponseEntity.ok(response);
     }
 }

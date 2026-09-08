@@ -15,7 +15,7 @@
                         <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
                             <i class="fa-solid fa-calendar-check" style="color:var(--primary);"></i> Lịch Hẹn Cá Nhân
                         </h1>
-                        <p style="color:var(--slate); font-size:0.9rem;">Theo dõi trạng thái lịch khám và mã số hẹn.</p>
+                        <p style="color:var(--slate); font-size:0.9rem;">Theo dõi trạng thái và thời gian các ca khám bệnh của bạn.</p>
                     </div>
                     <a th:href="@{/patient/booking}" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Đặt lịch mới</a>
                 </div>
@@ -26,21 +26,18 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Mã lịch hẹn</th>
                                 <th>Dịch vụ khám</th>
                                 <th>Bác sĩ</th>
                                 <th>Ngày & Giờ</th>
-                                <th>STT</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:if="${#lists.isEmpty(appointments)}">
-                                <td colspan="7" style="text-align:center; color:var(--slate); padding:2rem;">Bạn chưa có lịch hẹn khám nào.</td>
+                                <td colspan="5" style="text-align:center; color:var(--slate); padding:2rem;">Bạn chưa có lịch hẹn khám nào đang chờ hoặc đã hoàn thành.</td>
                             </tr>
                             <tr th:each="app : ${appointments}">
-                                <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
                                 <td style="font-weight:700;" th:text="${app.service.name}">Khám nội tổng quát</td>
                                 <td th:text="${app.doctor.user.fullName}">BS. Lê Minh Tuấn</td>
                                 <td>
@@ -48,11 +45,14 @@
                                     <div style="font-size:0.85rem; color:var(--slate);" th:text="${#temporals.format(app.appointmentTime, 'HH:mm')}">08:30</div>
                                 </td>
                                 <td>
-                                    <span th:if="${app.queueNumber != null}" style="font-size:1.1rem; font-weight:800; color:var(--primary);" th:text="'#' + ${app.queueNumber}">#1</span>
-                                    <span th:if="${app.queueNumber == null}" class="text-slate" style="font-size:0.85rem;">Chưa tiếp đón</span>
-                                </td>
-                                <td>
-                                    <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.name()}">PENDING</span>
+                                    <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}">
+                                        <span th:if="${app.status.name() == 'PENDING'}">Đang chờ duyệt</span>
+                                        <span th:if="${app.status.name() == 'CONFIRMED'}">Đã xác nhận</span>
+                                        <span th:if="${app.status.name() == 'CHECKED_IN'}">Đã tiếp đón</span>
+                                        <span th:if="${app.status.name() == 'IN_PROGRESS'}">Đang khám</span>
+                                        <span th:if="${app.status.name() == 'AWAITING_PAYMENT'}">Chờ thanh toán</span>
+                                        <span th:if="${app.status.name() == 'COMPLETED'}">Đã hoàn thành</span>
+                                    </span>
                                 </td>
                                 <td>
                                     <form th:if="${app.status.name() == 'PENDING' or app.status.name() == 'CONFIRMED'}"

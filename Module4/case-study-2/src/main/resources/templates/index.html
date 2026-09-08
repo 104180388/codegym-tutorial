@@ -18,127 +18,74 @@
         <div th:replace="~{fragments/layout :: alerts}"></div>
 
         <!-- 1. TIN TỨC & SỰ KIỆN SECTION -->
+        <!-- 1. TIN TỨC & SỰ KIỆN SECTION -->
         <section class="news-section">
             <div class="news-header">
                 <div>
                     <span class="news-badge-tag">TIN TỨC & SỰ KIỆN</span>
-                    <h2 class="news-header-title">Tin tức</h2>
+                    <h2 class="news-header-title">Tin tức y tế nổi bật</h2>
                 </div>
-                <ul class="news-nav-tabs">
-                    <li><a href="#" class="news-nav-tab active">Tin tức mới nhất</a></li>
-                    <li><a href="#" class="news-nav-tab">Đào tạo, chỉ đạo tuyến</a></li>
-                    <li><a href="#" class="news-nav-tab">Y học thường thức</a></li>
-                    <li><a href="#" class="news-nav-tab">Bài viết chuyên môn</a></li>
-                    <li><a href="#" class="news-nav-tab">Tin hoạt động Bệnh viện</a></li>
-                </ul>
+                <div style="display:flex; align-items:center; gap:1rem;">
+                    <a th:href="@{/news}" class="btn btn-outline btn-sm" style="border-radius:20px;">
+                        <i class="fa-solid fa-newspaper"></i> Xem tất cả tin tức <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
             </div>
 
             <!-- 6 News Cards Grid (2 rows x 3 columns) -->
             <div class="news-grid">
-                <!-- Card 1 (Hero Overlay Style) -->
-                <a href="#" class="news-card">
+                <a th:each="n : ${latestNews}" th:href="@{'/news/' + ${n.id}}" class="news-card">
                     <div class="news-card-img-wrap">
-                        <img th:src="@{/images/news_conference_medical_1788368970735.jpg}" alt="Tin tức" class="news-card-img">
+                        <img th:src="${n.coverImage}"
+                             th:alt="${n.title}"
+                             class="news-card-img"
+                             onerror="this.onerror=null; this.src='/images/services/default-service.jpg';"
+                             loading="lazy">
                     </div>
                     <div class="news-card-body">
-                        <h3 class="news-card-title">Khi tình yêu thương hóa thân vào nhịp đập sự sống</h3>
-                        <span class="news-card-date">28/08/2026</span>
-                    </div>
-                </a>
-
-                <!-- Card 2 -->
-                <a href="#" class="news-card">
-                    <div class="news-card-img-wrap">
-                        <img th:src="@{/images/news_conference_medical_1788368970735.jpg}" alt="Tin tức" class="news-card-img">
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">Phòng khám ra mắt Mạng lưới Văn phòng, hướng tới quản trị chuyên nghiệp, hiệu quả</h3>
-                        <span class="news-card-date">28/08/2026</span>
-                    </div>
-                </a>
-
-                <!-- Card 3 -->
-                <a href="#" class="news-card">
-                    <div class="news-card-img-wrap">
-                        <img th:src="@{/images/surgery_team_medical_1788368990598.jpg}" alt="Tin tức" class="news-card-img">
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">Phẫu thuật thành công cứu sống người bệnh 97 tuổi mắc nhiều bệnh lý nặng</h3>
-                        <span class="news-card-date">28/08/2026</span>
-                    </div>
-                </a>
-
-                <!-- Card 4 -->
-                <a href="#" class="news-card">
-                    <div class="news-card-img-wrap">
-                        <img th:src="@{/images/ct_scan_hospital_room_1788369029007.jpg}" alt="Tin tức" class="news-card-img">
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">Phòng khám đảm bảo khám, chữa bệnh liên tục, an toàn trong nghỉ lễ Quốc khánh 2/9</h3>
-                        <span class="news-card-date">27/08/2026</span>
-                    </div>
-                </a>
-
-                <!-- Card 5 -->
-                <a href="#" class="news-card">
-                    <div class="news-card-img-wrap">
-                        <img th:src="@{/images/news_conference_medical_1788368970735.jpg}" alt="Tin tức" class="news-card-img">
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">Một quyết định, một sự sống: Lời hiệu triệu từ trái tim của Giám đốc phòng khám về đăng ký hiến mô, tạng</h3>
-                        <span class="news-card-date">27/08/2026</span>
-                    </div>
-                </a>
-
-                <!-- Card 6 -->
-                <a href="#" class="news-card">
-                    <div class="news-card-img-wrap">
-                        <img th:src="@{/images/surgery_team_medical_1788368990598.jpg}" alt="Tin tức" class="news-card-img">
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">Nơi những trái tim tiếp tục nhịp đập: Bản hùng ca của sự sống và lòng trắc ẩn</h3>
-                        <span class="news-card-date">27/08/2026</span>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                                <span class="badge" style="background:#e0f2fe; color:#0369a1; font-size:0.75rem; padding:0.15rem 0.5rem; border-radius:4px; font-weight:600;" th:text="${n.source}">Tuổi Trẻ</span>
+                                <span class="news-card-date" th:text="${n.publishedTime}">08/09/2026</span>
+                            </div>
+                            <h3 class="news-card-title" th:text="${n.title}">Tiêu đề bài viết</h3>
+                        </div>
+                        <div style="margin-top:0.5rem; font-size:0.82rem; color:var(--slate); display:flex; align-items:center; justify-content:space-between;">
+                            <span><i class="fa-regular fa-user"></i> <span th:text="${n.author}">Tác giả</span></span>
+                            <span style="color:var(--primary); font-weight:600;">Đọc tiếp <i class="fa-solid fa-chevron-right" style="font-size:0.75rem;"></i></span>
+                        </div>
                     </div>
                 </a>
             </div>
         </section>
 
         <!-- 2. SỰ KIỆN NỔI BẬT SECTION -->
-        <section class="events-container-section">
-            <span class="news-badge-tag">TIN TỨC & SỰ KIỆN</span>
-            <h2 class="events-header-title">Sự kiện nổi bật</h2>
+        <section class="events-container-section" th:if="${featuredEvents != null and !#lists.isEmpty(featuredEvents)}">
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1.5rem;">
+                <div>
+                    <span class="news-badge-tag">TIÊU ĐIỂM Y TẾ</span>
+                    <h2 class="events-header-title">Sự kiện & Chuyên đề</h2>
+                </div>
+                <a th:href="@{/news}" style="color:var(--primary); font-weight:600; font-size:0.9rem; text-decoration:none;">
+                    Xem thêm <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
 
             <div class="events-grid">
-                <!-- Event Card 1 (Hero Overlay Style) -->
-                <a href="#" class="news-card">
+                <a th:each="e : ${featuredEvents}" th:href="@{'/news/' + ${e.id}}" class="news-card">
                     <div class="news-card-img-wrap" style="height: 220px;">
-                        <img th:src="@{/images/surgery_team_medical_1788368990598.jpg}" alt="Sự kiện" class="news-card-img">
+                        <img th:src="${e.coverImage}"
+                             th:alt="${e.title}"
+                             class="news-card-img"
+                             onerror="this.onerror=null; this.src='/images/services/default-service.jpg';"
+                             loading="lazy">
                     </div>
                     <div class="news-card-body">
-                        <h3 class="news-card-title">Hôn mê vì chảy máu tiểu não, người đàn ông vượt hơn 1.000 km từ Lào về phòng khám giành lại sự sống</h3>
-                        <span class="news-card-date">04/08/2026</span>
-                    </div>
-                </a>
-
-                <!-- Event Card 2 -->
-                <a href="#" class="news-card">
-                    <div class="news-card-img-wrap" style="height: 220px;">
-                        <img th:src="@{/images/surgery_team_medical_1788368990598.jpg}" alt="Sự kiện" class="news-card-img">
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">Chuyến xe 5 giờ sáng xuyên màn mưa và giọt nước mắt nghẹn ngào của người cha ở Ninh Bình</h3>
-                        <span class="news-card-date">29/07/2026</span>
-                    </div>
-                </a>
-
-                <!-- Event Card 3 -->
-                <a href="#" class="news-card">
-                    <div class="news-card-img-wrap" style="height: 220px;">
-                        <img th:src="@{/images/ct_scan_hospital_room_1788369029007.jpg}" alt="Sự kiện" class="news-card-img">
-                    </div>
-                    <div class="news-card-body">
-                        <h3 class="news-card-title">Phòng khám cơ sở Ninh Bình: Đưa y tế tuyến cuối, chất lượng cao đến gần với người dân</h3>
-                        <span class="news-card-date">24/07/2026</span>
+                        <div>
+                            <span class="news-card-date" th:text="${e.publishedTime}">07/09/2026</span>
+                            <h3 class="news-card-title" style="margin-top:0.35rem;" th:text="${e.title}">Tiêu đề sự kiện</h3>
+                        </div>
+                        <p style="font-size:0.85rem; color:var(--slate); margin-top:0.4rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" th:text="${e.summary}"></p>
                     </div>
                 </a>
             </div>
