@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Lễ tân - Dashboard')}"></head>
+<head th:replace="~{fragments/layout :: head('Lễ tân - Tổng quan')}"></head>
 <body>
 
     <nav th:replace="~{fragments/layout :: navbar}"></nav>
@@ -12,7 +12,7 @@
             <main>
                 <div style="margin-bottom: 1.5rem;">
                     <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
-                        <i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Dashboard Lễ Tân & Thu Ngân
+                        <i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Tổng Quan Lễ Tân & Thu Ngân
                     </h1>
                     <p style="color:var(--slate); font-size:0.9rem;">Tổng quan hoạt động tiếp đón, duyệt lịch hẹn và thu tiền dịch vụ trong ngày.</p>
                 </div>
@@ -20,7 +20,7 @@
                 <div th:replace="~{fragments/layout :: alerts}"></div>
 
                 <div class="grid-cards" style="margin-bottom:2rem;">
-                    <div class="card stat-card">
+                    <div class="card stat-card" style="cursor:pointer;" onclick="location.href='/staff/patients'">
                         <div class="stat-icon" style="background:#fef3c7; color:#b45309;"><i class="fa-solid fa-hourglass-half"></i></div>
                         <div>
                             <div class="stat-value" th:text="${pendingCount}">0</div>
@@ -57,7 +57,7 @@
                     <div class="card">
                         <h3 class="card-title"><i class="fa-solid fa-door-open" style="color:var(--primary);"></i> Tiếp Đón Nhanh</h3>
                         <p style="font-size:0.85rem; color:var(--slate); margin-bottom:1rem;">Cấp số thứ tự khám cho bệnh nhân hẹn trước hoặc khách vãng lai.</p>
-                        <a th:href="@{/staff/checkin}" class="btn btn-primary btn-sm"><i class="fa-solid fa-right-to-bracket"></i> Mở Trang Check-in</a>
+                        <a th:href="@{/staff/checkin}" class="btn btn-primary btn-sm"><i class="fa-solid fa-right-to-bracket"></i> Mở Trang Tiếp Đón</a>
                     </div>
 
                     <div class="card">

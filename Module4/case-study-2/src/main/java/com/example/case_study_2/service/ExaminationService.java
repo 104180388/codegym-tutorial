@@ -22,6 +22,9 @@ public class ExaminationService {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
+    @Autowired
+    private com.example.case_study_2.repository.PatientRepository patientRepository;
+
     public Optional<ExaminationRecord> getRecordByAppointmentId(Long appointmentId) {
         return recordRepository.findByAppointmentId(appointmentId);
     }
@@ -33,6 +36,17 @@ public class ExaminationService {
 
     public List<ExaminationRecord> getMedicalHistoryByPatientId(Long patientId) {
         return recordRepository.findByPatientId(patientId);
+    }
+
+    public List<com.example.case_study_2.entity.Patient> getPatientsExaminedByDoctor(Long doctorId, String keyword) {
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            return patientRepository.searchPatientsExaminedByDoctor(doctorId, keyword.trim());
+        }
+        return patientRepository.findPatientsExaminedByDoctor(doctorId);
+    }
+
+    public List<ExaminationRecord> getRecordsByDoctorAndPatient(Long doctorId, Long patientId) {
+        return recordRepository.findByDoctorIdAndPatientId(doctorId, patientId);
     }
 
     @Transactional

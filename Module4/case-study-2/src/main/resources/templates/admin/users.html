@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Admin - Quản lý tài khoản')}"></head>
+<head th:replace="~{fragments/layout :: head('Quản trị - Quản lý tài khoản')}"></head>
 <body>
 
     <nav th:replace="~{fragments/layout :: navbar}"></nav>
@@ -31,7 +31,7 @@
                                 <th>Họ và tên</th>
                                 <th>Email</th>
                                 <th>Số điện thoại</th>
-                                <th>Vai trò (Role)</th>
+                                <th>Vai trò</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -46,7 +46,7 @@
                                 <td>
                                     <span class="badge"
                                           th:classappend="${user.role.name == 'ROLE_ADMIN'} ? 'badge-cancelled' : (${user.role.name == 'ROLE_DOCTOR'} ? 'badge-confirmed' : (${user.role.name == 'ROLE_STAFF'} ? 'badge-awaiting-payment' : 'badge-completed'))"
-                                          th:text="${user.role.name}">ROLE_ADMIN</span>
+                                          th:text="${user.role.description != null ? user.role.description : user.role.name}">Quản trị viên</span>
                                 </td>
                                 <td>
                                     <span th:if="${user.isActive}" class="badge badge-completed">HOẠT ĐỘNG</span>

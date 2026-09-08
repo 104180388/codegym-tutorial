@@ -83,24 +83,24 @@
                                 <div class="form-group">
                                     <label class="form-label" for="paymentMethod">Hình thức thanh toán *</label>
                                     <select id="paymentMethod" name="paymentMethod" class="form-select" required>
-                                        <option value="CASH" th:selected="${invoice.paymentMethod.name() == 'CASH'}">Tiền mặt (CASH)</option>
-                                        <option value="BANK_TRANSFER" th:selected="${invoice.paymentMethod.name() == 'BANK_TRANSFER'}">Chuyển khoản Ngân hàng (BANK_TRANSFER)</option>
-                                        <option value="VNPAY" th:selected="${invoice.paymentMethod.name() == 'VNPAY'}">Ví VNPay (VNPAY)</option>
-                                        <option value="MOMO" th:selected="${invoice.paymentMethod.name() == 'MOMO'}">Ví MoMo (MOMO)</option>
+                                        <option value="CASH" th:selected="${invoice.paymentMethod.name() == 'CASH'}">Tiền mặt</option>
+                                        <option value="BANK_TRANSFER" th:selected="${invoice.paymentMethod.name() == 'BANK_TRANSFER'}">Chuyển khoản Ngân hàng</option>
+                                        <option value="VNPAY" th:selected="${invoice.paymentMethod.name() == 'VNPAY'}">Ví điện tử VNPay</option>
+                                        <option value="MOMO" th:selected="${invoice.paymentMethod.name() == 'MOMO'}">Ví điện tử MoMo</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Trạng thái hiện tại</label>
                                     <div>
                                         <span class="badge" th:classappend="${invoice.paymentStatus.name() == 'PAID'} ? 'badge-completed' : 'badge-pending'"
-                                              th:text="${invoice.paymentStatus.name()}">UNPAID</span>
+                                              th:text="${invoice.paymentStatus.displayName}">Chưa thanh toán</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <button type="submit" class="btn btn-secondary" style="width:100%; font-size:1.1rem;" th:disabled="${invoice.paymentStatus.name() == 'PAID'}">
-                            <i class="fa-solid fa-check-double"></i> Xác Nhận Đã Thu Tiền & Completing Appointment
+                            <i class="fa-solid fa-check-double"></i> Xác Nhận Đã Thu Tiền & Hoàn Tất Ca Khám
                         </button>
                     </form>
                 </div>

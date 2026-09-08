@@ -45,14 +45,8 @@
                                     <div style="font-size:0.85rem; color:var(--slate);" th:text="${#temporals.format(app.appointmentTime, 'HH:mm')}">08:30</div>
                                 </td>
                                 <td>
-                                    <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}">
-                                        <span th:if="${app.status.name() == 'PENDING'}">Đang chờ duyệt</span>
-                                        <span th:if="${app.status.name() == 'CONFIRMED'}">Đã xác nhận</span>
-                                        <span th:if="${app.status.name() == 'CHECKED_IN'}">Đã tiếp đón</span>
-                                        <span th:if="${app.status.name() == 'IN_PROGRESS'}">Đang khám</span>
-                                        <span th:if="${app.status.name() == 'AWAITING_PAYMENT'}">Chờ thanh toán</span>
-                                        <span th:if="${app.status.name() == 'COMPLETED'}">Đã hoàn thành</span>
-                                    </span>
+                                    <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}"
+                                          th:text="${app.status.displayName}">Đang chờ duyệt</span>
                                 </td>
                                 <td>
                                     <form th:if="${app.status.name() == 'PENDING' or app.status.name() == 'CONFIRMED'}"

@@ -54,78 +54,109 @@ public class DoctorController {
         long waitingCount = todayApps.stream().filter(a -> a.getStatus() == AppointmentStatus.CHECKED_IN).count();
         long inProgressCount = todayApps.stream().filter(a -> a.getStatus() == AppointmentStatus.IN_PROGRESS).count();
         long completedCount = todayApps.stream().filter(a -> a.getStatus() == AppointmentStatus.COMPLETED || a.getStatus() == AppointmentStatus.AWAITING_PAYMENT).count();
-        long totalUpcomingCount = allFromToday.size();
+        long totalPatientsExamined = examinationService.getPatientsExaminedByDoctor(doctor.getId(), null).size();
+
+        List<Appointment> upcomingUnexamined = allFromToday.stream()
+                .filter(a -> a.getStatus() != AppointmentStatus.COMPLETED 
+                          && a.getStatus() != AppointmentStatus.AWAITING_PAYMENT 
+                          && a.getStatus() != AppointmentStatus.CANCELLED)
+                .collect(java.util.stream.Collectors.toList());
 
         model.addAttribute("doctor", doctor);
         model.addAttribute("waitingCount", waitingCount);
         model.addAttribute("inProgressCount", inProgressCount);
         model.addAttribute("completedCount", completedCount);
-        model.addAttribute("totalUpcomingCount", totalUpcomingCount);
-        model.addAttribute("upcomingAppointments", allFromToday);
+        model.addAttribute("totalPatientsExamined", totalPatientsExamined);
+        model.addAttribute("upcomingAppointments", upcomingUnexamined);
         model.addAttribute("schedules", doctorService.getDoctorSchedules(doctor.getId()));
         model.addAttribute("today", today);
         return "doctor/dashboard";
     }
 
+    public static class DoctorPatientDto {
+        private com.example.case_study_2.entity.Patient patient;
+        private List<ExaminationRecord> records;
+
+        public DoctorPatientDto(com.example.case_study_2.entity.Patient patient, List<ExaminationRecord> records) {
+            this.patient = patient;
+            this.records = records;
+        }
+
+        public com.example.case_study_2.entity.Patient getPatient() {
+            return patient;
+        }
+
+        public List<ExaminationRecord> getRecords() {
+            return records;
+        }
+    }
+
+    @GetMapping("/patients")
+    public String patients(@AuthenticationPrincipal CustomUserDetails userDetails,
+                           @RequestParam(value = "keyword", required = false) String keyword,
+                           Model model) {
+        Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
+        List<com.example.case_study_2.entity.Patient> patients = examinationService.getPatientsExaminedByDoctor(doctor.getId(), keyword);
+
+        List<DoctorPatientDto> patientList = new java.util.ArrayList<>();
+        for (com.example.case_study_2.entity.Patient p : patients) {
+            List<ExaminationRecord> recs = examinationService.getRecordsByDoctorAndPatient(doctor.getId(), p.getId());
+            patientList.add(new DoctorPatientDto(p, recs));
+        }
+
+        model.addAttribute("doctor", doctor);
+        model.addAttribute("patientList", patientList);
+        model.addAttribute("keyword", keyword);
+        return "doctor/patients";
+    }
+
+    @GetMapping("/records/{id}")
+    public String recordDetail(@PathVariable("id") Long id,
+                               @AuthenticationPrincipal CustomUserDetails userDetails,
+                               Model model) {
+        Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
+        ExaminationRecord record = examinationService.getRecordById(id);
+        model.addAttribute("doctor", doctor);
+        model.addAttribute("record", record);
+        return "doctor/record-detail";
+    }
+
     @GetMapping("/appointments")
     public String appointments(@AuthenticationPrincipal CustomUserDetails userDetails,
-                               @RequestParam(value = "filter", required = false, defaultValue = "ALL") String filter,
+                               @RequestParam(value = "keyword", required = false) String keyword,
                                @RequestParam(value = "date", required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate customDate,
-                               @RequestParam(value = "status", required = false) String statusStr,
                                Model model) {
         Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
         java.time.LocalDate today = java.time.LocalDate.now();
-        java.time.LocalDate tomorrow = today.plusDays(1);
 
         List<Appointment> allFromToday = appointmentService.getDoctorAppointmentsFromDate(doctor.getId(), today);
 
-        long todayCount = allFromToday.stream().filter(a -> a.getAppointmentDate().isEqual(today)).count();
-        long tomorrowCount = allFromToday.stream().filter(a -> a.getAppointmentDate().isEqual(tomorrow)).count();
-        long futureCount = allFromToday.stream().filter(a -> a.getAppointmentDate().isAfter(tomorrow)).count();
-        long totalCount = allFromToday.size();
-
-        List<Appointment> filtered = allFromToday;
+        // Filter: only appointments not yet examined by doctor
+        List<Appointment> filtered = allFromToday.stream()
+                .filter(a -> a.getStatus() != AppointmentStatus.COMPLETED
+                          && a.getStatus() != AppointmentStatus.AWAITING_PAYMENT
+                          && a.getStatus() != AppointmentStatus.CANCELLED)
+                .collect(java.util.stream.Collectors.toList());
 
         if (customDate != null) {
             filtered = filtered.stream()
                     .filter(a -> a.getAppointmentDate().isEqual(customDate))
                     .collect(java.util.stream.Collectors.toList());
-        } else if ("TODAY".equalsIgnoreCase(filter)) {
-            filtered = filtered.stream()
-                    .filter(a -> a.getAppointmentDate().isEqual(today))
-                    .collect(java.util.stream.Collectors.toList());
-        } else if ("TOMORROW".equalsIgnoreCase(filter)) {
-            filtered = filtered.stream()
-                    .filter(a -> a.getAppointmentDate().isEqual(tomorrow))
-                    .collect(java.util.stream.Collectors.toList());
-        } else if ("NEXT_3_DAYS".equalsIgnoreCase(filter)) {
-            java.time.LocalDate plus3 = today.plusDays(3);
-            filtered = filtered.stream()
-                    .filter(a -> !a.getAppointmentDate().isAfter(plus3))
-                    .collect(java.util.stream.Collectors.toList());
         }
 
-        if (statusStr != null && !statusStr.trim().isEmpty() && !"ALL".equalsIgnoreCase(statusStr)) {
-            try {
-                AppointmentStatus status = AppointmentStatus.valueOf(statusStr);
-                filtered = filtered.stream()
-                        .filter(a -> a.getStatus() == status)
-                        .collect(java.util.stream.Collectors.toList());
-            } catch (Exception ignored) {
-            }
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            String kw = keyword.trim().toLowerCase();
+            filtered = filtered.stream()
+                    .filter(a -> (a.getPatient().getFullName() != null && a.getPatient().getFullName().toLowerCase().contains(kw))
+                              || (a.getPatient().getPhone() != null && a.getPatient().getPhone().contains(kw)))
+                    .collect(java.util.stream.Collectors.toList());
         }
 
         model.addAttribute("doctor", doctor);
         model.addAttribute("appointments", filtered);
-        model.addAttribute("today", today);
-        model.addAttribute("tomorrow", tomorrow);
-        model.addAttribute("todayCount", todayCount);
-        model.addAttribute("tomorrowCount", tomorrowCount);
-        model.addAttribute("futureCount", futureCount);
-        model.addAttribute("totalCount", totalCount);
-        model.addAttribute("currentFilter", filter);
-        model.addAttribute("currentStatus", statusStr);
         model.addAttribute("customDate", customDate);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("today", today);
 
         return "doctor/appointments";
     }

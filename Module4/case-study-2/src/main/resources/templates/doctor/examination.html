@@ -32,7 +32,7 @@
                     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; font-size:0.95rem;">
                         <div><strong>Họ và tên:</strong> <span th:text="${appointment.patient.fullName}">Trần Văn Nam</span></div>
                         <div><strong>Ngày sinh:</strong> <span th:text="${#temporals.format(appointment.patient.dob, 'dd/MM/yyyy')}">15/05/1998</span></div>
-                        <div><strong>Giới tính:</strong> <span th:text="${appointment.patient.gender.name() == 'MALE' ? 'Nam' : (appointment.patient.gender.name() == 'FEMALE' ? 'Nữ' : 'Khác')}">Nam</span></div>
+                        <div><strong>Giới tính:</strong> <span th:text="${appointment.patient.gender.displayName}">Nam</span></div>
                         <div><strong>Số điện thoại:</strong> <span th:text="${appointment.patient.phone}">0909999888</span></div>
                         <div><strong>Dịch vụ chỉ định:</strong> <span style="font-weight:700; color:var(--primary);" th:text="${appointment.service.name}">Khám nội tổng quát</span></div>
                         <div><strong>Địa chỉ:</strong> <span th:text="${appointment.patient.address != null ? appointment.patient.address : 'Chưa cập nhật'}">Hà Nội</span></div>

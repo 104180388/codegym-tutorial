@@ -101,17 +101,17 @@ class GoogleCalendarView {
                         <div class="gcal-grid">
                             <!-- Time Axis Column -->
                             <div class="gcal-time-axis">
-                                <div class="gcal-time-slot">8 AM</div>
-                                <div class="gcal-time-slot">9 AM</div>
-                                <div class="gcal-time-slot">10 AM</div>
-                                <div class="gcal-time-slot">11 AM</div>
-                                <div class="gcal-time-slot">12 PM</div>
-                                <div class="gcal-time-slot">1 PM</div>
-                                <div class="gcal-time-slot">2 PM</div>
-                                <div class="gcal-time-slot">3 PM</div>
-                                <div class="gcal-time-slot">4 PM</div>
-                                <div class="gcal-time-slot">5 PM</div>
-                                <div class="gcal-time-slot">6 PM</div>
+                                <div class="gcal-time-slot">08:00</div>
+                                <div class="gcal-time-slot">09:00</div>
+                                <div class="gcal-time-slot">10:00</div>
+                                <div class="gcal-time-slot">11:00</div>
+                                <div class="gcal-time-slot">12:00</div>
+                                <div class="gcal-time-slot">13:00</div>
+                                <div class="gcal-time-slot">14:00</div>
+                                <div class="gcal-time-slot">15:00</div>
+                                <div class="gcal-time-slot">16:00</div>
+                                <div class="gcal-time-slot">17:00</div>
+                                <div class="gcal-time-slot">18:00</div>
                             </div>
 
                             <!-- 7 Day Columns -->
@@ -141,7 +141,7 @@ class GoogleCalendarView {
                                         <div class="gcal-hour-line" style="top: 480px;"></div>
                                         <div class="gcal-hour-line" style="top: 540px;"></div>
 
-                                        <!-- Shift Event Block: Morning (8:00 AM - 11:30 AM) -->
+                                        <!-- Shift Event Block: Morning (08:00 - 11:30) -->
                                         ${morningShifts.map((shift, idx) => {
                                             const total = morningShifts.length;
                                             const widthPct = 100 / total;
@@ -149,13 +149,13 @@ class GoogleCalendarView {
                                             return `
                                                 <div class="gcal-event-card shift-morning" style="top: 0px; height: 210px; left: calc(${leftPct}% + 2px); width: calc(${widthPct}% - 4px);" data-id="${shift.id || ''}">
                                                     <div class="gcal-event-title">${shift.doctorName ? shift.doctorName : 'Ca Sáng (Khám bệnh)'}</div>
-                                                    <div class="gcal-event-time">8:00 – 11:30 AM</div>
+                                                    <div class="gcal-event-time">08:00 – 11:30</div>
                                                     ${this.isAdmin && shift.id ? `<button type="button" class="gcal-event-del-btn" data-id="${shift.id}" title="Xóa ca trực"><i class="fa-solid fa-xmark"></i></button>` : ''}
                                                 </div>
                                             `;
                                         }).join('')}
 
-                                        <!-- Shift Event Block: Afternoon (1:30 PM - 4:30 PM) -->
+                                        <!-- Shift Event Block: Afternoon (13:30 - 16:30) -->
                                         ${afternoonShifts.map((shift, idx) => {
                                             const total = afternoonShifts.length;
                                             const widthPct = 100 / total;
@@ -163,7 +163,7 @@ class GoogleCalendarView {
                                             return `
                                                 <div class="gcal-event-card shift-afternoon" style="top: 330px; height: 180px; left: calc(${leftPct}% + 2px); width: calc(${widthPct}% - 4px);" data-id="${shift.id || ''}">
                                                     <div class="gcal-event-title">${shift.doctorName ? shift.doctorName : 'Ca Chiều (Khám bệnh)'}</div>
-                                                    <div class="gcal-event-time">1:30 – 4:30 PM</div>
+                                                    <div class="gcal-event-time">13:30 – 16:30</div>
                                                     ${this.isAdmin && shift.id ? `<button type="button" class="gcal-event-del-btn" data-id="${shift.id}" title="Xóa ca trực"><i class="fa-solid fa-xmark"></i></button>` : ''}
                                                 </div>
                                             `;

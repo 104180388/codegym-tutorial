@@ -15,4 +15,7 @@ public interface ExaminationRecordRepository extends JpaRepository<ExaminationRe
 
     @Query("SELECT e FROM ExaminationRecord e WHERE e.appointment.patient.id = :patientId ORDER BY e.createdAt DESC")
     List<ExaminationRecord> findByPatientId(@Param("patientId") Long patientId);
+
+    @Query("SELECT e FROM ExaminationRecord e WHERE e.appointment.doctor.id = :doctorId AND e.appointment.patient.id = :patientId ORDER BY e.appointment.appointmentDate DESC, e.appointment.appointmentTime DESC, e.id DESC")
+    List<ExaminationRecord> findByDoctorIdAndPatientId(@Param("doctorId") Long doctorId, @Param("patientId") Long patientId);
 }

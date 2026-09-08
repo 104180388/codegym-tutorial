@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/layout :: head('Bác sĩ - Dashboard')}"></head>
+<head th:replace="~{fragments/layout :: head('Bác sĩ - Tổng quan ca trực')}"></head>
 
 <body>
 
@@ -52,12 +52,12 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/doctor/appointments}" class="card stat-card" style="text-decoration:none; color:inherit;">
+                    <a th:href="@{/doctor/patients}" class="card stat-card" style="text-decoration:none; color:inherit;">
                         <div class="stat-icon" style="background:#e0f2fe; color:#0284c7;"><i
-                                class="fa-solid fa-calendar-check"></i></div>
+                                class="fa-solid fa-user-injured"></i></div>
                         <div>
-                            <div class="stat-value" th:text="${totalUpcomingCount}">0</div>
-                            <div class="stat-label">Tổng lịch hẹn từ hôm nay</div>
+                            <div class="stat-value" th:text="${totalPatientsExamined}">0</div>
+                            <div class="stat-label">Bệnh nhân đã thăm khám</div>
                         </div>
                     </a>
                 </div>
@@ -66,62 +66,54 @@
                 <div class="card" style="margin-bottom: 2rem;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
                         <h2 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0;">
-                            <i class="fa-solid fa-calendar-days" style="color:var(--primary);"></i> Lịch Hẹn Khám Sắp Tới (Từ Hôm Nay Đến Tương Lai)
+                            <i class="fa-solid fa-calendar-days" style="color:var(--primary);"></i> Lịch Hẹn Khám Sắp Tới (Từ Hôm Nay Trở Đi)
                         </h2>
-                        <a th:href="@{/doctor/appointments}" class="btn btn-primary btn-sm">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Xem Tất Cả & Bộ Lọc Chi Tiết
-                        </a>
+                        <div style="display:flex; gap:0.5rem;">
+                            <a th:href="@{/doctor/appointments}" class="btn btn-outline btn-sm">
+                                <i class="fa-solid fa-calendar-check"></i> Xem tất cả lịch hẹn
+                            </a>
+                            <a th:href="@{/doctor/queue}" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-hospital-user"></i> Mở Hàng Chờ Khám
+                            </a>
+                        </div>
                     </div>
 
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Ngày & Giờ</th>
-                                    <th>Mã Hẹn</th>
-                                    <th>Bệnh Nhân</th>
-                                    <th>Dịch Vụ Khám</th>
-                                    <th>Trạng Thái</th>
-                                    <th>Thao Tác</th>
+                                    <th>Họ và tên bệnh nhân</th>
+                                    <th>Năm sinh</th>
+                                    <th>Giới tính</th>
+                                    <th>Ngày hẹn</th>
+                                    <th>Giờ hẹn</th>
+                                    <th>Dịch vụ đăng ký</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr th:if="${#lists.isEmpty(upcomingAppointments)}">
                                     <td colspan="6" style="text-align:center; color:var(--slate); padding:2rem;">
-                                        Không có lịch hẹn nào từ hôm nay trở đi.
+                                        Không có lịch hẹn khám sắp tới nào từ hôm nay trở đi.
                                     </td>
                                 </tr>
                                 <tr th:each="app, iter : ${upcomingAppointments}" th:if="${iter.index < 5}">
+                                    <td style="font-weight:700; color:var(--dark);" th:text="${app.patient.fullName}">Trần Văn Nam</td>
+                                    <td th:text="${#temporals.format(app.patient.dob, 'yyyy')}">1998</td>
                                     <td>
-                                        <span th:if="${app.appointmentDate.isEqual(today)}" class="badge" style="background:#dcfce7; color:#15803d; font-weight:700; font-size:0.75rem;">
-                                            HÔM NAY
-                                        </span>
-                                        <span th:unless="${app.appointmentDate.isEqual(today)}" style="font-weight:700; color:var(--dark);" th:text="${#temporals.format(app.appointmentDate, 'dd/MM/yyyy')}">
-                                            15/05/2026
-                                        </span>
-                                        <div style="font-weight:600; color:var(--primary); font-size:0.85rem;" th:text="${#temporals.format(app.appointmentTime, 'HH:mm')}">
-                                            08:30
+                                        <span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${app.patient.gender.displayName}">Nam</span>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight:700; color:var(--dark);">
+                                            <span th:text="${#temporals.format(app.appointmentDate, 'dd/MM/yyyy')}">15/05/2026</span>
+                                            <span th:if="${app.appointmentDate.isEqual(today)}" class="badge" style="background:#dcfce7; color:#15803d; font-size:0.7rem; padding:0.15rem 0.4rem; margin-left:0.25rem;">Hôm nay</span>
                                         </div>
                                     </td>
-                                    <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
                                     <td>
-                                        <div style="font-weight:700;" th:text="${app.patient.fullName}">Trần Văn Nam</div>
-                                        <div style="font-size:0.8rem; color:var(--slate);" th:text="${app.patient.phone}">0909999888</div>
+                                        <div style="font-weight:600; color:var(--primary); font-size:0.85rem;">
+                                            <i class="fa-regular fa-clock"></i> <span th:text="${#temporals.format(app.appointmentTime, 'HH:mm')}">08:30</span>
+                                        </div>
                                     </td>
                                     <td style="font-weight:600;" th:text="${app.service.name}">Khám Nội Tổng Quát</td>
-                                    <td>
-                                        <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.name()}">
-                                            PENDING
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a th:if="${app.status.name() == 'CHECKED_IN' or app.status.name() == 'IN_PROGRESS'}" th:href="@{/doctor/examination/{id}(id=${app.id})}" class="btn btn-primary btn-sm">
-                                            <i class="fa-solid fa-stethoscope"></i> Khám
-                                        </a>
-                                        <span th:unless="${app.status.name() == 'CHECKED_IN' or app.status.name() == 'IN_PROGRESS'}" style="font-size:0.8rem; color:var(--slate); font-style:italic;">
-                                            Chờ khám
-                                        </span>
-                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -148,7 +140,7 @@
                                 <tr th:each="s : ${schedules}">
                                     <td style="font-weight:700;" th:text="${#temporals.format(s.workDate, 'EEEE, dd/MM/yyyy')}">15/05/2026</td>
                                     <td>
-                                        <span class="badge badge-confirmed" th:text="${s.shift.name() == 'MORNING'} ? 'CA SÁNG (08:00 - 11:30)' : 'CA CHIỀU (13:30 - 16:30)'">CA SÁNG</span>
+                                        <span class="badge badge-confirmed" th:text="${s.shift.displayName}">CA SÁNG (08:00 - 11:30)</span>
                                     </td>
                                 </tr>
                             </tbody>

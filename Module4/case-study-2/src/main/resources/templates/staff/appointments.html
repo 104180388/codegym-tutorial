@@ -14,7 +14,7 @@
                     <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
                         <i class="fa-solid fa-calendar-days" style="color:var(--primary);"></i> Quản Lý Tất Cả Lịch Hẹn Online
                     </h1>
-                    <p style="color:var(--slate); font-size:0.9rem;">Duyệt lịch đặt online (CONFIRMED), Từ chối (CANCELLED) hoặc hỗ trợ đổi thông tin.</p>
+                    <p style="color:var(--slate); font-size:0.9rem;">Duyệt lịch đặt online (Đã xác nhận), Từ chối (Đã hủy) hoặc hỗ trợ đổi thông tin.</p>
                 </div>
 
                 <div th:replace="~{fragments/layout :: alerts}"></div>
@@ -46,9 +46,10 @@
                                     <div style="font-size:0.85rem; color:var(--slate);" th:text="${#temporals.format(app.appointmentTime, 'HH:mm')}">08:30</div>
                                 </td>
                                 <td>
-                                    <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.name()}">PENDING</span>
+                                    <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.displayName}">Chờ xác nhận</span>
                                 </td>
                                 <td>
+                                    <!-- PENDING: Cần Duyệt hoặc Hủy -->
                                     <div style="display:flex; gap:0.4rem;" th:if="${app.status.name() == 'PENDING'}">
                                         <form th:action="@{/staff/appointments/approve/{id}(id=${app.id})}" method="post">
                                             <button type="submit" class="btn btn-secondary btn-sm"><i class="fa-solid fa-check"></i> Duyệt</button>
@@ -57,9 +58,26 @@
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn hủy lịch này?');"><i class="fa-solid fa-xmark"></i> Hủy</button>
                                         </form>
                                     </div>
-                                    <span th:if="${app.status.name() == 'CONFIRMED'}">
-                                        <a th:href="@{/staff/checkin}" class="btn btn-primary btn-sm"><i class="fa-solid fa-door-open"></i> Check-in</a>
-                                    </span>
+
+                                    <!-- CONFIRMED: Đã duyệt -> Cho phép Cấp STT Khám -->
+                                    <div style="display:flex; gap:0.4rem;" th:if="${app.status.name() == 'CONFIRMED'}">
+                                        <form th:action="@{/staff/checkin/{id}(id=${app.id}, redirect='appointments')}" method="post">
+                                            <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-ticket"></i> Cấp STT Khám</button>
+                                        </form>
+                                        <form th:action="@{/staff/appointments/cancel/{id}(id=${app.id})}" method="post">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn hủy lịch này?');"><i class="fa-solid fa-xmark"></i> Hủy</button>
+                                        </form>
+                                    </div>
+
+                                    <!-- CHECKED_IN: Đã tiếp nhận và có STT -->
+                                    <div th:if="${app.status.name() == 'CHECKED_IN'}">
+                                        <span class="badge badge-checked-in" style="font-size:0.85rem;" th:text="'STT: ' + ${app.queueNumber}">STT: 1</span>
+                                    </div>
+
+                                    <!-- Các trạng thái khác -->
+                                    <div th:if="${app.status.name() != 'PENDING' and app.status.name() != 'CONFIRMED' and app.status.name() != 'CHECKED_IN'}">
+                                        <span style="color:var(--slate); font-size:0.85rem;">-</span>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

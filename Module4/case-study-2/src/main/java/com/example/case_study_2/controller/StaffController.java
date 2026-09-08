@@ -68,18 +68,27 @@ public class StaffController {
     }
 
     @PostMapping("/appointments/approve/{id}")
-    public String approveAppointment(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    public String approveAppointment(@PathVariable("id") Long id,
+                                     @RequestParam(value = "redirect", required = false) String redirect,
+                                     RedirectAttributes redirectAttributes) {
         appointmentService.updateStatus(id, AppointmentStatus.CONFIRMED);
         redirectAttributes.addFlashAttribute("successMessage", "Đã duyệt lịch hẹn thành công!");
+        if ("patients".equals(redirect)) {
+            return "redirect:/staff/patients";
+        }
         return "redirect:/staff/appointments";
     }
 
     @PostMapping("/appointments/cancel/{id}")
     public String cancelAppointment(@PathVariable("id") Long id,
                                     @RequestParam(value = "reason", required = false) String reason,
+                                    @RequestParam(value = "redirect", required = false) String redirect,
                                     RedirectAttributes redirectAttributes) {
         appointmentService.cancelAppointment(id, reason != null ? reason : "Lễ tân từ chối/hủy lịch");
         redirectAttributes.addFlashAttribute("successMessage", "Đã hủy lịch hẹn.");
+        if ("patients".equals(redirect)) {
+            return "redirect:/staff/patients";
+        }
         return "redirect:/staff/appointments";
     }
 
@@ -92,9 +101,14 @@ public class StaffController {
     }
 
     @PostMapping("/checkin/{id}")
-    public String processCheckin(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    public String processCheckin(@PathVariable("id") Long id,
+                                 @RequestParam(value = "redirect", required = false) String redirect,
+                                 RedirectAttributes redirectAttributes) {
         Appointment app = appointmentService.checkInAppointment(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Đã tiếp đón bệnh nhân thành công! Số STT: " + app.getQueueNumber());
+        redirectAttributes.addFlashAttribute("successMessage", "Đã tiếp đón bệnh nhân " + app.getPatient().getFullName() + " thành công! Số STT khám: " + app.getQueueNumber());
+        if ("appointments".equals(redirect)) {
+            return "redirect:/staff/appointments";
+        }
         return "redirect:/staff/checkin";
     }
 

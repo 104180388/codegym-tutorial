@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Bác sĩ - Hồ sơ bệnh nhân')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: doctorSidebar}"></aside>
+
+            <main>
+                <div style="margin-bottom: 1.5rem;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                        <i class="fa-solid fa-user-injured" style="color:var(--primary);"></i> Hồ Sơ Bệnh Nhân Đã Thăm Khám
+                    </h1>
+                    <p style="color:var(--slate); font-size:0.9rem;">
+                        Danh sách người bệnh đã được bác sĩ trực tiếp thăm khám và kê đơn. Bấm xem chi tiết để tra cứu lịch sử các lần khám và kết quả bệnh án.
+                    </p>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Search Box -->
+                <div class="card" style="margin-bottom:1.5rem; padding:1.25rem;">
+                    <form th:action="@{/doctor/patients}" method="get" style="display:flex; gap:1rem;">
+                        <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Nhập tên bệnh nhân hoặc số điện thoại..." style="flex:1;">
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                        <a th:href="@{/doctor/patients}" class="btn btn-outline"><i class="fa-solid fa-rotate-left"></i> Đặt lại</a>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Họ và tên bệnh nhân</th>
+                                <th>Năm sinh</th>
+                                <th>Giới tính</th>
+                                <th>Số điện thoại</th>
+                                <th>Địa chỉ</th>
+                                <th style="text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(patientList)}">
+                                <td colspan="6" style="text-align:center; color:var(--slate); padding:2.5rem;">
+                                    Không tìm thấy hồ sơ bệnh nhân nào đã khám phù hợp.
+                                </td>
+                            </tr>
+                            <th:block th:each="item : ${patientList}">
+                                <tr style="cursor:pointer;" th:onclick="|toggleHistory(${item.patient.id})|" title="Nhấn để xem lịch sử khám của bệnh nhân này">
+                                    <td style="font-weight:700; color:var(--dark);" th:text="${item.patient.fullName}">Trần Văn Nam</td>
+                                    <td th:text="${#temporals.format(item.patient.dob, 'yyyy')}">1998</td>
+                                    <td><span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${item.patient.gender.displayName}">Nam</span></td>
+                                    <td th:text="${item.patient.phone}">0909999888</td>
+                                    <td style="font-size:0.9rem;" th:text="${item.patient.address != null and !item.patient.address.isEmpty() ? item.patient.address : 'Chưa cập nhật'}">Hà Nội</td>
+                                    <td style="text-align:center;" onclick="event.stopPropagation();">
+                                        <button type="button" 
+                                                class="btn btn-outline btn-sm" 
+                                                th:onclick="|toggleHistory(${item.patient.id})|"
+                                                title="Mở rộng / Thu gọn lịch sử khám"
+                                                style="display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; padding:0; border-radius:6px;">
+                                            <i th:id="'toggle-icon-' + ${item.patient.id}" class="fa-solid fa-chevron-down" style="transition: transform 0.2s;"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Expandable Medical History Dropdown Row -->
+                                <tr th:id="'history-row-' + ${item.patient.id}" class="history-dropdown-row" style="display:none; background-color: #f8fafc;">
+                                    <td colspan="6" style="padding: 1rem 1.5rem; border-top: none; border-bottom: 2px solid #e2e8f0;">
+                                        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; box-shadow: 0 2px 4px rgba(0,0,0,0.04);">
+                                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom: 1px solid #f1f5f9; padding-bottom:0.6rem;">
+                                                <div style="font-weight:700; color:var(--dark); font-size:0.95rem;">
+                                                    <i class="fa-solid fa-file-medical" style="color:var(--primary); margin-right:0.4rem;"></i>
+                                                    Lịch Sử Khám Bệnh Của: <span style="color:var(--primary);" th:text="${item.patient.fullName}"></span>
+                                                </div>
+                                                <span class="badge badge-info" th:text="${item.records != null ? #lists.size(item.records) : 0} + ' lần khám'">0 lần khám</span>
+                                            </div>
+
+                                            <div th:if="${item.records == null or #lists.isEmpty(item.records)}" style="text-align:center; color:var(--slate); padding:1.25rem 0; font-size:0.9rem;">
+                                                <i class="fa-regular fa-calendar-xmark" style="font-size:1.75rem; margin-bottom:0.5rem; display:block; opacity:0.4;"></i>
+                                                Chưa có bản ghi kết quả khám hoàn chỉnh nào cho bệnh nhân này.
+                                            </div>
+
+                                            <div class="table-responsive" th:if="${item.records != null and not #lists.isEmpty(item.records)}">
+                                                <table class="table" style="font-size:0.875rem; margin-bottom:0; background:white;">
+                                                    <thead>
+                                                        <tr style="background:#f1f5f9;">
+                                                            <th>Ngày & Giờ khám</th>
+                                                            <th>Dịch vụ y tế</th>
+                                                            <th>Chẩn đoán lâm sàng</th>
+                                                            <th>Trạng thái</th>
+                                                            <th style="text-align:right;">Chi tiết hôm khám</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr th:each="rec : ${item.records}">
+                                                            <td>
+                                                                <div style="font-weight:700; color:var(--dark);" th:text="${#temporals.format(rec.appointment.appointmentDate, 'dd/MM/yyyy')}">15/05/2026</div>
+                                                                <div style="font-size:0.8rem; color:var(--slate);" th:text="${#temporals.format(rec.appointment.appointmentTime, 'HH:mm')}">08:30</div>
+                                                            </td>
+                                                            <td style="font-weight:600;" th:text="${rec.appointment.service.name}">Khám nội tổng quát</td>
+                                                            <td>
+                                                                <div style="max-width:300px; font-weight:600; color:#166534;" th:text="${rec.diagnosis}">Viêm họng cấp</div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(rec.appointment.status.name()).replace('_', '-')}" th:text="${rec.appointment.status.displayName}">Đã hoàn thành</span>
+                                                            </td>
+                                                            <td style="text-align:right;">
+                                                                <a th:href="@{/doctor/records/{id}(id=${rec.id})}" class="btn btn-primary btn-sm" title="Xem chi tiết kết quả khám hôm đó">
+                                                                    <i class="fa-solid fa-eye"></i> Chi tiết
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <style>
+        .history-dropdown-row.show-row {
+            display: table-row !important;
+        }
+    </style>
+
+    <script>
+        function toggleHistory(patientId) {
+            const row = document.getElementById('history-row-' + patientId);
+            const icon = document.getElementById('toggle-icon-' + patientId);
+            if (!row) return;
+            const isShown = row.classList.contains('show-row');
+            if (isShown) {
+                row.classList.remove('show-row');
+                row.style.display = 'none';
+                if (icon) {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+            } else {
+                row.classList.add('show-row');
+                row.style.display = 'table-row';
+                if (icon) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

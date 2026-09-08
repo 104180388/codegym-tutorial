@@ -38,7 +38,19 @@ public class Patient {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("appointmentDate DESC, appointmentTime DESC, id DESC")
+    private java.util.List<Appointment> appointments = new java.util.ArrayList<>();
+
     public Patient() {
+    }
+
+    public java.util.List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(java.util.List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 
     public Long getId() {

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Lễ tân - Tra cứu hồ sơ bệnh nhân')}"></head>
+<head th:replace="~{fragments/layout :: head('Lễ tân - Bệnh nhân & Lịch hẹn')}"></head>
 <body>
 
     <nav th:replace="~{fragments/layout :: navbar}"></nav>
@@ -12,9 +12,9 @@
             <main>
                 <div style="margin-bottom: 1.5rem;">
                     <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
-                        <i class="fa-solid fa-users" style="color:var(--primary);"></i> Tra Cứu Hồ Sơ Bệnh Nhân
+                        <i class="fa-solid fa-users" style="color:var(--primary);"></i> Quản Lý Bệnh Nhân & Lịch Hẹn Khám
                     </h1>
-                    <p style="color:var(--slate); font-size:0.9rem;">Tìm kiếm hồ sơ người bệnh theo Tên hoặc Số điện thoại liên hệ.</p>
+                    <p style="color:var(--slate); font-size:0.9rem;">Tra cứu thông tin bệnh nhân, mở rộng danh sách lịch hẹn để Duyệt hoặc Cấp số thứ tự khám.</p>
                 </div>
 
                 <div th:replace="~{fragments/layout :: alerts}"></div>
@@ -32,31 +32,123 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>#ID</th>
-                                <th>Họ và tên</th>
+                                <th>Họ và tên bệnh nhân</th>
                                 <th>Số điện thoại</th>
                                 <th>Ngày sinh</th>
                                 <th>Giới tính</th>
                                 <th>Địa chỉ</th>
                                 <th>Loại tài khoản</th>
+                                <th style="text-align:center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:if="${#lists.isEmpty(patients)}">
                                 <td colspan="7" style="text-align:center; color:var(--slate); padding:2rem;">Không tìm thấy kết quả bệnh nhân phù hợp.</td>
                             </tr>
-                            <tr th:each="p : ${patients}">
-                                <td th:text="${p.id}">1</td>
-                                <td style="font-weight:700; color:var(--dark);" th:text="${p.fullName}">Trần Văn Nam</td>
-                                <td th:text="${p.phone}">0909999888</td>
-                                <td th:text="${#temporals.format(p.dob, 'dd/MM/yyyy')}">15/05/1998</td>
-                                <td><span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${p.gender.name()}">MALE</span></td>
-                                <td style="font-size:0.9rem;" th:text="${p.address != null ? p.address : 'Chưa nhập'}">Hà Nội</td>
-                                <td>
-                                    <span th:if="${p.user != null}" class="badge badge-completed"><i class="fa-solid fa-globe"></i> Online Account</span>
-                                    <span th:if="${p.user == null}" class="badge badge-pending"><i class="fa-solid fa-person-walking"></i> Walk-in (Vãng lai)</span>
-                                </td>
-                            </tr>
+                            <th:block th:each="p : ${patients}">
+                                <tr style="cursor:pointer;" th:onclick="|toggleAppointments(${p.id})|" title="Nhấn để xem chi tiết lịch hẹn của bệnh nhân">
+                                    <td style="font-weight:700; color:var(--dark);" th:text="${p.fullName}">Trần Văn Nam</td>
+                                    <td th:text="${p.phone}">0909999888</td>
+                                    <td th:text="${#temporals.format(p.dob, 'dd/MM/yyyy')}">15/05/1998</td>
+                                    <td><span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${p.gender.displayName}">Nam</span></td>
+                                    <td style="font-size:0.9rem;" th:text="${p.address != null ? p.address : 'Chưa nhập'}">Hà Nội</td>
+                                    <td>
+                                        <span th:if="${p.user != null}" class="badge badge-completed"><i class="fa-solid fa-globe"></i> Trực tuyến</span>
+                                        <span th:if="${p.user == null}" class="badge badge-pending"><i class="fa-solid fa-person-walking"></i> Vãng lai</span>
+                                    </td>
+                                    <td style="text-align:center;" onclick="event.stopPropagation();">
+                                        <button type="button" 
+                                                class="btn btn-outline btn-sm" 
+                                                th:onclick="|toggleAppointments(${p.id})|"
+                                                title="Mở rộng / Thu gọn lịch hẹn"
+                                                style="display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; padding:0; border-radius:6px;">
+                                            <i th:id="'toggle-icon-' + ${p.id}" class="fa-solid fa-chevron-down" style="transition: transform 0.2s;"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Expandable Appointments Dropdown/Accordion Row -->
+                                <tr th:id="'appointments-row-' + ${p.id}" class="appointment-dropdown-row" style="display:none; background-color: #f8fafc;">
+                                    <td colspan="7" style="padding: 1rem 1.5rem; border-top: none; border-bottom: 2px solid #e2e8f0;">
+                                        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; box-shadow: 0 2px 4px rgba(0,0,0,0.04);">
+                                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom: 1px solid #f1f5f9; padding-bottom:0.6rem;">
+                                                <div style="font-weight:700; color:var(--dark); font-size:0.95rem;">
+                                                    <i class="fa-solid fa-calendar-days" style="color:var(--primary); margin-right:0.4rem;"></i>
+                                                    Danh Sách Lịch Hẹn Của Bệnh Nhân: <span style="color:var(--primary);" th:text="${p.fullName}"></span>
+                                                </div>
+                                                <span class="badge badge-info" th:text="${p.appointments != null ? #lists.size(p.appointments) : 0} + ' lịch hẹn'">0 lịch hẹn</span>
+                                            </div>
+
+                                            <div th:if="${p.appointments == null or #lists.isEmpty(p.appointments)}" style="text-align:center; color:var(--slate); padding:1.25rem 0; font-size:0.9rem;">
+                                                <i class="fa-regular fa-calendar-xmark" style="font-size:1.75rem; margin-bottom:0.5rem; display:block; opacity:0.4;"></i>
+                                                Bệnh nhân này chưa có lịch hẹn khám nào.
+                                            </div>
+
+                                            <div class="table-responsive" th:if="${p.appointments != null and not #lists.isEmpty(p.appointments)}">
+                                                <table class="table" style="font-size:0.875rem; margin-bottom:0; background:white;">
+                                                    <thead>
+                                                        <tr style="background:#f1f5f9;">
+                                                            <th>Mã lịch</th>
+                                                            <th>Ngày & Giờ hẹn</th>
+                                                            <th>Dịch vụ y tế</th>
+                                                            <th>Bác sĩ phụ trách</th>
+                                                            <th>Triệu chứng / Ghi chú</th>
+                                                            <th>Trạng thái</th>
+                                                            <th style="text-align:right;">Thao tác</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr th:each="app : ${p.appointments}">
+                                                            <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
+                                                            <td>
+                                                                <div style="font-weight:700; color:var(--dark);" th:text="${#temporals.format(app.appointmentDate, 'dd/MM/yyyy')}">15/05/2026</div>
+                                                                <div style="font-size:0.8rem; color:var(--slate);" th:text="${#temporals.format(app.appointmentTime, 'HH:mm')}">08:30</div>
+                                                            </td>
+                                                            <td style="font-weight:600;" th:text="${app.service.name}">Khám nội tổng quát</td>
+                                                            <td th:text="${app.doctor.user.fullName}">BS. Lê Minh Tuấn</td>
+                                                            <td style="color:var(--slate); font-size:0.85rem;" th:text="${app.symptoms != null and !app.symptoms.isEmpty() ? app.symptoms : '-'}">-</td>
+                                                            <td>
+                                                                <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.displayName}">Chờ xác nhận</span>
+                                                            </td>
+                                                            <td style="text-align:right;">
+                                                                <!-- PENDING: Duyệt hoặc Hủy -->
+                                                                <div style="display:inline-flex; gap:0.35rem; justify-content:flex-end;" th:if="${app.status.name() == 'PENDING'}">
+                                                                    <form th:action="@{/staff/appointments/approve/{id}(id=${app.id}, redirect='patients')}" method="post" style="display:inline;">
+                                                                        <button type="submit" class="btn btn-secondary btn-sm" title="Duyệt lịch hẹn"><i class="fa-solid fa-check"></i> Duyệt</button>
+                                                                    </form>
+                                                                    <form th:action="@{/staff/appointments/cancel/{id}(id=${app.id}, redirect='patients')}" method="post" style="display:inline;">
+                                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn hủy lịch này?');" title="Hủy lịch hẹn"><i class="fa-solid fa-xmark"></i> Hủy</button>
+                                                                    </form>
+                                                                </div>
+
+                                                                <!-- CONFIRMED: Cấp STT Khám hoặc Hủy -->
+                                                                <div style="display:inline-flex; gap:0.35rem; justify-content:flex-end;" th:if="${app.status.name() == 'CONFIRMED'}">
+                                                                    <form th:action="@{/staff/checkin/{id}(id=${app.id}, redirect='patients')}" method="post" style="display:inline;">
+                                                                        <button type="submit" class="btn btn-primary btn-sm" title="Tiếp nhận & Cấp STT Khám"><i class="fa-solid fa-ticket"></i> Cấp STT Khám</button>
+                                                                    </form>
+                                                                    <form th:action="@{/staff/appointments/cancel/{id}(id=${app.id}, redirect='patients')}" method="post" style="display:inline;">
+                                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn hủy lịch này?');" title="Hủy lịch hẹn"><i class="fa-solid fa-xmark"></i> Hủy</button>
+                                                                    </form>
+                                                                </div>
+
+                                                                <!-- CHECKED_IN: Đã cấp STT -->
+                                                                <div th:if="${app.status.name() == 'CHECKED_IN'}">
+                                                                    <span class="badge badge-checked-in" style="font-size:0.85rem;" th:text="'STT: ' + ${app.queueNumber}">STT: 1</span>
+                                                                </div>
+
+                                                                <!-- Các trạng thái khác -->
+                                                                <div th:if="${app.status.name() != 'PENDING' and app.status.name() != 'CONFIRMED' and app.status.name() != 'CHECKED_IN'}">
+                                                                    <span style="color:var(--slate); font-size:0.85rem;">-</span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </th:block>
                         </tbody>
                     </table>
                 </div>
@@ -66,5 +158,34 @@
 
     <footer th:replace="~{fragments/layout :: footer}"></footer>
 
+    <style>
+        .appointment-dropdown-row.show-row {
+            display: table-row !important;
+        }
+    </style>
+
+    <script>
+        function toggleAppointments(patientId) {
+            const row = document.getElementById('appointments-row-' + patientId);
+            const icon = document.getElementById('toggle-icon-' + patientId);
+            if (!row) return;
+            const isShown = row.classList.contains('show-row');
+            if (isShown) {
+                row.classList.remove('show-row');
+                row.style.display = 'none';
+                if (icon) {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+            } else {
+                row.classList.add('show-row');
+                row.style.display = 'table-row';
+                if (icon) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                }
+            }
+        }
+    </script>
 </body>
 </html>

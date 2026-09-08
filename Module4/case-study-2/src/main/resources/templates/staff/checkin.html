@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Lễ tân - Tiếp đón & Check-in')}"></head>
+<head th:replace="~{fragments/layout :: head('Lễ tân - Tiếp đón & Tiếp nhận')}"></head>
 <body>
 
     <nav th:replace="~{fragments/layout :: navbar}"></nav>
@@ -14,15 +14,15 @@
                     <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
                         <i class="fa-solid fa-door-open" style="color:var(--primary);"></i> Quầy Tiếp Đón Bệnh Nhân & Cấp STT Khám
                     </h1>
-                    <p style="color:var(--slate); font-size:0.9rem;">Check-in cho khách hẹn trước hoặc tạo phiếu tiếp đón trực tiếp tại quầy (Walk-in).</p>
+                    <p style="color:var(--slate); font-size:0.9rem;">Tiếp đón cho khách hẹn trước hoặc tạo phiếu tiếp đón trực tiếp tại quầy (Khách vãng lai).</p>
                 </div>
 
                 <div th:replace="~{fragments/layout :: alerts}"></div>
 
-                <!-- Tabs: Check-in Online vs Walk-in -->
+                <!-- Tabs: Tiếp đón Online vs Vãng lai -->
                 <div class="card" style="margin-bottom:2rem;">
                     <h2 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin-bottom:1rem;">
-                        <i class="fa-solid fa-user-plus" style="color:var(--secondary);"></i> 1. Tiếp Đón Khách Vãng Lai Trực Tiếp Tại Quầy (Walk-in)
+                        <i class="fa-solid fa-user-plus" style="color:var(--secondary);"></i> 1. Tiếp Đón Khách Vãng Lai Trực Tiếp Tại Quầy
                     </h2>
                     <form th:action="@{/staff/checkin/walk-in}" method="post">
                         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem;">
@@ -77,35 +77,36 @@
                             <input type="text" id="symptoms" name="symptoms" class="form-control" placeholder="Ghi chú triệu chứng nếu có...">
                         </div>
 
-                        <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-ticket"></i> Đăng Ký Walk-in & Cấp Số STT Khám</button>
+                        <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-ticket"></i> Tiếp Nhận & Cấp Số STT Khám</button>
                     </form>
                 </div>
 
                 <div class="card">
                     <h2 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin-bottom:1rem;">
-                        <i class="fa-solid fa-list-check" style="color:var(--primary);"></i> 2. Danh Sách Lịch Hẹn Đã Đặt (Chờ Check-in)
+                        <i class="fa-solid fa-list-check" style="color:var(--primary);"></i> 2. Danh Sách Lịch Hẹn Đã Đặt (Chờ Tiếp Đón)
                     </h2>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Mã lịch hẹn</th>
                                     <th>Bệnh nhân</th>
                                     <th>SĐT</th>
                                     <th>Bác sĩ</th>
                                     <th>Dịch vụ</th>
                                     <th>Trạng thái</th>
-                                    <th>Thao tác Check-in</th>
+                                    <th>Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="app : ${appointments}" th:if="${app.status.name() == 'PENDING' or app.status.name() == 'CONFIRMED'}">
-                                    <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
+                                <tr th:if="${#lists.isEmpty(appointments.?[status.name() == 'CONFIRMED'])}">
+                                    <td colspan="6" style="text-align:center; color:var(--slate); padding:2rem;">Không có lịch hẹn đã duyệt nào đang chờ tiếp đón.</td>
+                                </tr>
+                                <tr th:each="app : ${appointments}" th:if="${app.status.name() == 'CONFIRMED'}">
                                     <td style="font-weight:700;" th:text="${app.patient.fullName}">Trần Văn Nam</td>
                                     <td th:text="${app.patient.phone}">0909999888</td>
                                     <td th:text="${app.doctor.user.fullName}">BS. Lê Minh Tuấn</td>
                                     <td th:text="${app.service.name}">Khám nội tổng quát</td>
-                                    <td><span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.name()}">CONFIRMED</span></td>
+                                    <td><span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.displayName}">Đã xác nhận</span></td>
                                     <td>
                                         <form th:action="@{/staff/checkin/{id}(id=${app.id})}" method="post">
                                             <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-clipboard-check"></i> Cấp STT Khám</button>

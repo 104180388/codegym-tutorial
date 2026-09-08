@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Admin - Thêm tài khoản nội bộ')}"></head>
+<head th:replace="~{fragments/layout :: head('Quản trị - Thêm tài khoản nội bộ')}"></head>
 <body>
 
     <nav th:replace="~{fragments/layout :: navbar}"></nav>
@@ -24,7 +24,7 @@
                     <form th:action="@{/admin/users/create}" th:object="${userFormDto}" method="post">
 
                         <div class="form-group">
-                            <label class="form-label" for="roleId">1. Vai trò tài khoản (Role) *</label>
+                            <label class="form-label" for="roleId">1. Vai trò tài khoản *</label>
                             <select id="roleId" th:field="*{roleId}" class="form-select" required>
                                 <option value="">-- Chọn vai trò --</option>
                                 <option th:each="r : ${roles}" th:value="${r.id}" th:data-role-name="${r.name}" th:text="${r.name} + ' - ' + ${r.description}"></option>

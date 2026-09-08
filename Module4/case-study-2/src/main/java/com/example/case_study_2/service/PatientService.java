@@ -28,7 +28,7 @@ public class PatientService {
     }
 
     public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
+        return patientRepository.findAllByOrderByIdDesc();
     }
 
     public List<Patient> searchPatients(String keyword) {

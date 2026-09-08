@@ -1,7 +1,17 @@
 package com.example.case_study_2.entity.enums;
 
 public enum Gender {
-    MALE,
-    FEMALE,
-    OTHER
+    MALE("Nam"),
+    FEMALE("Nữ"),
+    OTHER("Khác");
+
+    private final String displayName;
+
+    Gender(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Admin - Thống kê tổng quan')}"></head>
+<head th:replace="~{fragments/layout :: head('Quản trị - Thống kê tổng quan')}"></head>
 <body>
 
     <nav th:replace="~{fragments/layout :: navbar}"></nav>
@@ -58,9 +58,9 @@
                     <div class="card">
                         <h3 class="card-title"><i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Phân Tích Trạng Thái Lịch Hẹn</h3>
                         <div style="margin-top:1rem; font-size:0.95rem;">
-                            <p style="margin-bottom:0.5rem;"><strong>Đang chờ duyệt (PENDING):</strong> <span class="badge badge-pending" th:text="${pendingAppointments}">0</span></p>
-                            <p style="margin-bottom:0.5rem;"><strong>Đã khám hoàn thành (COMPLETED):</strong> <span class="badge badge-completed" th:text="${completedAppointments}">0</span></p>
-                            <p style="margin-bottom:0.5rem;"><strong>Đã hủy (CANCELLED):</strong> <span class="badge badge-cancelled" th:text="${cancelledAppointments}">0</span></p>
+                            <p style="margin-bottom:0.5rem;"><strong>Đang chờ duyệt:</strong> <span class="badge badge-pending" th:text="${pendingAppointments}">0</span></p>
+                            <p style="margin-bottom:0.5rem;"><strong>Đã khám hoàn thành:</strong> <span class="badge badge-completed" th:text="${completedAppointments}">0</span></p>
+                            <p style="margin-bottom:0.5rem;"><strong>Đã hủy:</strong> <span class="badge badge-cancelled" th:text="${cancelledAppointments}">0</span></p>
                         </div>
                     </div>
 
