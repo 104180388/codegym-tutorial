@@ -6,7 +6,9 @@ import com.example.case_study_2.entity.*;
 import com.example.case_study_2.entity.enums.AppointmentStatus;
 import com.example.case_study_2.entity.enums.Shift;
 import com.example.case_study_2.repository.*;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -214,22 +216,53 @@ public class AppointmentService {
         return appointmentRepository.save(app);
     }
 
+    @Transactional
+    public int autoCancelOverdueAppointments() {
+        return appointmentRepository.autoCancelOverdueAppointments(LocalDate.now());
+    }
+
+    @PostConstruct
+    @Transactional
+    public void onStartupAutoCancelOverdueAppointments() {
+        try {
+            int count = autoCancelOverdueAppointments();
+            if (count > 0) {
+                System.out.println("[Startup Hook] Đã tự động đổi trạng thái " + count + " lịch hẹn đã qua ngày thành 'Đã hủy'.");
+            }
+        } catch (Exception e) {
+            System.err.println("[Startup Hook] Lỗi khi tự động hủy lịch hẹn quá hạn: " + e.getMessage());
+        }
+    }
+
+    @Scheduled(cron = "0 0 * * * ?") // Chạy mỗi đầu giờ
+    @Transactional
+    public void scheduledAutoCancelOverdueAppointments() {
+        int count = autoCancelOverdueAppointments();
+        if (count > 0) {
+            System.out.println("[Scheduled Task] Đã tự động đổi trạng thái " + count + " lịch hẹn đã qua ngày thành 'Đã hủy'.");
+        }
+    }
+
     public List<Appointment> getPatientAppointments(Long patientId) {
         if (patientId == null) return Collections.emptyList();
+        autoCancelOverdueAppointments();
         return appointmentRepository.findPatientAppointmentsActiveAndCompleted(patientId);
     }
 
     public List<Appointment> getDoctorAppointmentsForToday(Long doctorId) {
+        autoCancelOverdueAppointments();
         return appointmentRepository.findByDoctorIdAndAppointmentDate(doctorId, LocalDate.now());
     }
 
     public List<Appointment> getDoctorAppointmentsFromDate(Long doctorId, LocalDate startDate) {
         if (doctorId == null) return Collections.emptyList();
+        autoCancelOverdueAppointments();
         LocalDate fromDate = startDate != null ? startDate : LocalDate.now();
         return appointmentRepository.findDoctorAppointmentsFromDate(doctorId, fromDate);
     }
 
     public List<Appointment> getDoctorQueueToday(Long doctorId) {
+        autoCancelOverdueAppointments();
         return appointmentRepository.findByDoctorIdAndAppointmentDateAndStatusIn(
                 doctorId,
                 LocalDate.now(),
@@ -237,11 +270,18 @@ public class AppointmentService {
         );
     }
 
+    public List<Appointment> getPendingAppointments() {
+        autoCancelOverdueAppointments();
+        return appointmentRepository.findPendingAppointments();
+    }
+
     public List<Appointment> getAllAppointmentsForStaff() {
+        autoCancelOverdueAppointments();
         return appointmentRepository.findAllForStaffManagement();
     }
 
     public List<Appointment> getAllAppointments() {
+        autoCancelOverdueAppointments();
         return appointmentRepository.findAllForStaffManagement();
     }
 

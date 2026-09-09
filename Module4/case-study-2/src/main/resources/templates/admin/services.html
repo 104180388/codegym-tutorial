@@ -40,8 +40,12 @@
                                 <td th:text="${s.estimatedDurationMin} + ' phút'">20 phút</td>
                                 <td style="font-weight:800; color:var(--primary);" th:text="${#numbers.formatDecimal(s.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">150.000 đ</td>
                                 <td>
-                                    <span th:if="${s.isActive}" class="badge badge-completed">ĐANG MỞ</span>
-                                    <span th:if="${!s.isActive}" class="badge badge-cancelled">TẮT</span>
+                                    <span th:if="${s.isActive}" class="badge badge-completed">
+                                        <i class="fa-solid fa-circle-check"></i> ĐANG MỞ
+                                    </span>
+                                    <span th:if="${!s.isActive}" class="badge badge-cancelled">
+                                        <i class="fa-solid fa-circle-xmark"></i> TẮT
+                                    </span>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-outline btn-sm" th:onclick="'toggleServiceModal(' + ${s.id} + ')'">

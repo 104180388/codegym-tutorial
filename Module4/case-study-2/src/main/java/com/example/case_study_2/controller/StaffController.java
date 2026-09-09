@@ -63,7 +63,7 @@ public class StaffController {
 
     @GetMapping("/appointments")
     public String appointments(Model model) {
-        model.addAttribute("appointments", appointmentService.getAllAppointmentsForStaff());
+        model.addAttribute("appointments", appointmentService.getPendingAppointments());
         return "staff/appointments";
     }
 

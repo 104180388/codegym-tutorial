@@ -14,7 +14,7 @@
                     <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
                         <i class="fa-solid fa-users" style="color:var(--primary);"></i> Quản Lý Bệnh Nhân & Lịch Hẹn Khám
                     </h1>
-                    <p style="color:var(--slate); font-size:0.9rem;">Tra cứu thông tin bệnh nhân, mở rộng danh sách lịch hẹn để Duyệt hoặc Cấp số thứ tự khám.</p>
+                    <p style="color:var(--slate); font-size:0.9rem;">Tra cứu thông tin bệnh nhân, hồ sơ lịch sử khám bệnh và tiếp đón cấp số thứ tự khám.</p>
                 </div>
 
                 <div th:replace="~{fragments/layout :: alerts}"></div>
@@ -50,11 +50,11 @@
                                     <td style="font-weight:700; color:var(--dark);" th:text="${p.fullName}">Trần Văn Nam</td>
                                     <td th:text="${p.phone}">0909999888</td>
                                     <td th:text="${#temporals.format(p.dob, 'dd/MM/yyyy')}">15/05/1998</td>
-                                    <td><span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${p.gender.displayName}">Nam</span></td>
+                                    <td th:text="${p.gender.displayName}">Nam</td>
                                     <td style="font-size:0.9rem;" th:text="${p.address != null ? p.address : 'Chưa nhập'}">Hà Nội</td>
                                     <td>
-                                        <span th:if="${p.user != null}" class="badge badge-completed"><i class="fa-solid fa-globe"></i> Trực tuyến</span>
-                                        <span th:if="${p.user == null}" class="badge badge-pending"><i class="fa-solid fa-person-walking"></i> Vãng lai</span>
+                                        <span th:if="${p.user != null}" class="badge badge-online"><i class="fa-solid fa-globe"></i> Trực tuyến</span>
+                                        <span th:if="${p.user == null}" class="badge badge-walkin"><i class="fa-solid fa-person-walking"></i> Vãng lai</span>
                                     </td>
                                     <td style="text-align:center;" onclick="event.stopPropagation();">
                                         <button type="button" 
@@ -76,30 +76,27 @@
                                                     <i class="fa-solid fa-calendar-days" style="color:var(--primary); margin-right:0.4rem;"></i>
                                                     Danh Sách Lịch Hẹn Của Bệnh Nhân: <span style="color:var(--primary);" th:text="${p.fullName}"></span>
                                                 </div>
-                                                <span class="badge badge-info" th:text="${p.appointments != null ? #lists.size(p.appointments) : 0} + ' lịch hẹn'">0 lịch hẹn</span>
+                                                <span class="badge badge-info"><i class="fa-solid fa-calendar-check"></i> <span th:text="${p.appointments != null ? #lists.size(p.appointments.?[status.name() != 'PENDING']) : 0} + ' lịch hẹn'">0 lịch hẹn</span></span>
                                             </div>
 
-                                            <div th:if="${p.appointments == null or #lists.isEmpty(p.appointments)}" style="text-align:center; color:var(--slate); padding:1.25rem 0; font-size:0.9rem;">
+                                            <div th:if="${p.appointments == null or #lists.isEmpty(p.appointments.?[status.name() != 'PENDING'])}" style="text-align:center; color:var(--slate); padding:1.25rem 0; font-size:0.9rem;">
                                                 <i class="fa-regular fa-calendar-xmark" style="font-size:1.75rem; margin-bottom:0.5rem; display:block; opacity:0.4;"></i>
-                                                Bệnh nhân này chưa có lịch hẹn khám nào.
+                                                Bệnh nhân này chưa có lịch hẹn khám đã duyệt hoặc hoàn thành.
                                             </div>
 
-                                            <div class="table-responsive" th:if="${p.appointments != null and not #lists.isEmpty(p.appointments)}">
+                                            <div class="table-responsive" th:if="${p.appointments != null and not #lists.isEmpty(p.appointments.?[status.name() != 'PENDING'])}">
                                                 <table class="table" style="font-size:0.875rem; margin-bottom:0; background:white;">
                                                     <thead>
                                                         <tr style="background:#f1f5f9;">
-                                                            <th>Mã lịch</th>
                                                             <th>Ngày & Giờ hẹn</th>
                                                             <th>Dịch vụ y tế</th>
                                                             <th>Bác sĩ phụ trách</th>
                                                             <th>Triệu chứng / Ghi chú</th>
                                                             <th>Trạng thái</th>
-                                                            <th style="text-align:right;">Thao tác</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr th:each="app : ${p.appointments}">
-                                                            <td><span class="user-badge" th:text="${app.appointmentCode}">APT-123456</span></td>
+                                                        <tr th:each="app : ${p.appointments}" th:if="${app.status.name() != 'PENDING'}">
                                                             <td>
                                                                 <div style="font-weight:700; color:var(--dark);" th:text="${#temporals.format(app.appointmentDate, 'dd/MM/yyyy')}">15/05/2026</div>
                                                                 <div style="font-size:0.8rem; color:var(--slate);" th:text="${#temporals.format(app.appointmentTime, 'HH:mm')}">08:30</div>
@@ -108,38 +105,7 @@
                                                             <td th:text="${app.doctor.user.fullName}">BS. Lê Minh Tuấn</td>
                                                             <td style="color:var(--slate); font-size:0.85rem;" th:text="${app.symptoms != null and !app.symptoms.isEmpty() ? app.symptoms : '-'}">-</td>
                                                             <td>
-                                                                <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.displayName}">Chờ xác nhận</span>
-                                                            </td>
-                                                            <td style="text-align:right;">
-                                                                <!-- PENDING: Duyệt hoặc Hủy -->
-                                                                <div style="display:inline-flex; gap:0.35rem; justify-content:flex-end;" th:if="${app.status.name() == 'PENDING'}">
-                                                                    <form th:action="@{/staff/appointments/approve/{id}(id=${app.id}, redirect='patients')}" method="post" style="display:inline;">
-                                                                        <button type="submit" class="btn btn-secondary btn-sm" title="Duyệt lịch hẹn"><i class="fa-solid fa-check"></i> Duyệt</button>
-                                                                    </form>
-                                                                    <form th:action="@{/staff/appointments/cancel/{id}(id=${app.id}, redirect='patients')}" method="post" style="display:inline;">
-                                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn hủy lịch này?');" title="Hủy lịch hẹn"><i class="fa-solid fa-xmark"></i> Hủy</button>
-                                                                    </form>
-                                                                </div>
-
-                                                                <!-- CONFIRMED: Cấp STT Khám hoặc Hủy -->
-                                                                <div style="display:inline-flex; gap:0.35rem; justify-content:flex-end;" th:if="${app.status.name() == 'CONFIRMED'}">
-                                                                    <form th:action="@{/staff/checkin/{id}(id=${app.id}, redirect='patients')}" method="post" style="display:inline;">
-                                                                        <button type="submit" class="btn btn-primary btn-sm" title="Tiếp nhận & Cấp STT Khám"><i class="fa-solid fa-ticket"></i> Cấp STT Khám</button>
-                                                                    </form>
-                                                                    <form th:action="@{/staff/appointments/cancel/{id}(id=${app.id}, redirect='patients')}" method="post" style="display:inline;">
-                                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn hủy lịch này?');" title="Hủy lịch hẹn"><i class="fa-solid fa-xmark"></i> Hủy</button>
-                                                                    </form>
-                                                                </div>
-
-                                                                <!-- CHECKED_IN: Đã cấp STT -->
-                                                                <div th:if="${app.status.name() == 'CHECKED_IN'}">
-                                                                    <span class="badge badge-checked-in" style="font-size:0.85rem;" th:text="'STT: ' + ${app.queueNumber}">STT: 1</span>
-                                                                </div>
-
-                                                                <!-- Các trạng thái khác -->
-                                                                <div th:if="${app.status.name() != 'PENDING' and app.status.name() != 'CONFIRMED' and app.status.name() != 'CHECKED_IN'}">
-                                                                    <span style="color:var(--slate); font-size:0.85rem;">-</span>
-                                                                </div>
+                                                                <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.displayName}">Đã xác nhận</span>
                                                             </td>
                                                         </tr>
                                                     </tbody>

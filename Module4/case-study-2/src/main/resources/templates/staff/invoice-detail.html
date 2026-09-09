@@ -92,8 +92,10 @@
                                 <div class="form-group">
                                     <label class="form-label">Trạng thái hiện tại</label>
                                     <div>
-                                        <span class="badge" th:classappend="${invoice.paymentStatus.name() == 'PAID'} ? 'badge-completed' : 'badge-pending'"
-                                              th:text="${invoice.paymentStatus.displayName}">Chưa thanh toán</span>
+                                        <span class="badge" th:classappend="${invoice.paymentStatus.name() == 'PAID'} ? 'badge-completed' : 'badge-pending'">
+                                            <i class="fa-solid" th:classappend="${invoice.paymentStatus.name() == 'PAID'} ? 'fa-circle-check' : 'fa-clock'"></i>
+                                            <span th:text="${invoice.paymentStatus.displayName}">Chưa thanh toán</span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>

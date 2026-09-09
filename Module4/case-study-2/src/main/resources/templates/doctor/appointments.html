@@ -82,13 +82,11 @@
                                 <tr th:each="app : ${appointments}">
                                     <td style="font-weight:700; color:var(--dark);" th:text="${app.patient.fullName}">Trần Văn Nam</td>
                                     <td th:text="${#temporals.format(app.patient.dob, 'yyyy')}">1998</td>
-                                    <td>
-                                        <span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${app.patient.gender.displayName}">Nam</span>
-                                    </td>
+                                    <td th:text="${app.patient.gender.displayName}">Nam</td>
                                     <td>
                                         <div style="font-weight:700; color:var(--dark);">
                                             <span th:text="${#temporals.format(app.appointmentDate, 'dd/MM/yyyy')}">15/05/2026</span>
-                                            <span th:if="${app.appointmentDate.isEqual(today)}" class="badge" style="background:#dcfce7; color:#15803d; font-size:0.7rem; padding:0.15rem 0.4rem; margin-left:0.25rem;">Hôm nay</span>
+                                            <span th:if="${app.appointmentDate.isEqual(today)}" class="badge badge-today"><i class="fa-solid fa-sun"></i> Hôm nay</span>
                                         </div>
                                     </td>
                                     <td>

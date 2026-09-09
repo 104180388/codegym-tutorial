@@ -26,6 +26,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT a FROM Appointment a WHERE a.doctor.id = :doctorId AND a.appointmentDate >= :startDate ORDER BY a.appointmentDate ASC, a.appointmentTime ASC, a.id ASC")
     List<Appointment> findDoctorAppointmentsFromDate(@Param("doctorId") Long doctorId, @Param("startDate") LocalDate startDate);
     
+    @Query("SELECT a FROM Appointment a WHERE a.status = com.example.case_study_2.entity.enums.AppointmentStatus.PENDING ORDER BY a.appointmentDate ASC, a.appointmentTime ASC, a.id ASC")
+    List<Appointment> findPendingAppointments();
+
     @Query("SELECT a FROM Appointment a ORDER BY CASE WHEN a.status = com.example.case_study_2.entity.enums.AppointmentStatus.PENDING THEN 0 ELSE 1 END ASC, a.appointmentDate DESC, a.appointmentTime DESC, a.id DESC")
     List<Appointment> findAllForStaffManagement();
 
@@ -39,6 +42,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("SELECT MAX(a.queueNumber) FROM Appointment a WHERE a.doctor.id = :doctorId AND a.appointmentDate = :appointmentDate")
     Integer findMaxQueueNumberForDoctorAndDate(@Param("doctorId") Long doctorId, @Param("appointmentDate") LocalDate appointmentDate);
+
+    @org.springframework.data.jpa.repository.Modifying(clearAutomatically = true)
+    @org.springframework.transaction.annotation.Transactional
+    @Query("UPDATE Appointment a SET a.status = com.example.case_study_2.entity.enums.AppointmentStatus.CANCELLED, a.cancellationReason = 'Tự động hủy do quá hạn ngày khám' WHERE a.appointmentDate < :today AND a.status NOT IN (com.example.case_study_2.entity.enums.AppointmentStatus.COMPLETED, com.example.case_study_2.entity.enums.AppointmentStatus.CANCELLED)")
+    int autoCancelOverdueAppointments(@Param("today") LocalDate today);
+
+    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate < :today AND a.status NOT IN (com.example.case_study_2.entity.enums.AppointmentStatus.COMPLETED, com.example.case_study_2.entity.enums.AppointmentStatus.CANCELLED)")
+    List<Appointment> findOverdueUncompletedAppointments(@Param("today") LocalDate today);
 
     @Query("SELECT COUNT(a) FROM Appointment a WHERE a.patient.id = :patientId AND a.status NOT IN ('COMPLETED', 'CANCELLED')")
     long countUnfinishedAppointmentsByPatient(@Param("patientId") Long patientId);

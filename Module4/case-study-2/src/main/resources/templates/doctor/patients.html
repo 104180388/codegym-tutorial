@@ -52,7 +52,7 @@
                                 <tr style="cursor:pointer;" th:onclick="|toggleHistory(${item.patient.id})|" title="Nhấn để xem lịch sử khám của bệnh nhân này">
                                     <td style="font-weight:700; color:var(--dark);" th:text="${item.patient.fullName}">Trần Văn Nam</td>
                                     <td th:text="${#temporals.format(item.patient.dob, 'yyyy')}">1998</td>
-                                    <td><span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${item.patient.gender.displayName}">Nam</span></td>
+                                    <td th:text="${item.patient.gender.displayName}">Nam</td>
                                     <td th:text="${item.patient.phone}">0909999888</td>
                                     <td style="font-size:0.9rem;" th:text="${item.patient.address != null and !item.patient.address.isEmpty() ? item.patient.address : 'Chưa cập nhật'}">Hà Nội</td>
                                     <td style="text-align:center;" onclick="event.stopPropagation();">
@@ -75,7 +75,7 @@
                                                     <i class="fa-solid fa-file-medical" style="color:var(--primary); margin-right:0.4rem;"></i>
                                                     Lịch Sử Khám Bệnh Của: <span style="color:var(--primary);" th:text="${item.patient.fullName}"></span>
                                                 </div>
-                                                <span class="badge badge-info" th:text="${item.records != null ? #lists.size(item.records) : 0} + ' lần khám'">0 lần khám</span>
+                                                <span class="badge badge-info"><i class="fa-solid fa-file-waveform"></i> <span th:text="${item.records != null ? #lists.size(item.records) : 0} + ' lần khám'">0 lần khám</span></span>
                                             </div>
 
                                             <div th:if="${item.records == null or #lists.isEmpty(item.records)}" style="text-align:center; color:var(--slate); padding:1.25rem 0; font-size:0.9rem;">

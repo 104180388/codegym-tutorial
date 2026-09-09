@@ -55,6 +55,15 @@
                                             <i class="fa-solid fa-ban"></i> Hủy lịch
                                         </button>
                                     </form>
+                                    <span th:if="${app.status.name() == 'CHECKED_IN'}" class="badge badge-checked-in" style="font-size:0.82rem; font-weight:700; padding:0.35rem 0.85rem;">
+                                        <i class="fa-solid fa-ticket"></i> Số thứ tự: <span th:text="${app.queueNumber != null ? app.queueNumber : '-'}">1</span>
+                                    </span>
+                                    <span th:if="${app.status.name() == 'IN_PROGRESS'}" class="badge badge-in-progress" style="font-size:0.82rem; font-weight:700; padding:0.35rem 0.85rem;">
+                                        <i class="fa-solid fa-stethoscope"></i> Đang khám (STT: <span th:text="${app.queueNumber != null ? app.queueNumber : '-'}">1</span>)
+                                    </span>
+                                    <span th:if="${app.status.name() == 'AWAITING_PAYMENT'}" class="badge badge-awaiting-payment" style="font-size:0.82rem; font-weight:700; padding:0.35rem 0.85rem;">
+                                        <i class="fa-solid fa-hourglass-half"></i> Chờ thanh toán
+                                    </span>
                                     <span th:if="${app.status.name() == 'COMPLETED'}">
                                         <a th:href="@{/patient/medical-history}" class="btn btn-outline btn-sm"><i class="fa-solid fa-file-medical"></i> Xem kết quả</a>
                                     </span>

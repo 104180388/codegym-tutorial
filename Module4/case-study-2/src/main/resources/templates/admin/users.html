@@ -45,12 +45,18 @@
                                 <td th:text="${user.phone}">0901000001</td>
                                 <td>
                                     <span class="badge"
-                                          th:classappend="${user.role.name == 'ROLE_ADMIN'} ? 'badge-cancelled' : (${user.role.name == 'ROLE_DOCTOR'} ? 'badge-confirmed' : (${user.role.name == 'ROLE_STAFF'} ? 'badge-awaiting-payment' : 'badge-completed'))"
-                                          th:text="${user.role.description != null ? user.role.description : user.role.name}">Quản trị viên</span>
+                                          th:classappend="${user.role.name == 'ROLE_ADMIN'} ? 'badge-role-admin' : (${user.role.name == 'ROLE_DOCTOR'} ? 'badge-role-doctor' : (${user.role.name == 'ROLE_STAFF'} ? 'badge-role-staff' : 'badge-role-patient'))">
+                                        <i class="fa-solid" th:classappend="${user.role.name == 'ROLE_ADMIN'} ? 'fa-shield-halved' : (${user.role.name == 'ROLE_DOCTOR'} ? 'fa-user-doctor' : (${user.role.name == 'ROLE_STAFF'} ? 'fa-id-badge' : 'fa-user'))"></i>
+                                        <span th:text="${user.role.description != null ? user.role.description : user.role.name}">Quản trị viên</span>
+                                    </span>
                                 </td>
                                 <td>
-                                    <span th:if="${user.isActive}" class="badge badge-completed">HOẠT ĐỘNG</span>
-                                    <span th:if="${!user.isActive}" class="badge badge-cancelled">BỊ KHÓA</span>
+                                    <span th:if="${user.isActive}" class="badge badge-completed">
+                                        <i class="fa-solid fa-circle-check"></i> HOẠT ĐỘNG
+                                    </span>
+                                    <span th:if="${!user.isActive}" class="badge badge-cancelled">
+                                        <i class="fa-solid fa-circle-xmark"></i> BỊ KHÓA
+                                    </span>
                                 </td>
                                 <td>
                                     <form th:action="@{/admin/users/toggle/{id}(id=${user.id})}" method="post" style="display:inline;">

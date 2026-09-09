@@ -48,9 +48,17 @@
                                     -<span th:text="${#numbers.formatDecimal(inv.discount, 0, 'COMMA', 0, 'POINT')}">0</span> đ
                                 </td>
                                 <td style="font-weight:800; color:var(--primary); font-size:1.05rem;" th:text="${#numbers.formatDecimal(inv.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">150.000 VNĐ</td>
-                                <td><span class="user-badge" style="background:#f1f5f9; color:var(--dark);" th:text="${inv.paymentMethod.displayName}">Tiền mặt</span></td>
                                 <td>
-                                    <span class="badge" th:classappend="${inv.paymentStatus.name() == 'PAID'} ? 'badge-completed' : 'badge-pending'" th:text="${inv.paymentStatus.displayName}">Đã thanh toán</span>
+                                    <span class="badge badge-payment-method">
+                                        <i class="fa-solid fa-wallet"></i>
+                                        <span th:text="${inv.paymentMethod.displayName}">Tiền mặt</span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge" th:classappend="${inv.paymentStatus.name() == 'PAID'} ? 'badge-completed' : 'badge-pending'">
+                                        <i class="fa-solid" th:classappend="${inv.paymentStatus.name() == 'PAID'} ? 'fa-circle-check' : 'fa-clock'"></i>
+                                        <span th:text="${inv.paymentStatus.displayName}">Đã thanh toán</span>
+                                    </span>
                                 </td>
                                 <td style="font-size:0.85rem; color:var(--slate);" th:text="${inv.paymentTime != null ? #temporals.format(inv.paymentTime, 'HH:mm dd/MM/yyyy') : 'Chưa thanh toán'}">10:15 15/05/2026</td>
                             </tr>

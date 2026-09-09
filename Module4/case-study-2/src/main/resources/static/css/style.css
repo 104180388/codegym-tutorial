@@ -169,12 +169,25 @@ strong, b {
 }
 
 .user-badge {
-    background: var(--primary-light);
-    color: var(--primary);
-    padding: 0.35rem 0.85rem;
-    border-radius: 50px;
-    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: #f8fafc;
+    color: #334155;
+    padding: 0.28rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
     font-weight: 600;
+    border: 1px solid #e2e8f0;
+    letter-spacing: 0.025em;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.user-badge:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: var(--primary);
 }
 
 /* Hero Section */
@@ -370,49 +383,169 @@ strong, b {
     font-size: 0.85rem;
 }
 
-/* Status Badges */
+/* Status Badges & Oval Pills */
 .badge {
-    display: inline-block;
-    padding: 0.25rem 0.65rem;
-    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.32rem 0.78rem;
+    font-size: 0.76rem;
     font-weight: 600;
-    border-radius: 50px;
-    text-transform: uppercase;
+    line-height: 1.25;
+    border-radius: 9999px;
+    white-space: nowrap;
+    letter-spacing: 0.025em;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
 }
 
+.badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.badge i {
+    font-size: 0.72rem;
+    opacity: 0.9;
+}
+
+/* Status Badges */
 .badge-pending {
-    background: #fef3c7;
+    background: #fffbeb;
     color: #b45309;
+    border-color: #fde68a;
+    box-shadow: 0 1px 3px rgba(245, 158, 11, 0.08);
 }
 
 .badge-confirmed {
-    background: #e0f2fe;
-    color: #0369a1;
+    background: #f0f9ff;
+    color: #0284c7;
+    border-color: #bae6fd;
+    box-shadow: 0 1px 3px rgba(2, 132, 199, 0.08);
 }
 
 .badge-checked-in {
-    background: #e0e7ff;
+    background: #eef2ff;
     color: #4338ca;
+    border-color: #c7d2fe;
+    box-shadow: 0 1px 3px rgba(67, 56, 202, 0.08);
 }
 
 .badge-in-progress {
-    background: #fae8ff;
-    color: #86198f;
+    background: #faf5ff;
+    color: #7e22ce;
+    border-color: #e9d5ff;
+    box-shadow: 0 1px 3px rgba(126, 34, 206, 0.08);
 }
 
 .badge-awaiting-payment {
-    background: #ffedd5;
+    background: #fff7ed;
     color: #c2410c;
+    border-color: #fed7aa;
+    box-shadow: 0 1px 3px rgba(194, 65, 12, 0.08);
 }
 
 .badge-completed {
-    background: #dcfce7;
-    color: #15803d;
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #a7f3d0;
+    box-shadow: 0 1px 3px rgba(4, 120, 87, 0.08);
 }
 
 .badge-cancelled {
-    background: #fee2e2;
-    color: #b91c1c;
+    background: #fff1f2;
+    color: #be123c;
+    border-color: #fecdd3;
+    box-shadow: 0 1px 3px rgba(190, 18, 60, 0.08);
+}
+
+.badge-info {
+    background: #f0fdfa;
+    color: #0f766e;
+    border-color: #99f6e4;
+    box-shadow: 0 1px 3px rgba(15, 118, 110, 0.08);
+}
+
+.badge-today {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+    font-size: 0.72rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* User Role & Account Type Badges */
+.badge-role-admin {
+    background: #fdf4ff;
+    color: #86198f;
+    border-color: #f0abfc;
+    box-shadow: 0 1px 3px rgba(134, 25, 143, 0.08);
+}
+
+.badge-role-doctor {
+    background: #f0fdfa;
+    color: #0f766e;
+    border-color: #99f6e4;
+    box-shadow: 0 1px 3px rgba(15, 118, 110, 0.08);
+}
+
+.badge-role-staff {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+    box-shadow: 0 1px 3px rgba(29, 78, 216, 0.08);
+}
+
+.badge-role-patient {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #a7f3d0;
+    box-shadow: 0 1px 3px rgba(4, 120, 87, 0.08);
+}
+
+.badge-online {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #a7f3d0;
+    box-shadow: 0 1px 3px rgba(4, 120, 87, 0.08);
+}
+
+.badge-walkin {
+    background: #f8fafc;
+    color: #475569;
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 3px rgba(71, 85, 105, 0.06);
+}
+
+/* Gender Badges */
+.badge-gender-male {
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
+}
+
+.badge-gender-female {
+    background: #fdf2f8;
+    color: #db2777;
+    border-color: #fbcfe8;
+    box-shadow: 0 1px 3px rgba(219, 39, 119, 0.08);
+}
+
+/* Payment Method Badges */
+.badge-payment-method {
+    background: #f8fafc;
+    color: #334155;
+    border-color: #e2e8f0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 /* Tables */
@@ -560,6 +693,13 @@ footer {
     padding: 2rem;
     margin-top: auto;
     font-size: 0.9rem;
+}
+
+footer p {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0;
 }
 
 footer a {

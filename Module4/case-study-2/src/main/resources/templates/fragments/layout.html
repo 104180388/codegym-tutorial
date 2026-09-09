@@ -116,6 +116,9 @@
             <li><a th:href="@{/staff/dashboard}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/dashboard'} ? 'active'"><i
                         class="fa-solid fa-chart-pie"></i> Tổng quan</a></li>
+            <li><a th:href="@{/staff/appointments}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/appointments'} ? 'active'"><i
+                        class="fa-solid fa-calendar-check"></i> Lịch hẹn khám</a></li>
             <li><a th:href="@{/staff/checkin}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/checkin'} ? 'active'"><i
                         class="fa-solid fa-door-open"></i> Tiếp đón & Tiếp nhận</a></li>
@@ -152,8 +155,7 @@
     <!-- Footer Fragment -->
     <footer th:fragment="footer">
         <p>&copy; 2026 Hệ thống Quản lý Phòng khám & Đặt lịch khám bệnh. Tất cả quyền được bảo lưu.</p>
-        <p style="margin-top: 0.5rem; font-size: 0.8rem;">Phát triển bằng Spring Boot 3.x, Thymeleaf, Spring Security &
-            MySQL.</p>
+        <p style="margin-top: 0.5rem;">Phát triển bằng Spring Boot 3.x, Thymeleaf, Spring Security & MySQL.</p>
     </footer>
 
 </body>
