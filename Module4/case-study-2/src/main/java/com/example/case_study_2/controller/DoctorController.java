@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -164,8 +165,12 @@ public class DoctorController {
     @GetMapping("/schedule")
     public String schedule(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
+        LocalDate today = LocalDate.now();
+        LocalDate end30Days = today.plusDays(30);
         model.addAttribute("doctor", doctor);
         model.addAttribute("schedules", doctorService.getDoctorSchedules(doctor.getId()));
+        model.addAttribute("today", today);
+        model.addAttribute("end30Days", end30Days);
         return "doctor/schedule";
     }
 

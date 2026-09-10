@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Bác sĩ - Lịch ca trực')}"></head>
+<head th:replace="~{fragments/layout :: head('Bác sĩ - Lịch ca trực 30 ngày')}"></head>
 <body>
 
     <nav th:replace="~{fragments/layout :: navbar}"></nav>
@@ -10,14 +10,74 @@
             <aside th:replace="~{fragments/layout :: doctorSidebar}"></aside>
 
             <main>
-                <div style="margin-bottom: 1.5rem;">
-                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
-                        <i class="fa-solid fa-calendar-days" style="color:var(--primary);"></i> Lịch Phân Ca Trực Cá Nhân
-                    </h1>
-                    <p style="color:var(--slate); font-size:0.9rem;">Giao diện lịch ca trực theo khung giờ chuẩn (Ca Sáng: 08:00 - 11:30 | Ca Chiều: 13:30 - 16:30).</p>
+                <!-- Title & Breadcrumb -->
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 1.5rem; flex-wrap:wrap; gap:1rem;">
+                    <div>
+                        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark); margin-bottom:0.35rem;">
+                            <i class="fa-solid fa-calendar-days" style="color:var(--primary);"></i> Lịch Phân Ca Trực Cá Nhân (30 Ngày Trong Tháng)
+                        </h1>
+                        <p style="color:var(--slate); font-size:0.9rem; margin:0;">
+                            Theo dõi ca làm việc cá nhân trong tháng (các ngày đã qua và các ngày trong tháng tới hiển thị màu xám, tự động cập nhật theo ngày).
+                        </p>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.5rem; background:#f8fafc; padding:0.6rem 1rem; border-radius:8px; border:1px solid var(--border); font-size:0.88rem; color:var(--dark);">
+                        <i class="fa-regular fa-clock" style="color:var(--primary);"></i>
+                        <span>Khung giờ: <strong>Ca Sáng (08:00 - 11:30)</strong> | <strong>Ca Chiều (13:30 - 16:30)</strong></span>
+                    </div>
                 </div>
 
                 <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- 30-Day Quick Stats Cards -->
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div class="card" style="padding:1.15rem; border-left:4px solid var(--primary); display:flex; align-items:center; gap:1rem;">
+                        <div style="width:48px; height:48px; border-radius:12px; background:rgba(2, 132, 199, 0.12); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:1.35rem;">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.78rem; color:var(--slate); font-weight:600; text-transform:uppercase;">Khoảng thời gian</div>
+                            <div style="font-size:1.05rem; font-weight:700; color:var(--dark);">
+                                Lịch Tháng <span th:text="${today != null ? #temporals.format(today, 'MM/yyyy') : ''}">09/2026</span>
+                            </div>
+                            <div style="font-size:0.75rem; color:var(--slate);">
+                                Hôm nay: <span th:text="${today != null ? #temporals.format(today, 'dd/MM/yyyy') : ''}">10/09/2026</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding:1.15rem; border-left:4px solid #0284c7; display:flex; align-items:center; gap:1rem;">
+                        <div style="width:48px; height:48px; border-radius:12px; background:rgba(2, 132, 199, 0.12); color:#0284c7; display:flex; align-items:center; justify-content:center; font-size:1.35rem;">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.78rem; color:var(--slate); font-weight:600; text-transform:uppercase;">Tổng ca trực trong tháng</div>
+                            <div style="font-size:1.35rem; font-weight:800; color:var(--dark);" id="statTotalShifts">0 ca</div>
+                            <div style="font-size:0.75rem; color:#059669; font-weight:600;" id="statWorkDays">0 ngày làm việc</div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding:1.15rem; border-left:4px solid #0369a1; display:flex; align-items:center; gap:1rem;">
+                        <div style="width:48px; height:48px; border-radius:12px; background:rgba(3, 105, 161, 0.12); color:#0369a1; display:flex; align-items:center; justify-content:center; font-size:1.35rem;">
+                            <i class="fa-solid fa-sun"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.78rem; color:var(--slate); font-weight:600; text-transform:uppercase;">Ca Sáng (08:00 - 11:30)</div>
+                            <div style="font-size:1.35rem; font-weight:800; color:var(--dark);" id="statMorningShifts">0 ca</div>
+                            <div style="font-size:0.75rem; color:var(--slate);">3.5 giờ / ca trực</div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding:1.15rem; border-left:4px solid #2563eb; display:flex; align-items:center; gap:1rem;">
+                        <div style="width:48px; height:48px; border-radius:12px; background:rgba(37, 99, 235, 0.12); color:#2563eb; display:flex; align-items:center; justify-content:center; font-size:1.35rem;">
+                            <i class="fa-solid fa-cloud-sun"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.78rem; color:var(--slate); font-weight:600; text-transform:uppercase;">Ca Chiều (13:30 - 16:30)</div>
+                            <div style="font-size:1.35rem; font-weight:800; color:var(--dark);" id="statAfternoonShifts">0 ca</div>
+                            <div style="font-size:0.75rem; color:var(--slate);">3.0 giờ / ca trực</div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Google Calendar Component Container -->
                 <div id="googleCalendarApp"></div>
@@ -41,7 +101,8 @@
 
             new GoogleCalendarView('googleCalendarApp', {
                 schedules: schedulesData,
-                isAdmin: false
+                isAdmin: false,
+                defaultView: 'month30'
             });
         });
         /*]]>*/

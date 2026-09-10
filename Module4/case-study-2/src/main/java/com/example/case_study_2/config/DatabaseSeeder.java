@@ -250,69 +250,72 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private void seedWeeklySchedules(Doctor dr1, Doctor dr2, Doctor dr3, Doctor dr4, Doctor dr5, Doctor dr6) {
         LocalDate today = LocalDate.now();
-        // Get Monday of current week
-        LocalDate mon = today.minusDays(today.getDayOfWeek().getValue() - 1);
-        LocalDate tue = mon.plusDays(1);
-        LocalDate wed = mon.plusDays(2);
-        LocalDate thu = mon.plusDays(3);
-        LocalDate fri = mon.plusDays(4);
-        LocalDate sat = mon.plusDays(5);
-        LocalDate sun = mon.plusDays(6);
+        // Seed 8 weeks ahead (60 days) to guarantee that doctor schedules for the next 30 days and beyond are always available
+        LocalDate baseMonday = today.minusDays(today.getDayOfWeek().getValue() - 1);
+        for (int week = 0; week < 8; week++) {
+            LocalDate mon = baseMonday.plusWeeks(week);
+            LocalDate tue = mon.plusDays(1);
+            LocalDate wed = mon.plusDays(2);
+            LocalDate thu = mon.plusDays(3);
+            LocalDate fri = mon.plusDays(4);
+            LocalDate sat = mon.plusDays(5);
+            LocalDate sun = mon.plusDays(6);
 
-        // THỨ 2
-        addSchedule(dr1, mon, Shift.MORNING); addSchedule(dr1, mon, Shift.AFTERNOON);
-        addSchedule(dr2, mon, Shift.MORNING);
-        addSchedule(dr3, mon, Shift.MORNING); addSchedule(dr3, mon, Shift.AFTERNOON);
-        addSchedule(dr4, mon, Shift.MORNING);
-        addSchedule(dr5, mon, Shift.AFTERNOON);
-        addSchedule(dr6, mon, Shift.AFTERNOON);
+            // THỨ 2
+            addSchedule(dr1, mon, Shift.MORNING); addSchedule(dr1, mon, Shift.AFTERNOON);
+            addSchedule(dr2, mon, Shift.MORNING);
+            addSchedule(dr3, mon, Shift.MORNING); addSchedule(dr3, mon, Shift.AFTERNOON);
+            addSchedule(dr4, mon, Shift.MORNING);
+            addSchedule(dr5, mon, Shift.AFTERNOON);
+            addSchedule(dr6, mon, Shift.AFTERNOON);
 
-        // THỨ 3
-        addSchedule(dr1, tue, Shift.MORNING); addSchedule(dr1, tue, Shift.AFTERNOON);
-        addSchedule(dr2, tue, Shift.MORNING); addSchedule(dr2, tue, Shift.AFTERNOON);
-        addSchedule(dr3, tue, Shift.MORNING); addSchedule(dr3, tue, Shift.AFTERNOON);
-        addSchedule(dr4, tue, Shift.MORNING); addSchedule(dr4, tue, Shift.AFTERNOON);
-        addSchedule(dr5, tue, Shift.MORNING);
-        addSchedule(dr6, tue, Shift.AFTERNOON);
+            // THỨ 3
+            addSchedule(dr1, tue, Shift.MORNING); addSchedule(dr1, tue, Shift.AFTERNOON);
+            addSchedule(dr2, tue, Shift.MORNING); addSchedule(dr2, tue, Shift.AFTERNOON);
+            addSchedule(dr3, tue, Shift.MORNING); addSchedule(dr3, tue, Shift.AFTERNOON);
+            addSchedule(dr4, tue, Shift.MORNING); addSchedule(dr4, tue, Shift.AFTERNOON);
+            addSchedule(dr5, tue, Shift.MORNING);
+            addSchedule(dr6, tue, Shift.AFTERNOON);
 
-        // THỨ 4
-        addSchedule(dr1, wed, Shift.MORNING); addSchedule(dr1, wed, Shift.AFTERNOON);
-        addSchedule(dr3, wed, Shift.MORNING);
-        addSchedule(dr4, wed, Shift.MORNING);
-        addSchedule(dr5, wed, Shift.MORNING); addSchedule(dr5, wed, Shift.AFTERNOON);
-        addSchedule(dr6, wed, Shift.MORNING); addSchedule(dr6, wed, Shift.AFTERNOON);
+            // THỨ 4
+            addSchedule(dr1, wed, Shift.MORNING); addSchedule(dr1, wed, Shift.AFTERNOON);
+            addSchedule(dr3, wed, Shift.MORNING);
+            addSchedule(dr4, wed, Shift.MORNING);
+            addSchedule(dr5, wed, Shift.MORNING); addSchedule(dr5, wed, Shift.AFTERNOON);
+            addSchedule(dr6, wed, Shift.MORNING); addSchedule(dr6, wed, Shift.AFTERNOON);
 
-        // THỨ 5
-        addSchedule(dr1, thu, Shift.MORNING);
-        addSchedule(dr2, thu, Shift.MORNING); addSchedule(dr2, thu, Shift.AFTERNOON);
-        addSchedule(dr3, thu, Shift.MORNING); addSchedule(dr3, thu, Shift.AFTERNOON);
-        addSchedule(dr4, thu, Shift.MORNING); addSchedule(dr4, thu, Shift.AFTERNOON);
-        addSchedule(dr5, thu, Shift.AFTERNOON);
-        addSchedule(dr6, thu, Shift.MORNING);
+            // THỨ 5
+            addSchedule(dr1, thu, Shift.MORNING);
+            addSchedule(dr2, thu, Shift.MORNING); addSchedule(dr2, thu, Shift.AFTERNOON);
+            addSchedule(dr3, thu, Shift.MORNING); addSchedule(dr3, thu, Shift.AFTERNOON);
+            addSchedule(dr4, thu, Shift.MORNING); addSchedule(dr4, thu, Shift.AFTERNOON);
+            addSchedule(dr5, thu, Shift.AFTERNOON);
+            addSchedule(dr6, thu, Shift.MORNING);
 
-        // THỨ 6
-        addSchedule(dr1, fri, Shift.AFTERNOON);
-        addSchedule(dr2, fri, Shift.MORNING);
-        addSchedule(dr3, fri, Shift.MORNING); addSchedule(dr3, fri, Shift.AFTERNOON);
-        addSchedule(dr4, fri, Shift.MORNING);
-        addSchedule(dr5, fri, Shift.MORNING);
-        addSchedule(dr6, fri, Shift.MORNING); addSchedule(dr6, fri, Shift.AFTERNOON);
+            // THỨ 6
+            addSchedule(dr1, fri, Shift.AFTERNOON);
+            addSchedule(dr2, fri, Shift.MORNING);
+            addSchedule(dr3, fri, Shift.MORNING); addSchedule(dr3, fri, Shift.AFTERNOON);
+            addSchedule(dr4, fri, Shift.MORNING);
+            addSchedule(dr5, fri, Shift.MORNING);
+            addSchedule(dr6, fri, Shift.MORNING); addSchedule(dr6, fri, Shift.AFTERNOON);
 
-        // THỨ 7
-        addSchedule(dr1, sat, Shift.MORNING); addSchedule(dr1, sat, Shift.AFTERNOON);
-        addSchedule(dr2, sat, Shift.MORNING); addSchedule(dr2, sat, Shift.AFTERNOON);
-        addSchedule(dr3, sat, Shift.MORNING); addSchedule(dr3, sat, Shift.AFTERNOON);
-        addSchedule(dr4, sat, Shift.MORNING); addSchedule(dr4, sat, Shift.AFTERNOON);
-        addSchedule(dr5, sat, Shift.MORNING); addSchedule(dr5, sat, Shift.AFTERNOON);
-        addSchedule(dr6, sat, Shift.MORNING); addSchedule(dr6, sat, Shift.AFTERNOON);
+            // THỨ 7
+            addSchedule(dr1, sat, Shift.MORNING); addSchedule(dr1, sat, Shift.AFTERNOON);
+            addSchedule(dr2, sat, Shift.MORNING); addSchedule(dr2, sat, Shift.AFTERNOON);
+            addSchedule(dr3, sat, Shift.MORNING); addSchedule(dr3, sat, Shift.AFTERNOON);
+            addSchedule(dr4, sat, Shift.MORNING); addSchedule(dr4, sat, Shift.AFTERNOON);
+            addSchedule(dr5, sat, Shift.MORNING); addSchedule(dr5, sat, Shift.AFTERNOON);
+            addSchedule(dr6, sat, Shift.MORNING); addSchedule(dr6, sat, Shift.AFTERNOON);
 
-        // CHỦ NHẬT
-        addSchedule(dr1, sun, Shift.MORNING);
-        addSchedule(dr2, sun, Shift.MORNING);
-        addSchedule(dr3, sun, Shift.MORNING);
-        addSchedule(dr4, sun, Shift.MORNING);
-        addSchedule(dr5, sun, Shift.MORNING); addSchedule(dr5, sun, Shift.AFTERNOON);
-        addSchedule(dr6, sun, Shift.AFTERNOON);
+            // CHỦ NHẬT
+            addSchedule(dr1, sun, Shift.MORNING);
+            addSchedule(dr2, sun, Shift.MORNING);
+            addSchedule(dr3, sun, Shift.MORNING);
+            addSchedule(dr4, sun, Shift.MORNING);
+            addSchedule(dr5, sun, Shift.MORNING); addSchedule(dr5, sun, Shift.AFTERNOON);
+            addSchedule(dr6, sun, Shift.AFTERNOON);
+        }
     }
 
     private User createUser(Long id, Role role, String username, String password, String email, String phone,
