@@ -72,13 +72,13 @@
                                     </td>
                                     <td style="text-align:right;">
                                         <div style="display:inline-flex; gap:0.4rem; justify-content:flex-end;">
-                                            <form th:action="@{/staff/appointments/approve/{id}(id=${app.id})}" method="post" style="display:inline;">
+                                            <form th:action="@{/staff/appointments/approve/{id}(id=${app.id})}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xác nhận duyệt lịch khám cho bệnh nhân này?');">
                                                 <button type="submit" class="btn btn-secondary btn-sm" title="Duyệt lịch hẹn">
                                                     <i class="fa-solid fa-check"></i> Duyệt
                                                 </button>
                                             </form>
-                                            <form th:action="@{/staff/appointments/cancel/{id}(id=${app.id})}" method="post" style="display:inline;">
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn hủy/từ chối lịch hẹn này?');" title="Hủy lịch hẹn">
+                                            <form th:action="@{/staff/appointments/cancel/{id}(id=${app.id})}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn hủy / từ chối lịch khám này?');">
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Hủy lịch hẹn">
                                                     <i class="fa-solid fa-xmark"></i> Hủy
                                                 </button>
                                             </form>

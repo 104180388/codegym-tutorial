@@ -124,6 +124,9 @@
             <li><a th:href="@{/staff/checkin}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/checkin'} ? 'active'"><i
                         class="fa-solid fa-door-open"></i> Tiếp đón & Tiếp nhận</a></li>
+            <li><a th:href="@{/staff/checked-in}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/checked-in'} ? 'active'"><i
+                        class="fa-solid fa-user-clock"></i> Đã tiếp nhận</a></li>
             <li><a th:href="@{/staff/billing}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/staff/billing'} ? 'active'"><i
                         class="fa-solid fa-file-invoice-dollar"></i> Quản lý thu ngân</a></li>

@@ -89,7 +89,34 @@ public class StaffController {
         if ("patients".equals(redirect)) {
             return "redirect:/staff/patients";
         }
+        if ("checked-in".equals(redirect)) {
+            return "redirect:/staff/checked-in";
+        }
         return "redirect:/staff/appointments";
+    }
+
+    @GetMapping("/checked-in")
+    public String checkedInAppointments(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "doctorId", required = false) Long doctorId,
+            Model model) {
+        List<Appointment> list = appointmentService.getCheckedInAppointments();
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            String kw = keyword.trim().toLowerCase();
+            list = list.stream().filter(a ->
+                (a.getPatient() != null && a.getPatient().getFullName() != null && a.getPatient().getFullName().toLowerCase().contains(kw)) ||
+                (a.getPatient() != null && a.getPatient().getPhone() != null && a.getPatient().getPhone().contains(kw)) ||
+                (a.getAppointmentCode() != null && a.getAppointmentCode().toLowerCase().contains(kw))
+            ).toList();
+        }
+        if (doctorId != null) {
+            list = list.stream().filter(a -> a.getDoctor() != null && doctorId.equals(a.getDoctor().getId())).toList();
+        }
+        model.addAttribute("appointments", list);
+        model.addAttribute("doctors", doctorService.getAllDoctors());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("selectedDoctorId", doctorId);
+        return "staff/checked-in";
     }
 
     @GetMapping("/checkin")
@@ -108,6 +135,9 @@ public class StaffController {
         redirectAttributes.addFlashAttribute("successMessage", "Đã tiếp đón bệnh nhân " + app.getPatient().getFullName() + " thành công! Số STT khám: " + app.getQueueNumber());
         if ("appointments".equals(redirect)) {
             return "redirect:/staff/appointments";
+        }
+        if ("checked-in".equals(redirect)) {
+            return "redirect:/staff/checked-in";
         }
         return "redirect:/staff/checkin";
     }

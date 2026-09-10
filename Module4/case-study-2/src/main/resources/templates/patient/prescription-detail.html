@@ -24,7 +24,7 @@
                     <div style="text-align:center; border-bottom:2px dashed var(--border); padding-bottom:1.5rem; margin-bottom:1.5rem;">
                         <h2 style="font-size:1.4rem; font-weight:800; color:var(--dark); margin-bottom:0.4rem;">PHIẾU KẾT QUẢ KHÁM & ĐƠN THUỐC ĐIỀU TRỊ</h2>
                         <p style="font-size:0.9rem; color:var(--slate); margin:0;">
-                            Ngày khám: <strong th:text="${#temporals.format(record.appointment.appointmentDate, 'EEEE, dd/MM/yyyy')}">15/05/2026</strong> 
+                            Ngày khám: <strong th:text="${#temporals.format(record.appointment.appointmentDate, 'EEEE, dd/MM/yyyy', new java.util.Locale('vi', 'VN'))}">15/05/2026</strong> 
                             (<span th:text="${#temporals.format(record.appointment.appointmentTime, 'HH:mm')}">08:30</span>)
                         </p>
                     </div>
@@ -84,13 +84,13 @@
                         </a>
                     </div>
 
-                    <!-- 5. Lời dặn của bác sĩ / Dặn dò -->
-                    <div th:if="${record.doctorNotes != null and !record.doctorNotes.isEmpty()}" style="background:#fff7ed; color:#9a3412; border:1.5px solid #fed7aa; padding:1.25rem; border-radius:8px; font-size:0.95rem; line-height:1.6;">
-                        <div style="display:flex; align-items:center; gap:0.5rem; font-weight:700; color:#c2410c; margin-bottom:0.4rem; font-size:1rem;">
-                            <i class="fa-solid fa-comment-medical"></i> 4. Lời dặn của bác sĩ / Dặn dò tái khám:
+                    <!-- 4. Lời dặn của bác sĩ / Dặn dò -->
+                    <div th:if="${record.doctorNotes != null and !record.doctorNotes.isEmpty()}" style="padding:1.25rem; border:1px solid var(--border); border-radius:8px; font-size:0.95rem; line-height:1.6; color:var(--dark);">
+                        <div style="display:flex; align-items:center; gap:0.5rem; font-weight:700; color:var(--dark); margin-bottom:0.4rem; font-size:1.05rem;">
+                            <i class="fa-solid fa-comment-medical" style="color:var(--primary);"></i> 4. Lời dặn của bác sĩ / Dặn dò tái khám:
                         </div>
-                        <p style="margin:0;" th:text="${record.doctorNotes}">Tái khám sau 7 ngày hoặc khi có dấu hiệu sốt cao không hạ.</p>
-                        <p style="font-size:0.82rem; margin-top:0.75rem; color:#b45309; border-top:1px dashed #fdba74; padding-top:0.5rem;">
+                        <p style="margin:0; white-space: pre-line;" th:text="${record.doctorNotes}">Tái khám sau 7 ngày hoặc khi có dấu hiệu sốt cao không hạ.</p>
+                        <p style="font-size:0.82rem; margin-top:0.75rem; color:var(--slate); border-top:1px dashed var(--border); padding-top:0.5rem;">
                             * Lưu ý: Đơn thuốc có giá trị để bệnh nhân tham khảo tự mua tại các nhà thuốc chuẩn GPP trên toàn quốc. Tuân thủ đúng liều lượng và hướng dẫn của bác sĩ.
                         </p>
                     </div>

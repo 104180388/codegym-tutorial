@@ -44,7 +44,7 @@
                         </div>
                     </div>
 
-                    <form th:action="@{/staff/invoices/{id}/pay(id=${appointment.id})}" method="post">
+                    <form th:action="@{/staff/invoices/{id}/pay(id=${appointment.id})}" method="post" onsubmit="return confirmPayment();">
                         <div class="table-responsive" style="margin-bottom:1.5rem;">
                             <table class="table">
                                 <thead>
@@ -113,5 +113,13 @@
     <footer th:replace="~{fragments/layout :: footer}"></footer>
 
     <script th:src="@{/js/main.js}"></script>
+    <script>
+        function confirmPayment() {
+            var total = document.getElementById('totalAmountDisplay') ? document.getElementById('totalAmountDisplay').innerText.trim() : '';
+            var methodSelect = document.getElementById('paymentMethod');
+            var methodText = methodSelect ? methodSelect.options[methodSelect.selectedIndex].text : '';
+            return confirm('Xác nhận đã thu đủ số tiền ' + total + ' bằng hình thức [' + methodText + '] và hoàn tất ca khám này?');
+        }
+    </script>
 </body>
 </html>

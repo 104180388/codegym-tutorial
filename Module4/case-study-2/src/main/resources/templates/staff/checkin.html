@@ -24,7 +24,7 @@
                     <h2 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin-bottom:1rem;">
                         <i class="fa-solid fa-user-plus" style="color:var(--secondary);"></i> 1. Tiếp Đón Khách Vãng Lai Trực Tiếp Tại Quầy
                     </h2>
-                    <form th:action="@{/staff/checkin/walk-in}" method="post">
+                    <form th:action="@{/staff/checkin/walk-in}" method="post" onsubmit="return confirm('Xác nhận tiếp nhận và cấp số thứ tự khám cho bệnh nhân vãng lai này?');">
                         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem;">
                             <div class="form-group">
                                 <label class="form-label" for="fullName">Họ và tên bệnh nhân *</label>
@@ -108,7 +108,7 @@
                                     <td th:text="${app.service.name}">Khám nội tổng quát</td>
                                     <td><span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status.name()).replace('_', '-')}" th:text="${app.status.displayName}">Đã xác nhận</span></td>
                                     <td>
-                                        <form th:action="@{/staff/checkin/{id}(id=${app.id})}" method="post">
+                                        <form th:action="@{/staff/checkin/{id}(id=${app.id})}" method="post" onsubmit="return confirm('Xác nhận tiếp đón và cấp số thứ tự khám cho bệnh nhân này?');">
                                             <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-clipboard-check"></i> Cấp STT Khám</button>
                                         </form>
                                     </td>

@@ -275,6 +275,11 @@ public class AppointmentService {
         return appointmentRepository.findPendingAppointments();
     }
 
+    public List<Appointment> getCheckedInAppointments() {
+        autoCancelOverdueAppointments();
+        return appointmentRepository.findCheckedInAppointments();
+    }
+
     public List<Appointment> getAllAppointmentsForStaff() {
         autoCancelOverdueAppointments();
         return appointmentRepository.findAllForStaffManagement();

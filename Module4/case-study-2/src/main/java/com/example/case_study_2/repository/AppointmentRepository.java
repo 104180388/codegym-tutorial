@@ -29,6 +29,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT a FROM Appointment a WHERE a.status = com.example.case_study_2.entity.enums.AppointmentStatus.PENDING ORDER BY a.appointmentDate ASC, a.appointmentTime ASC, a.id ASC")
     List<Appointment> findPendingAppointments();
 
+    @Query("SELECT a FROM Appointment a WHERE a.status = com.example.case_study_2.entity.enums.AppointmentStatus.CHECKED_IN ORDER BY a.appointmentDate DESC, a.queueNumber ASC, a.appointmentTime ASC, a.id DESC")
+    List<Appointment> findCheckedInAppointments();
+
     @Query("SELECT a FROM Appointment a ORDER BY CASE WHEN a.status = com.example.case_study_2.entity.enums.AppointmentStatus.PENDING THEN 0 ELSE 1 END ASC, a.appointmentDate DESC, a.appointmentTime DESC, a.id DESC")
     List<Appointment> findAllForStaffManagement();
 

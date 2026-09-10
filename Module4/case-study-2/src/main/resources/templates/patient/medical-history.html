@@ -46,7 +46,7 @@
                                 <p style="font-size:0.85rem; color:var(--slate); margin:0;">
                                     <i class="fa-regular fa-calendar" style="color:var(--primary);"></i> Ngày khám:
                                     <strong style="color:var(--dark);"
-                                        th:text="${#temporals.format(record.appointment.appointmentDate, 'EEEE, dd/MM/yyyy')}">15/05/2026</strong>
+                                        th:text="${#temporals.format(record.appointment.appointmentDate, 'EEEE, dd/MM/yyyy', new java.util.Locale('vi', 'VN'))}">15/05/2026</strong>
                                     (<span
                                         th:text="${#temporals.format(record.appointment.appointmentTime, 'HH:mm')}">08:30</span>)
                                 </p>
