@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -37,6 +38,9 @@ public class AdminController {
 
     @Autowired
     private DoctorService doctorService;
+
+    @Autowired
+    private ShiftChangeService shiftChangeService;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -169,4 +173,68 @@ public class AdminController {
         return "admin/patients";
     }
 
+    @GetMapping("/shift-requests")
+    public String shiftRequests(
+            @RequestParam(value = "status", required = false, defaultValue = "ALL") String status,
+            Model model) {
+        List<com.example.case_study_2.entity.ShiftChangeRequest> requests;
+        if ("ALL".equalsIgnoreCase(status) || status.isEmpty()) {
+            requests = shiftChangeService.getAllRequests();
+        } else {
+            try {
+                com.example.case_study_2.entity.enums.ShiftRequestStatus reqStatus = com.example.case_study_2.entity.enums.ShiftRequestStatus.valueOf(status);
+                requests = shiftChangeService.getRequestsByStatus(reqStatus);
+            } catch (Exception e) {
+                requests = shiftChangeService.getAllRequests();
+            }
+        }
+
+        List<com.example.case_study_2.entity.ShiftChangeRequest> all = shiftChangeService.getAllRequests();
+        long totalCount = all.size();
+        long pendingCount = all.stream().filter(r -> r.getStatus() == com.example.case_study_2.entity.enums.ShiftRequestStatus.PENDING).count();
+        long approvedCount = all.stream().filter(r -> r.getStatus() == com.example.case_study_2.entity.enums.ShiftRequestStatus.APPROVED).count();
+        long rejectedCount = all.stream().filter(r -> r.getStatus() == com.example.case_study_2.entity.enums.ShiftRequestStatus.REJECTED).count();
+
+        model.addAttribute("requests", requests);
+        model.addAttribute("currentStatus", status);
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("pendingCount", pendingCount);
+        model.addAttribute("approvedCount", approvedCount);
+        model.addAttribute("rejectedCount", rejectedCount);
+        return "admin/shift-requests";
+    }
+
+    @PostMapping("/shift-requests/{id}/approve")
+    public String approveShiftRequest(
+            @PathVariable("id") Long id,
+            @RequestParam(value = "adminNotes", required = false) String adminNotes,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.example.case_study_2.config.CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            shiftChangeService.approveRequest(id, userDetails.getUser().getId(), adminNotes);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã phê duyệt yêu cầu thành công! Lịch phân ca trực của bác sĩ đã được cập nhật tự động.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể phê duyệt yêu cầu: " + e.getMessage());
+        }
+        return "redirect:/admin/shift-requests";
+    }
+
+    @PostMapping("/shift-requests/{id}/reject")
+    public String rejectShiftRequest(
+            @PathVariable("id") Long id,
+            @RequestParam(value = "adminNotes", required = false) String adminNotes,
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.example.case_study_2.config.CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            shiftChangeService.rejectRequest(id, userDetails.getUser().getId(), adminNotes);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã từ chối yêu cầu nghỉ/đổi ca.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể từ chối yêu cầu: " + e.getMessage());
+        }
+        return "redirect:/admin/shift-requests";
+    }
 }

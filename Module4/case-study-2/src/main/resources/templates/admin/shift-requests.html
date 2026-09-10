@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Duyệt Đơn Xin Nghỉ Ca')}"></head>
+
+<body>
+    <!-- Navbar -->
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <!-- Admin Sidebar -->
+            <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
+
+            <!-- Main Content -->
+            <main>
+                <!-- Alerts -->
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+            <!-- Page Header -->
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                        <span class="user-badge" style="background: #fdf2f8; color: #be185d; border-color: #fbcfe8;">
+                            <i class="fa-solid fa-shield-halved"></i> Quản trị hệ thống
+                        </span>
+                    </div>
+                    <h1 class="h2" style="margin: 0; color: var(--dark); font-weight: 700;">
+                        <i class="fa-solid fa-clipboard-check" style="color: var(--primary); margin-right: 0.5rem;"></i>
+                        Phê Duyệt Đơn Xin Nghỉ Ca Của Bác Sĩ
+                    </h1>
+                    <p style="color: var(--slate); margin-top: 0.25rem; font-size: 0.92rem;">
+                        Xem xét, phê duyệt hoặc từ chối các đơn xin nghỉ ca làm việc từ Bác sĩ. Ca trực của bác sĩ sẽ tự động được gỡ khỏi lịch phân ca khi được phê duyệt.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <a th:href="@{/admin/schedules}" class="btn btn-outline">
+                        <i class="fa-solid fa-calendar-days"></i> Quản lý Phân ca trực bác sĩ
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+                <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--primary); display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+                        <i class="fa-solid fa-file-invoice"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--slate); text-transform: uppercase;">Tổng số đơn</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--dark);" th:text="${totalCount}">0</div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 1.25rem; border-left: 4px solid #f59e0b; display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--slate); text-transform: uppercase;">Chờ phê duyệt</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #d97706;" th:text="${pendingCount}">0</div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--success); display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: #dcfce7; color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--slate); text-transform: uppercase;">Đã phê duyệt</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);" th:text="${approvedCount}">0</div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--danger); display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: #fee2e2; color: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--slate); text-transform: uppercase;">Đã từ chối</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--danger);" th:text="${rejectedCount}">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Section Card -->
+            <div class="card" style="padding: 1.5rem;">
+                <!-- Status Filter Tabs -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <a th:href="@{/admin/shift-requests(status='ALL')}" 
+                           class="btn btn-sm"
+                           th:classappend="${currentStatus == 'ALL' or currentStatus == null} ? 'btn-primary' : 'btn-outline'">
+                            <i class="fa-solid fa-list"></i> Tất cả (<span th:text="${totalCount}"></span>)
+                        </a>
+                        <a th:href="@{/admin/shift-requests(status='PENDING')}" 
+                           class="btn btn-sm"
+                           th:classappend="${currentStatus == 'PENDING'} ? 'btn-primary' : 'btn-outline'"
+                           style="border-color: #f59e0b;"
+                           th:styleappend="${currentStatus == 'PENDING'} ? 'background: #d97706; border-color: #d97706;' : 'color: #d97706;'">
+                            <i class="fa-solid fa-hourglass-half"></i> Chờ phê duyệt (<span th:text="${pendingCount}"></span>)
+                        </a>
+                        <a th:href="@{/admin/shift-requests(status='APPROVED')}" 
+                           class="btn btn-sm"
+                           th:classappend="${currentStatus == 'APPROVED'} ? 'btn-primary' : 'btn-outline'"
+                           style="border-color: var(--success);"
+                           th:styleappend="${currentStatus == 'APPROVED'} ? 'background: var(--success); border-color: var(--success);' : 'color: var(--success);'">
+                            <i class="fa-solid fa-circle-check"></i> Đã phê duyệt (<span th:text="${approvedCount}"></span>)
+                        </a>
+                        <a th:href="@{/admin/shift-requests(status='REJECTED')}" 
+                           class="btn btn-sm"
+                           th:classappend="${currentStatus == 'REJECTED'} ? 'btn-primary' : 'btn-outline'"
+                           style="border-color: var(--danger);"
+                           th:styleappend="${currentStatus == 'REJECTED'} ? 'background: var(--danger); border-color: var(--danger);' : 'color: var(--danger);'">
+                            <i class="fa-solid fa-circle-xmark"></i> Đã từ chối (<span th:text="${rejectedCount}"></span>)
+                        </a>
+                    </div>
+                    <span style="font-size: 0.85rem; color: var(--slate);" th:text="'Hiển thị: ' + ${requests.size()} + ' đơn'"></span>
+                </div>
+
+                <!-- Requests Table -->
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f8fafc; border-bottom: 2px solid var(--border); text-align: left;">
+                                <th style="padding: 0.85rem 1rem;">Mã đơn</th>
+                                <th style="padding: 0.85rem 1rem;">Bác sĩ yêu cầu</th>
+                                <th style="padding: 0.85rem 1rem;">Ca trực xin nghỉ</th>
+                                <th style="padding: 0.85rem 1rem;">Lý do của Bác sĩ</th>
+                                <th style="padding: 0.85rem 1rem;">Ngày gửi</th>
+                                <th style="padding: 0.85rem 1rem;">Trạng thái</th>
+                                <th style="padding: 0.85rem 1rem; text-align: center;">Thao tác phê duyệt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${requests == null or requests.isEmpty()}">
+                                <td colspan="7" style="text-align: center; padding: 2.5rem; color: var(--slate);">
+                                    <div style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 0.75rem;">
+                                        <i class="fa-regular fa-clipboard"></i>
+                                    </div>
+                                    <div style="font-weight: 600; font-size: 1rem; color: #64748b;">Không có đơn xin nghỉ nào trong danh mục này.</div>
+                                </td>
+                            </tr>
+                            <tr th:each="req : ${requests}" style="border-bottom: 1px solid var(--border); vertical-align: middle;">
+                                <td style="padding: 1rem; font-weight: 700; color: var(--slate);" th:text="'#' + ${req.id}"></td>
+                                <td style="padding: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                                        <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
+                                            <i class="fa-solid fa-user-doctor"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 700; color: var(--dark);" th:text="${req.doctor.user.fullName}"></div>
+                                            <div style="font-size: 0.75rem; color: var(--slate);">
+                                                <span th:text="${req.doctor.degree}"></span> | <span th:text="${req.doctor.user.phone}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="padding: 1rem;">
+                                    <div style="font-weight: 700; color: var(--dark);" th:text="${#temporals.format(req.currentDate, 'dd/MM/yyyy')}"></div>
+                                    <span th:if="${req.currentShift.name() == 'MORNING'}" class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 0.75rem; margin-top: 0.2rem;">
+                                        <i class="fa-solid fa-sun"></i> Ca Sáng (07:30 - 11:30)
+                                    </span>
+                                    <span th:if="${req.currentShift.name() == 'AFTERNOON'}" class="badge" style="background: #eff6ff; color: #1d4ed8; font-size: 0.75rem; margin-top: 0.2rem;">
+                                        <i class="fa-solid fa-cloud-sun"></i> Ca Chiều (13:30 - 17:30)
+                                    </span>
+                                </td>
+                                <td style="padding: 1rem; max-width: 250px;">
+                                    <div style="font-size: 0.88rem; color: var(--dark); line-height: 1.4;" th:text="${req.reason}"></div>
+                                </td>
+                                <td style="padding: 1rem; font-size: 0.82rem; color: var(--slate);" th:text="${#temporals.format(req.createdAt, 'HH:mm dd/MM/yyyy')}"></td>
+                                <td style="padding: 1rem;">
+                                    <span th:if="${req.status.name() == 'PENDING'}" class="badge" style="background: #fef3c7; color: #b45309; font-weight: 700; padding: 0.35rem 0.65rem; border-radius: 50px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                        <i class="fa-solid fa-clock"></i> Chờ duyệt
+                                    </span>
+                                    <span th:if="${req.status.name() == 'APPROVED'}" class="badge" style="background: #dcfce7; color: #15803d; font-weight: 700; padding: 0.35rem 0.65rem; border-radius: 50px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                        <i class="fa-solid fa-circle-check"></i> Đã duyệt
+                                    </span>
+                                    <span th:if="${req.status.name() == 'REJECTED'}" class="badge" style="background: #fee2e2; color: #b91c1c; font-weight: 700; padding: 0.35rem 0.65rem; border-radius: 50px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                        <i class="fa-solid fa-circle-xmark"></i> Từ chối
+                                    </span>
+                                    <span th:if="${req.status.name() == 'CANCELLED'}" class="badge" style="background: #f1f5f9; color: #64748b; font-weight: 600; padding: 0.35rem 0.65rem; border-radius: 50px; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                        <i class="fa-solid fa-ban"></i> Đã hủy
+                                    </span>
+                                </td>
+                                <td style="padding: 1rem; text-align: center;">
+                                    <!-- Actions for PENDING -->
+                                    <div th:if="${req.status.name() == 'PENDING'}" style="display: inline-flex; gap: 0.5rem; align-items: center;">
+                                        <button type="button" class="btn btn-sm" style="background: var(--success); color: white; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer;"
+                                                th:data-id="${req.id}"
+                                                th:data-doctor-name="${req.doctor.user.fullName}"
+                                                th:data-date="${#temporals.format(req.currentDate, 'dd/MM/yyyy')}"
+                                                th:data-shift="${req.currentShift.name() == 'MORNING' ? 'Ca Sáng' : 'Ca Chiều'}"
+                                                onclick="openApproveModal(this.dataset.id, this.dataset.doctorName, this.dataset.date, this.dataset.shift)">
+                                            <i class="fa-solid fa-check"></i> Duyệt
+                                        </button>
+                                        <button type="button" class="btn btn-sm" style="background: var(--danger); color: white; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer;"
+                                                th:data-id="${req.id}"
+                                                th:data-doctor-name="${req.doctor.user.fullName}"
+                                                onclick="openRejectModal(this.dataset.id, this.dataset.doctorName)">
+                                            <i class="fa-solid fa-xmark"></i> Từ chối
+                                        </button>
+                                    </div>
+
+                                    <!-- Processed Info for APPROVED / REJECTED -->
+                                    <div th:if="${req.status.name() != 'PENDING'}" style="font-size: 0.8rem; color: var(--slate); text-align: left;">
+                                        <div th:if="${req.reviewedAt != null}" style="font-weight: 600; color: #475569;">
+                                            <i class="fa-regular fa-clock"></i> <span th:text="${#temporals.format(req.reviewedAt, 'HH:mm dd/MM/yyyy')}"></span>
+                                        </div>
+                                        <div th:if="${req.adminNotes != null and !req.adminNotes.isEmpty()}" style="font-style: italic; color: #334155; margin-top: 0.2rem; background: #f8fafc; padding: 0.25rem 0.5rem; border-radius: 4px; border-left: 2px solid var(--primary);" th:text="'Ghi chú: ' + ${req.adminNotes}"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        </div>
+    </div>
+
+    <!-- Modal Approve Request -->
+    <dialog id="approveModal" class="doctor-dialog" style="max-width: 500px;">
+        <div class="doctor-modal-header" style="background: #f0fdf4; border-bottom-color: #bbf7d0;">
+            <h2 style="color: #166534;">
+                <i class="fa-solid fa-circle-check" style="color: var(--success);"></i>
+                Phê Duyệt Đơn Xin Nghỉ Ca
+            </h2>
+            <button type="button" class="doctor-modal-close-btn" onclick="closeApproveModal()">&times;</button>
+        </div>
+        <form id="approveForm" method="post">
+            <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                <div style="font-size: 0.95rem; color: var(--dark); line-height: 1.5;">
+                    Bạn đang đồng ý duyệt cho Bác sĩ <b id="approveDoctorNameText"></b> nghỉ làm vào ngày <b id="approveDateText"></b> (<b id="approveShiftText"></b>).
+                </div>
+                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.75rem; font-size: 0.82rem; color: #1e40af;">
+                    <i class="fa-solid fa-info-circle"></i> <b>Lưu ý:</b> Ca trực này sẽ tự động được gỡ khỏi lịch phân ca của bác sĩ (doctor_schedules) ngay lập tức.
+                </div>
+                <div>
+                    <label class="form-label" style="display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.88rem;">
+                        Ghi chú phản hồi (Không bắt buộc):
+                    </label>
+                    <textarea name="adminNotes" rows="2" class="form-control" placeholder="Nhập ghi chú phản hồi cho bác sĩ nếu cần..." style="width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.88rem;"></textarea>
+                </div>
+            </div>
+            <div class="doctor-modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeApproveModal()">Đóng</button>
+                <button type="submit" class="btn btn-primary" style="background: var(--success); border-color: var(--success);">
+                    <i class="fa-solid fa-check"></i> Xác nhận Phê duyệt
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Modal Reject Request -->
+    <dialog id="rejectModal" class="doctor-dialog" style="max-width: 500px;">
+        <div class="doctor-modal-header" style="background: #fef2f2; border-bottom-color: #fecaca;">
+            <h2 style="color: #991b1b;">
+                <i class="fa-solid fa-circle-xmark" style="color: var(--danger);"></i>
+                Từ Chối Đơn Xin Nghỉ Ca
+            </h2>
+            <button type="button" class="doctor-modal-close-btn" onclick="closeRejectModal()">&times;</button>
+        </div>
+        <form id="rejectForm" method="post">
+            <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                <div style="font-size: 0.95rem; color: var(--dark); line-height: 1.5;">
+                    Bạn chuẩn bị từ chối đơn xin nghỉ của Bác sĩ <b id="rejectDoctorNameText"></b>. Lịch trực phân ca của bác sĩ sẽ được giữ nguyên không đổi.
+                </div>
+                <div>
+                    <label class="form-label" style="display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.88rem;">
+                        Lý do từ chối: <span style="color: var(--danger);">*</span>
+                    </label>
+                    <textarea name="adminNotes" rows="3" class="form-control" placeholder="Vui lòng nhập lý do từ chối để bác sĩ nắm thông tin (vd: ca trực thiếu nhân sự, phòng khám đang quá tải...)" required style="width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.88rem;"></textarea>
+                </div>
+            </div>
+            <div class="doctor-modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeRejectModal()">Đóng</button>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa-solid fa-xmark"></i> Xác nhận Từ chối
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Footer -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script>
+        function openApproveModal(id, doctorName, date, shift) {
+            var form = document.getElementById('approveForm');
+            if (form) form.action = '/admin/shift-requests/' + id + '/approve';
+            document.getElementById('approveDoctorNameText').textContent = doctorName;
+            document.getElementById('approveDateText').textContent = date;
+            document.getElementById('approveShiftText').textContent = shift;
+
+            var modal = document.getElementById('approveModal');
+            if (modal) modal.showModal();
+        }
+
+        function closeApproveModal() {
+            var modal = document.getElementById('approveModal');
+            if (modal) modal.close();
+        }
+
+        function openRejectModal(id, doctorName) {
+            var form = document.getElementById('rejectForm');
+            if (form) form.action = '/admin/shift-requests/' + id + '/reject';
+            document.getElementById('rejectDoctorNameText').textContent = doctorName;
+
+            var modal = document.getElementById('rejectModal');
+            if (modal) modal.showModal();
+        }
+
+        function closeRejectModal() {
+            var modal = document.getElementById('rejectModal');
+            if (modal) modal.close();
+        }
+    </script>
+</body>
+
+</html>

@@ -2,6 +2,7 @@ package com.example.case_study_2.repository;
 
 import com.example.case_study_2.entity.Appointment;
 import com.example.case_study_2.entity.enums.AppointmentStatus;
+import com.example.case_study_2.entity.enums.Shift;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,6 +43,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("SELECT COUNT(a) FROM Appointment a WHERE a.doctor.id = :doctorId AND a.appointmentDate = :appointmentDate AND a.appointmentTime = :appointmentTime AND a.status != 'CANCELLED'")
     long countBookedSlot(@Param("doctorId") Long doctorId, @Param("appointmentDate") LocalDate appointmentDate, @Param("appointmentTime") LocalTime appointmentTime);
+
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.doctor.id = :doctorId AND a.appointmentDate = :appointmentDate AND a.status != com.example.case_study_2.entity.enums.AppointmentStatus.CANCELLED AND ((:isMorning = true AND a.appointmentTime < :midday) OR (:isMorning = false AND a.appointmentTime >= :midday))")
+    long countBookedAppointmentsForDoctorShift(@Param("doctorId") Long doctorId, @Param("appointmentDate") LocalDate appointmentDate, @Param("isMorning") boolean isMorning, @Param("midday") LocalTime midday);
+
+    default long countBookedAppointmentsForDoctorAndShift(Long doctorId, LocalDate appointmentDate, Shift shift) {
+        boolean isMorning = (shift == Shift.MORNING);
+        return countBookedAppointmentsForDoctorShift(doctorId, appointmentDate, isMorning, LocalTime.of(12, 0));
+    }
 
     @Query("SELECT MAX(a.queueNumber) FROM Appointment a WHERE a.doctor.id = :doctorId AND a.appointmentDate = :appointmentDate")
     Integer findMaxQueueNumberForDoctorAndDate(@Param("doctorId") Long doctorId, @Param("appointmentDate") LocalDate appointmentDate);

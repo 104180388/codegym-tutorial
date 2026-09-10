@@ -45,6 +45,12 @@ public class DoctorController {
     @Autowired
     private com.example.case_study_2.service.AiDiagnosisService aiDiagnosisService;
 
+    @Autowired
+    private com.example.case_study_2.service.ShiftChangeService shiftChangeService;
+
+    @Autowired
+    private com.example.case_study_2.repository.AppointmentRepository appointmentRepository;
+
     @GetMapping("/dashboard")
     public String dashboard(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
@@ -273,5 +279,78 @@ public class DoctorController {
             @RequestBody com.example.case_study_2.dto.AiDiagnoseRequestDto request) {
         com.example.case_study_2.dto.AiDiagnoseResponseDto response = aiDiagnosisService.generateDiagnosis(request);
         return org.springframework.http.ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/shift-requests")
+    public String shiftRequests(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
+        List<com.example.case_study_2.entity.ShiftChangeRequest> requests = shiftChangeService.getDoctorRequests(doctor.getId());
+        
+        LocalDate today = LocalDate.now();
+        LocalDate endOfNextWeek = today.with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY)).plusWeeks(1);
+
+        // All scheduled shifts within this week and next week
+        List<com.example.case_study_2.entity.DoctorSchedule> allWeekSchedules = doctorService.getDoctorSchedules(doctor.getId()).stream()
+                .filter(s -> !s.getWorkDate().isBefore(today) && !s.getWorkDate().isAfter(endOfNextWeek))
+                .sorted(java.util.Comparator.comparing(com.example.case_study_2.entity.DoctorSchedule::getWorkDate)
+                        .thenComparing(com.example.case_study_2.entity.DoctorSchedule::getShift))
+                .collect(java.util.stream.Collectors.toList());
+
+        // Eligible shifts for leave (ONLY shifts that have 0 booked patient appointments)
+        List<com.example.case_study_2.entity.DoctorSchedule> eligibleSchedules = allWeekSchedules.stream()
+                .filter(s -> appointmentRepository.countBookedAppointmentsForDoctorAndShift(doctor.getId(), s.getWorkDate(), s.getShift()) == 0)
+                .collect(java.util.stream.Collectors.toList());
+
+        long shiftsWithBookingsCount = allWeekSchedules.size() - eligibleSchedules.size();
+
+        long pendingCount = requests.stream().filter(r -> r.getStatus() == com.example.case_study_2.entity.enums.ShiftRequestStatus.PENDING).count();
+        long approvedCount = requests.stream().filter(r -> r.getStatus() == com.example.case_study_2.entity.enums.ShiftRequestStatus.APPROVED).count();
+        long rejectedCount = requests.stream().filter(r -> r.getStatus() == com.example.case_study_2.entity.enums.ShiftRequestStatus.REJECTED).count();
+
+        model.addAttribute("doctor", doctor);
+        model.addAttribute("requests", requests);
+        model.addAttribute("schedules", eligibleSchedules);
+        model.addAttribute("shiftsWithBookingsCount", shiftsWithBookingsCount);
+        model.addAttribute("pendingCount", pendingCount);
+        model.addAttribute("approvedCount", approvedCount);
+        model.addAttribute("rejectedCount", rejectedCount);
+        model.addAttribute("today", today);
+        model.addAttribute("endOfNextWeek", endOfNextWeek);
+        return "doctor/shift-requests";
+    }
+
+    @PostMapping("/shift-requests/create")
+    public String createShiftRequest(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam("scheduleId") Long scheduleId,
+            @RequestParam("reason") String reason,
+            RedirectAttributes redirectAttributes) {
+        try {
+            Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
+            shiftChangeService.createLeaveRequest(doctor.getId(), scheduleId, reason);
+            redirectAttributes.addFlashAttribute("successMessage", "Gửi yêu cầu xin nghỉ thành công! Yêu cầu của bạn đã được chuyển tới Admin để phê duyệt.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã có lỗi xảy ra khi tạo yêu cầu: " + e.getMessage());
+        }
+        return "redirect:/doctor/shift-requests";
+    }
+
+    @PostMapping("/shift-requests/{id}/cancel")
+    public String cancelShiftRequest(
+            @PathVariable("id") Long requestId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        try {
+            Doctor doctor = doctorService.getDoctorByUserId(userDetails.getUser().getId());
+            shiftChangeService.cancelRequest(requestId, doctor.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Hủy yêu cầu xin nghỉ thành công!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể hủy yêu cầu: " + e.getMessage());
+        }
+        return "redirect:/doctor/shift-requests";
     }
 }

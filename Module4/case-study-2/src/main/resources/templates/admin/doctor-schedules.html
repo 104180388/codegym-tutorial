@@ -12,11 +12,16 @@
             <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
 
             <main>
-                <div style="margin-bottom: 1.5rem;">
-                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
-                        <i class="fa-solid fa-calendar-check" style="color:var(--primary);"></i> Quản Lý & Phân Ca Trực Bác Sĩ
-                    </h1>
-                    <p style="color:var(--slate); font-size:0.9rem;">Giao diện lịch ca trực dạng Google Calendar cho phép phân ca, sửa ca và xóa ca trực trực tiếp trên lịch.</p>
+                <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark); margin: 0;">
+                            <i class="fa-solid fa-calendar-check" style="color:var(--primary);"></i> Quản Lý & Phân Ca Trực Bác Sĩ
+                        </h1>
+                        <p style="color:var(--slate); font-size:0.9rem; margin-top: 0.25rem;">Giao diện lịch ca trực dạng Google Calendar cho phép phân ca, sửa ca và xóa ca trực trực tiếp trên lịch.</p>
+                    </div>
+                    <a th:href="@{/admin/shift-requests}" class="btn btn-outline" style="display:inline-flex; align-items:center; gap:0.4rem; border-color:var(--primary); color:var(--primary); font-weight: 600;">
+                        <i class="fa-solid fa-clipboard-check"></i> Duyệt Đơn Xin Nghỉ Ca
+                    </a>
                 </div>
 
                 <div th:replace="~{fragments/layout :: alerts}"></div>

@@ -22,37 +22,90 @@
         <a th:href="@{/}" class="navbar-brand">
             <i class="fa-solid fa-notes-medical"></i> Clinic<span>Care</span>
         </a>
-        <ul class="nav-links">
-            <li><a th:href="@{/}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/'} ? 'active'">Trang chủ</a></li>
-            <li><a th:href="@{/services}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/services'} ? 'active'">Dịch vụ</a></li>
-            <li><a th:href="@{/doctors}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctors'} ? 'active'">Bác sĩ</a></li>
-            <li><a th:href="@{/news}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/news')} ? 'active'">Tin tức</a></li>
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
+            <ul class="nav-links">
+                <li><a th:href="@{/}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/'} ? 'active'">Trang chủ</a></li>
+                <li><a th:href="@{/services}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/services'} ? 'active'">Dịch vụ</a></li>
+                <li><a th:href="@{/doctors}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctors'} ? 'active'">Bác sĩ</a></li>
+                <li><a th:href="@{/news}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/news')} ? 'active'">Tin tức</a></li>
 
-            <!-- Patient Links (Visible only when logged in as Patient) -->
-            <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/booking}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/booking'} ? 'active'">Đặt lịch khám</a></li>
-            <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/appointments}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/appointments'} ? 'active'">Lịch hẹn của tôi</a></li>
-            <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/profile}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/profile'} ? 'active'"><i class="fa-solid fa-user"></i> Tài khoản</a></li>
+                <!-- Patient Links (Visible only when logged in as Patient) -->
+                <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/booking}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/booking'} ? 'active'">Đặt lịch khám</a></li>
+                <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/appointments}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/appointments'} ? 'active'">Lịch hẹn của tôi</a></li>
+                <li sec:authorize="hasAuthority('ROLE_PATIENT')"><a th:href="@{/patient/profile}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/patient/profile'} ? 'active'"><i class="fa-solid fa-user"></i> Tài khoản</a></li>
 
-            <!-- Doctor Link (Visible only when logged in as Doctor) -->
-            <li sec:authorize="hasAuthority('ROLE_DOCTOR')"><a th:href="@{/doctor/dashboard}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/doctor')} ? 'active'">Tổng quan Bác sĩ</a></li>
+                <!-- Doctor Link (Visible only when logged in as Doctor) -->
+                <li sec:authorize="hasAuthority('ROLE_DOCTOR')"><a th:href="@{/doctor/dashboard}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/doctor')} ? 'active'">Tổng quan Bác sĩ</a></li>
 
-            <!-- Staff Link (Visible only when logged in as Staff) -->
-            <li sec:authorize="hasAuthority('ROLE_STAFF')"><a th:href="@{/staff/dashboard}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/staff')} ? 'active'">Tổng quan Lễ tân</a></li>
+                <!-- Staff Link (Visible only when logged in as Staff) -->
+                <li sec:authorize="hasAuthority('ROLE_STAFF')"><a th:href="@{/staff/dashboard}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/staff')} ? 'active'">Tổng quan Lễ tân</a></li>
 
-            <!-- Admin Link (Visible only when logged in as Admin) -->
-            <li sec:authorize="hasAuthority('ROLE_ADMIN')"><a th:href="@{/admin/dashboard}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin')} ? 'active'">Tổng quan Quản trị</a></li>
+                <!-- Admin Link (Visible only when logged in as Admin) -->
+                <li sec:authorize="hasAuthority('ROLE_ADMIN')"><a th:href="@{/admin/dashboard}" th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin')} ? 'active'">Tổng quan Quản trị</a></li>
 
-            <!-- Unauthenticated Links (Shows ONLY 5 items: Trang chủ, Dịch vụ, Bác sĩ, Đăng nhập, Đăng ký) -->
-            <li sec:authorize="isAnonymous()"><a th:href="@{/login}" class="btn btn-outline btn-sm">Đăng nhập</a></li>
-            <li sec:authorize="isAnonymous()"><a th:href="@{/register}" class="btn btn-primary btn-sm">Đăng ký</a></li>
+                <!-- Unauthenticated Links (Shows ONLY 5 items: Trang chủ, Dịch vụ, Bác sĩ, Đăng nhập, Đăng ký) -->
+                <li sec:authorize="isAnonymous()"><a th:href="@{/login}" class="btn btn-outline btn-sm">Đăng nhập</a></li>
+                <li sec:authorize="isAnonymous()"><a th:href="@{/register}" class="btn btn-primary btn-sm">Đăng ký</a></li>
 
-            <!-- Authenticated Logout Button (Hides Đăng nhập & Đăng ký) -->
-            <li sec:authorize="isAuthenticated()">
-                <form th:action="@{/logout}" method="post" style="display:inline-flex; align-items:center; margin:0;">
-                    <button type="submit" class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
-                </form>
-            </li>
-        </ul>
+                <!-- Authenticated Logout Button (Hides Đăng nhập & Đăng ký) -->
+                <li sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" style="display:inline-flex; align-items:center; margin:0;">
+                        <button type="submit" class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
+                    </form>
+                </li>
+            </ul>
+
+            <!-- Notification Bell Icon Component -->
+            <div class="notif-wrapper">
+                <button id="notifBellBtn" class="notif-bell-btn" type="button" title="Thông báo hệ thống" aria-label="Thông báo">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="notifBadge" class="notif-badge" style="display:none;"></span>
+                </button>
+
+                <!-- Dropdown Notification Menu -->
+                <div id="notifDropdown" class="notif-dropdown">
+                    <div class="notif-header">
+                        <span class="notif-title"><i class="fa-solid fa-bell" style="color:var(--primary);"></i> Thông báo</span>
+                        <button id="notifMarkReadBtn" class="notif-mark-btn" type="button">
+                            <i class="fa-solid fa-check-double"></i> Đánh dấu đã đọc
+                        </button>
+                    </div>
+
+                    <div class="notif-body" id="notifBodyContainer">
+                        <!-- Empty state when there are no new notifications -->
+                        <div th:if="${systemNotifications == null or systemNotifications.isEmpty()}" class="notif-empty-state" style="text-align:center; padding: 2.25rem 1.25rem; color: var(--slate);">
+                            <div style="font-size: 2.2rem; color: #cbd5e1; margin-bottom: 0.6rem;">
+                                <i class="fa-regular fa-bell-slash"></i>
+                            </div>
+                            <div style="font-weight: 700; font-size: 0.95rem; color: #64748b;">Hiện không có thông báo mới</div>
+                            <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem; margin-bottom: 0;">Hệ thống sẽ tự động cập nhật khi có lịch khám hoặc trạng thái mới.</p>
+                        </div>
+
+                        <!-- Dynamic Real System Notifications -->
+                        <div th:if="${systemNotifications != null and !systemNotifications.isEmpty()}">
+                            <a th:each="n : ${systemNotifications}" 
+                               th:href="@{${n.link}}" 
+                               class="notif-item unread" 
+                               th:data-id="${n.id}">
+                                <div class="notif-icon-box" 
+                                     th:classappend="${n.type == 'SUCCESS' ? 'notif-icon-success' : (n.type == 'WARNING' ? 'notif-icon-warning' : (n.type == 'DANGER' ? 'notif-icon-danger' : 'notif-icon-primary'))}">
+                                    <i th:class="${n.icon}"></i>
+                                </div>
+                                <div class="notif-content">
+                                    <div class="notif-item-title" th:text="${n.title}"></div>
+                                    <div class="notif-item-desc" th:text="${n.description}"></div>
+                                    <div class="notif-item-time"><i class="fa-regular fa-clock"></i> <span th:text="${n.timeAgo}"></span></div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="notif-footer">
+                        <i class="fa-solid fa-shield-halved" style="margin-right: 0.35rem; color: var(--secondary);"></i> Hệ thống phòng khám ClinicCare
+                    </div>
+                </div>
+            </div>
+        </div>
     </nav>
 
 
@@ -106,6 +159,9 @@
             <li><a th:href="@{/doctor/schedule}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctor/schedule'} ? 'active'"><i
                         class="fa-solid fa-calendar-days"></i> Lịch trực cá nhân</a></li>
+            <li><a th:href="@{/doctor/shift-requests}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/doctor/shift-requests')} ? 'active'"><i
+                        class="fa-solid fa-calendar-xmark"></i> Xin nghỉ ca</a></li>
             <li><a th:href="@{/doctor/profile}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/doctor/profile'} ? 'active'"><i
                         class="fa-solid fa-user-doctor"></i> Hồ sơ chuyên môn</a></li>
@@ -157,6 +213,9 @@
             <li><a th:href="@{/admin/schedules}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/schedules')} ? 'active'"><i
                         class="fa-solid fa-calendar-check"></i> Phân ca trực bác sĩ</a></li>
+            <li><a th:href="@{/admin/shift-requests}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/shift-requests')} ? 'active'"><i
+                        class="fa-solid fa-clipboard-check"></i> Duyệt xin nghỉ ca</a></li>
             <li><a th:href="@{/admin/patients}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/patients')} ? 'active'"><i
                         class="fa-solid fa-hospital-user"></i> Hồ sơ bệnh nhân</a></li>
@@ -220,6 +279,123 @@
                             }
                         });
                     }
+
+                    // 3. Notification Dropdown, Storage Persistence, and Mark as Read
+                    (function() {
+                        var notifBtn = document.getElementById('notifBellBtn');
+                        var notifDropdown = document.getElementById('notifDropdown');
+                        var notifBadge = document.getElementById('notifBadge');
+                        var markReadBtn = document.getElementById('notifMarkReadBtn');
+
+                        if (!notifBtn || !notifDropdown) return;
+
+                        var STORAGE_KEY = 'clinic_read_notifications_v1';
+
+                        function getReadIds() {
+                            try {
+                                var raw = localStorage.getItem(STORAGE_KEY);
+                                return raw ? JSON.parse(raw) : [];
+                            } catch(e) {
+                                return [];
+                            }
+                        }
+
+                        function saveReadIds(ids) {
+                            try {
+                                localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+                            } catch(e) {}
+                        }
+
+                        function updateNotifUI() {
+                            var readIds = getReadIds();
+                            var items = notifDropdown.querySelectorAll('.notif-item');
+                            var unreadCount = 0;
+
+                            items.forEach(function(item) {
+                                var id = item.getAttribute('data-id');
+                                if (id && readIds.indexOf(id) !== -1) {
+                                    item.classList.remove('unread');
+                                } else if (item.hasAttribute('data-id')) {
+                                    item.classList.add('unread');
+                                    unreadCount++;
+                                }
+                            });
+
+                            if (notifBadge) {
+                                if (unreadCount > 0) {
+                                    notifBadge.textContent = unreadCount;
+                                    notifBadge.style.display = 'flex';
+                                } else {
+                                    notifBadge.style.display = 'none';
+                                }
+                            }
+
+                            if (markReadBtn) {
+                                if (unreadCount > 0) {
+                                    markReadBtn.innerHTML = '<i class="fa-solid fa-check-double"></i> Đánh dấu đã đọc';
+                                    markReadBtn.style.color = 'var(--primary)';
+                                    markReadBtn.style.cursor = 'pointer';
+                                    markReadBtn.style.opacity = '1';
+                                    markReadBtn.disabled = false;
+                                } else {
+                                    markReadBtn.innerHTML = '<i class="fa-solid fa-check"></i> Đã đọc tất cả';
+                                    markReadBtn.style.color = 'var(--slate)';
+                                    markReadBtn.style.cursor = 'default';
+                                    markReadBtn.style.opacity = '0.7';
+                                    markReadBtn.disabled = true;
+                                }
+                            }
+                        }
+
+                        // Initialize UI immediately
+                        updateNotifUI();
+
+                        // Toggle Dropdown
+                        notifBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            notifDropdown.classList.toggle('show');
+                        });
+
+                        // Outside click dismiss
+                        document.addEventListener('click', function(e) {
+                            if (!notifDropdown.contains(e.target) && !notifBtn.contains(e.target)) {
+                                notifDropdown.classList.remove('show');
+                            }
+                        });
+
+                        // Mark All as Read button
+                        if (markReadBtn) {
+                            markReadBtn.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                var items = notifDropdown.querySelectorAll('.notif-item');
+                                var readIds = getReadIds();
+                                items.forEach(function(item) {
+                                    var id = item.getAttribute('data-id');
+                                    if (id && readIds.indexOf(id) === -1) {
+                                        readIds.push(id);
+                                    }
+                                });
+                                saveReadIds(readIds);
+                                updateNotifUI();
+                            });
+                        }
+
+                        // Individual item click -> mark item as read
+                        var notifLinks = notifDropdown.querySelectorAll('.notif-item');
+                        notifLinks.forEach(function(link) {
+                            link.addEventListener('click', function() {
+                                var id = link.getAttribute('data-id');
+                                if (id) {
+                                    var readIds = getReadIds();
+                                    if (readIds.indexOf(id) === -1) {
+                                        readIds.push(id);
+                                        saveReadIds(readIds);
+                                        updateNotifUI();
+                                    }
+                                }
+                            });
+                        });
+                    })();
                 });
             })();
         </script>
