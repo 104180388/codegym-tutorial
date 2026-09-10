@@ -92,11 +92,65 @@ public class AuthService {
         return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản"));
     }
 
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+
+    @Autowired
+    private InvoiceRepository invoiceRepository;
+
+    @Autowired
+    private DoctorScheduleRepository doctorScheduleRepository;
+
     @Transactional
     public void toggleUserActiveStatus(Long id) {
         User user = getUserById(id);
         user.setIsActive(!Boolean.TRUE.equals(user.getIsActive()));
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = getUserById(id);
+        if ("admin".equalsIgnoreCase(user.getUsername())) {
+            throw new IllegalArgumentException("Không thể xóa tài khoản Quản trị viên hệ thống (admin)!");
+        }
+
+        // 1. If Patient: unlink from user to preserve historical medical records, or delete if no appointments
+        patientRepository.findByUserId(id).ifPresent(patient -> {
+            if (patient.getAppointments() != null && !patient.getAppointments().isEmpty()) {
+                patient.setUser(null);
+                patientRepository.save(patient);
+            } else {
+                patientRepository.delete(patient);
+            }
+        });
+
+        // 2. If Doctor: check if doctor has appointments
+        doctorRepository.findByUserId(id).ifPresent(doctor -> {
+            long countAppt = appointmentRepository.findAll().stream()
+                    .filter(a -> a.getDoctor() != null && a.getDoctor().getId().equals(doctor.getId()))
+                    .count();
+            if (countAppt > 0) {
+                throw new IllegalArgumentException("Không thể xóa tài khoản Bác sĩ (" + user.getFullName() + ") vì đã có lịch hẹn/hồ sơ khám trong hệ thống!");
+            }
+            List<DoctorSchedule> schedules = doctorScheduleRepository.findByDoctorId(doctor.getId());
+            doctorScheduleRepository.deleteAll(schedules);
+            doctor.getServices().clear();
+            doctorRepository.delete(doctor);
+        });
+
+        // 3. If Staff: check if staff has processed invoices
+        staffRepository.findByUserId(id).ifPresent(staff -> {
+            long countInvoices = invoiceRepository.findAll().stream()
+                    .filter(i -> i.getStaff() != null && i.getStaff().getId().equals(staff.getId()))
+                    .count();
+            if (countInvoices > 0) {
+                throw new IllegalArgumentException("Không thể xóa tài khoản Nhân viên (" + user.getFullName() + ") vì đã gắn với hóa đơn thu ngân trong hệ thống!");
+            }
+            staffRepository.delete(staff);
+        });
+
+        userRepository.delete(user);
     }
 
     @Transactional

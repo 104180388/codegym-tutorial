@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Quản trị - Hồ sơ bệnh nhân')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
+
+            <main>
+                <!-- Header -->
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 1.5rem; flex-wrap:wrap; gap:1rem;">
+                    <div>
+                        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                            <i class="fa-solid fa-hospital-user" style="color:var(--primary);"></i> Hồ Sơ Bệnh Nhân
+                        </h1>
+                        <p style="color:var(--slate); font-size:0.9rem;">Danh bạ quản lý tất cả hồ sơ bệnh nhân, theo dõi lịch sử khám bệnh và tổng mức chi tiêu viện phí.</p>
+                    </div>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Stats Widgets -->
+                <div class="grid-cards" style="margin-bottom:1.5rem;">
+                    <div class="card stat-card" style="border-left:4px solid var(--primary);">
+                        <div class="stat-icon" style="background:#e0f2fe; color:var(--primary);"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${totalCount}">0</div>
+                            <div class="stat-label">Tổng hồ sơ bệnh nhân</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card" style="border-left:4px solid #10b981;">
+                        <div class="stat-icon" style="background:#dcfce7; color:#15803d;"><i class="fa-solid fa-user-check"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${hasAccountCount}">0</div>
+                            <div class="stat-label">Tài khoản trực tuyến</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card" style="border-left:4px solid #0d9488;">
+                        <div class="stat-icon" style="background:#ccfbf1; color:#0f766e;"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div>
+                            <div class="stat-value" th:text="${totalAppointmentsCount}">0</div>
+                            <div class="stat-label">Tổng lượt khám</div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card" style="border-left:4px solid #8b5cf6;">
+                        <div class="stat-icon" style="background:#fae8ff; color:#86198f;"><i class="fa-solid fa-receipt"></i></div>
+                        <div>
+                            <div class="stat-value" style="font-size:1.3rem;" th:text="${#numbers.formatDecimal(totalSpentAll, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+                            <div class="stat-label">Tổng viện phí thu</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Form -->
+                <div class="card" style="margin-bottom:1.5rem; padding:1.25rem;">
+                    <form th:action="@{/admin/patients}" method="get" style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:250px; position:relative;">
+                            <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--slate);"></i>
+                            <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên bệnh nhân hoặc số điện thoại..." class="form-control" style="padding-left:36px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                        <a th:if="${keyword != null and !keyword.isEmpty()}" th:href="@{/admin/patients}" class="btn btn-outline"><i class="fa-solid fa-xmark"></i> Xóa lọc</a>
+                    </form>
+                </div>
+
+                <!-- Patients Table -->
+                <div class="card" style="padding:1.5rem;">
+                    <div class="table-responsive">
+                        <table class="table" style="font-size:0.88rem;">
+                            <thead>
+                                <tr>
+                                    <th>Họ Và Tên</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Ngày Sinh</th>
+                                    <th>Tài Khoản Liên Kết</th>
+                                    <th style="text-align:center;">Số Lần Khám</th>
+                                    <th style="text-align:right;">Tổng Viện Phí</th>
+                                    <th style="text-align:center;">Chi Tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${patients}">
+                                    <td>
+                                        <div style="font-weight:700; color:var(--dark);" th:text="${p.fullName}">Lê Văn Dũng</div>
+                                        <div style="font-size:0.75rem; color:var(--slate);" th:text="${p.address != null ? p.address : 'Chưa cập nhật địa chỉ'}">Hà Nội</div>
+                                    </td>
+                                    <td>
+                                        <span style="font-family:monospace; font-weight:600;" th:text="${p.phone}">0912111222</span>
+                                    </td>
+                                    <td>
+                                        <div th:text="${p.dob != null ? #temporals.format(p.dob, 'dd/MM/yyyy') : '-'}">12/04/1990</div>
+                                    </td>
+                                    <td>
+                                        <span th:if="${p.username != null}" class="badge" style="background:#dcfce7; color:#15803d; font-size:0.75rem;">
+                                            <i class="fa-solid fa-user-check"></i> <span th:text="${p.username}">dung_le</span>
+                                        </span>
+                                        <span th:if="${p.username == null}" class="badge badge-cancelled" style="font-size:0.75rem;">
+                                            <i class="fa-solid fa-user-slash"></i> Vãng lai
+                                        </span>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <span style="font-weight:700; color:var(--primary);" th:text="${p.totalAppointments}">0</span> ca
+                                        <div style="font-size:0.75rem; color:#15803d;" th:text="'(' + ${p.completedAppointments} + ' đã xong)'">(0 đã xong)</div>
+                                    </td>
+                                    <td style="text-align:right; font-weight:700; color:#15803d;" th:text="${#numbers.formatDecimal(p.totalSpent != null ? p.totalSpent : 0, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                        0 đ
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <button type="button" class="btn btn-outline btn-sm" 
+                                                th:data-id="${p.id}"
+                                                th:data-fullname="${p.fullName}"
+                                                th:data-phone="${p.phone}"
+                                                th:data-address="${p.address != null ? p.address : 'Chưa cập nhật'}"
+                                                th:data-allergies="${p.allergies != null and !p.allergies.isEmpty() ? p.allergies : 'Không có'}"
+                                                th:data-history="${p.medicalHistory != null and !p.medicalHistory.isEmpty() ? p.medicalHistory : 'Không có'}"
+                                                th:data-total="${p.totalAppointments}"
+                                                th:data-completed="${p.completedAppointments}"
+                                                th:data-spent="${#numbers.formatDecimal(p.totalSpent != null ? p.totalSpent : 0, 0, 'COMMA', 0, 'POINT')} + ' đ'"
+                                                onclick="openPatientDetailFromButton(this)">
+                                            <i class="fa-solid fa-eye"></i> Xem
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(patients)}">
+                                    <td colspan="7" style="text-align:center; padding:2.5rem; color:var(--slate);">
+                                        <i class="fa-solid fa-hospital-user" style="font-size:2.5rem; color:#cbd5e1; margin-bottom:0.5rem; display:block;"></i>
+                                        Không tìm thấy hồ sơ bệnh nhân nào phù hợp.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Patient Detail Modal -->
+    <div id="patientDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div class="card" style="width:90%; max-width:550px; max-height:90vh; overflow-y:auto; padding:1.5rem; border-radius:var(--radius); animation: fadeIn 0.2s ease;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+                <h3 style="margin:0; font-size:1.2rem; color:var(--dark);"><i class="fa-solid fa-id-card-clip" style="color:var(--primary);"></i> Thông Tin Chi Tiết Bệnh Nhân</h3>
+                <button type="button" onclick="closePatientDetail()" style="background:none; border:none; font-size:1.25rem; cursor:pointer; color:var(--slate);"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div style="font-size:0.9rem; line-height:1.8;">
+                <div style="margin-bottom:0.5rem;"><strong>Họ và tên:</strong> <span id="modalFullName" style="font-weight:700; color:var(--primary);"></span></div>
+                <div style="margin-bottom:0.5rem;"><strong>Số điện thoại:</strong> <span id="modalPhone" style="font-family:monospace; font-weight:600;"></span></div>
+                <div style="margin-bottom:0.5rem;"><strong>Địa chỉ:</strong> <span id="modalAddress"></span></div>
+                <div style="margin-bottom:0.5rem;"><strong>Tiền sử dị ứng:</strong> <span id="modalAllergies" style="color:#ef4444; font-weight:600;"></span></div>
+                <div style="margin-bottom:0.5rem;"><strong>Tiền sử bệnh án:</strong> <span id="modalHistory"></span></div>
+                
+                <hr style="border:none; border-top:1px solid var(--border); margin:1rem 0;">
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+                    <div style="background:#f8fafc; padding:0.75rem; border-radius:8px; border:1px solid var(--border);">
+                        <div style="font-size:0.8rem; color:var(--slate);">Lượt khám hoàn thành</div>
+                        <div id="modalAppointments" style="font-size:1.1rem; font-weight:700; color:#15803d;"></div>
+                    </div>
+                    <div style="background:#f8fafc; padding:0.75rem; border-radius:8px; border:1px solid var(--border);">
+                        <div style="font-size:0.8rem; color:var(--slate);">Tổng viện phí đã trả</div>
+                        <div id="modalSpent" style="font-size:1.1rem; font-weight:700; color:var(--primary);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:1.5rem; text-align:right;">
+                <button type="button" onclick="closePatientDetail()" class="btn btn-secondary btn-sm">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script>
+        function openPatientDetailFromButton(btn) {
+            document.getElementById('modalFullName').innerText = btn.getAttribute('data-fullname') || '-';
+            document.getElementById('modalPhone').innerText = btn.getAttribute('data-phone') || '-';
+            document.getElementById('modalAddress').innerText = btn.getAttribute('data-address') || 'Chưa cập nhật';
+            document.getElementById('modalAllergies').innerText = btn.getAttribute('data-allergies') || 'Không có';
+            document.getElementById('modalHistory').innerText = btn.getAttribute('data-history') || 'Không có';
+            document.getElementById('modalAppointments').innerText = (btn.getAttribute('data-completed') || '0') + ' / ' + (btn.getAttribute('data-total') || '0') + ' ca';
+            document.getElementById('modalSpent').innerText = btn.getAttribute('data-spent') || '0 đ';
+            
+            var modal = document.getElementById('patientDetailModal');
+            modal.style.display = 'flex';
+        }
+
+        function closePatientDetail() {
+            document.getElementById('patientDetailModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById('patientDetailModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

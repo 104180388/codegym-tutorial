@@ -111,7 +111,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             roleRepository.save(new Role(1L, "ROLE_ADMIN", "Quản trị viên hệ thống"));
             roleRepository.save(new Role(2L, "ROLE_DOCTOR", "Bác sĩ chuyên môn"));
             roleRepository.save(new Role(3L, "ROLE_STAFF", "Nhân viên lễ tân / Thu ngân"));
-            roleRepository.save(new Role(4L, "ROLE_PATIENT", "Bệnh nhân / Người dùng"));
+            roleRepository.save(new Role(4L, "ROLE_PATIENT", "Bệnh nhân"));
         }
     }
 

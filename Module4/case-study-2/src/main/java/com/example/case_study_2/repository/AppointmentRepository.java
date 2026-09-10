@@ -56,4 +56,22 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Query("SELECT a.service.name, COUNT(a) FROM Appointment a GROUP BY a.service.name")
     List<Object[]> countAppointmentsByService();
+
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE YEAR(a.appointmentDate) = :year AND MONTH(a.appointmentDate) = :month")
+    long countAppointmentsInMonth(@Param("year") int year, @Param("month") int month);
+
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.status = com.example.case_study_2.entity.enums.AppointmentStatus.COMPLETED AND YEAR(a.appointmentDate) = :year AND MONTH(a.appointmentDate) = :month")
+    long countCompletedAppointmentsInMonth(@Param("year") int year, @Param("month") int month);
+
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.status = com.example.case_study_2.entity.enums.AppointmentStatus.CANCELLED AND YEAR(a.appointmentDate) = :year AND MONTH(a.appointmentDate) = :month")
+    long countCancelledAppointmentsInMonth(@Param("year") int year, @Param("month") int month);
+
+    @Query("SELECT a.service.name, COUNT(a) FROM Appointment a WHERE YEAR(a.appointmentDate) = :year AND MONTH(a.appointmentDate) = :month GROUP BY a.service.name ORDER BY a.service.name ASC")
+    List<Object[]> countAppointmentsByServiceInMonth(@Param("year") int year, @Param("month") int month);
+
+    @Query("SELECT a.doctor.user.fullName, COUNT(a) FROM Appointment a WHERE YEAR(a.appointmentDate) = :year AND MONTH(a.appointmentDate) = :month GROUP BY a.doctor.user.fullName ORDER BY a.doctor.user.fullName ASC")
+    List<Object[]> countAppointmentsByDoctorInMonth(@Param("year") int year, @Param("month") int month);
+
+    @Query("SELECT a.doctor.user.fullName, COUNT(a) FROM Appointment a WHERE a.status = com.example.case_study_2.entity.enums.AppointmentStatus.COMPLETED AND YEAR(a.appointmentDate) = :year AND MONTH(a.appointmentDate) = :month GROUP BY a.doctor.user.fullName ORDER BY a.doctor.user.fullName ASC")
+    List<Object[]> countCompletedAppointmentsByDoctorInMonth(@Param("year") int year, @Param("month") int month);
 }

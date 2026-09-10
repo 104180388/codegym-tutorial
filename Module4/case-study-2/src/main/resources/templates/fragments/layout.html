@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -136,19 +138,25 @@
         <ul class="sidebar-menu">
             <li><a th:href="@{/admin/dashboard}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/dashboard'} ? 'active'"><i
-                        class="fa-solid fa-chart-column"></i> Thống kê tổng quan</a></li>
-            <li><a th:href="@{/admin/users}"
-                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/users'} ? 'active'"><i
-                        class="fa-solid fa-users-gear"></i> Quản lý tài khoản</a></li>
-            <li><a th:href="@{/admin/services}"
-                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/services'} ? 'active'"><i
-                        class="fa-solid fa-briefcase-medical"></i> Quản lý dịch vụ y tế</a></li>
-            <li><a th:href="@{/admin/schedules}"
-                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/schedules'} ? 'active'"><i
-                        class="fa-solid fa-calendar-check"></i> Phân ca trực bác sĩ</a></li>
+                        class="fa-solid fa-chart-pie"></i> Thống kê tổng quan</a></li>
             <li><a th:href="@{/admin/reports}"
                     th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/reports'} ? 'active'"><i
-                        class="fa-solid fa-file-export"></i> Báo cáo doanh thu</a></li>
+                        class="fa-solid fa-chart-line"></i> Doanh thu theo thời gian</a></li>
+            <li><a th:href="@{/admin/reports/comparison}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/reports/comparison'} ? 'active'"><i
+                        class="fa-solid fa-scale-balanced"></i> So sánh doanh thu</a></li>
+            <li><a th:href="@{/admin/users}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/users')} ? 'active'"><i
+                        class="fa-solid fa-users-gear"></i> Quản lý tài khoản</a></li>
+            <li><a th:href="@{/admin/services}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/services')} ? 'active'"><i
+                        class="fa-solid fa-briefcase-medical"></i> Quản lý dịch vụ y tế</a></li>
+            <li><a th:href="@{/admin/schedules}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/schedules')} ? 'active'"><i
+                        class="fa-solid fa-calendar-check"></i> Phân ca trực bác sĩ</a></li>
+            <li><a th:href="@{/admin/patients}"
+                    th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/patients')} ? 'active'"><i
+                        class="fa-solid fa-hospital-user"></i> Hồ sơ bệnh nhân</a></li>
         </ul>
     </aside>
 
@@ -156,6 +164,62 @@
     <footer th:fragment="footer">
         <p>&copy; 2026 Hệ thống Quản lý Phòng khám & Đặt lịch khám bệnh. Tất cả quyền được bảo lưu.</p>
         <p style="margin-top: 0.5rem;">Phát triển bằng Spring Boot 3.x, Thymeleaf, Spring Security & MySQL.</p>
+
+        <script>
+            (function() {
+                document.addEventListener("DOMContentLoaded", function() {
+                    var currentPath = window.location.pathname;
+
+                    // 1. Highlight active Sidebar item
+                    var sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+                    if (sidebarLinks.length > 0) {
+                        var matchedSidebarLink = null;
+
+                        // Pass 1: exact match
+                        sidebarLinks.forEach(function(link) {
+                            var href = link.getAttribute('href');
+                            if (href && href === currentPath) {
+                                matchedSidebarLink = link;
+                            }
+                        });
+
+                        // Pass 2: prefix match for sub-pages (e.g., /admin/users/create matches /admin/users)
+                        if (!matchedSidebarLink) {
+                            var bestLen = 0;
+                            sidebarLinks.forEach(function(link) {
+                                var href = link.getAttribute('href');
+                                if (href && href !== '/' && currentPath.startsWith(href) && href.length > bestLen) {
+                                    if (!href.endsWith('/dashboard') || currentPath === href) {
+                                        matchedSidebarLink = link;
+                                        bestLen = href.length;
+                                    }
+                                }
+                            });
+                        }
+
+                        if (matchedSidebarLink) {
+                            sidebarLinks.forEach(function(l) { l.classList.remove('active'); });
+                            matchedSidebarLink.classList.add('active');
+                        }
+                    }
+
+                    // 2. Highlight active Navbar item
+                    var navLinks = document.querySelectorAll('.nav-links a');
+                    if (navLinks.length > 0) {
+                        navLinks.forEach(function(link) {
+                            var href = link.getAttribute('href');
+                            if (href) {
+                                if (href === '/' && currentPath === '/') {
+                                    link.classList.add('active');
+                                } else if (href !== '/' && (currentPath === href || (href.length > 3 && currentPath.startsWith(href)))) {
+                                    link.classList.add('active');
+                                }
+                            }
+                        });
+                    }
+                });
+            })();
+        </script>
     </footer>
 
 </body>

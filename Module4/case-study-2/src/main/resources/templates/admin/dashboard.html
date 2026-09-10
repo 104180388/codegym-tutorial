@@ -10,34 +10,40 @@
             <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
 
             <main>
-                <div style="margin-bottom: 1.5rem;">
-                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
-                        <i class="fa-solid fa-chart-column" style="color:var(--primary);"></i> Thống Kê Tổng Quan Quản Trị Hệ Thống
-                    </h1>
-                    <p style="color:var(--slate); font-size:0.9rem;">Báo cáo tổng quan doanh thu, tỷ lệ đặt/hủy lịch và số lượng tài khoản.</p>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 1.5rem; flex-wrap:wrap; gap:1rem;">
+                    <div>
+                        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                            <i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Thống Kê Tổng Quan Quản Trị Hệ Thống
+                        </h1>
+                        <p style="color:var(--slate); font-size:0.9rem;">Báo cáo tổng hợp doanh thu thực tế, hoạt động khám bệnh và xu hướng tăng trưởng.</p>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <a th:href="@{/admin/reports}" class="btn btn-primary btn-sm"><i class="fa-solid fa-chart-line"></i> Báo Cáo Doanh Thu</a>
+                        <a th:href="@{/admin/reports/comparison}" class="btn btn-secondary btn-sm" style="background:#0d9488; color:white;"><i class="fa-solid fa-scale-balanced"></i> So Sánh Các Tháng</a>
+                    </div>
                 </div>
 
                 <div th:replace="~{fragments/layout :: alerts}"></div>
 
                 <!-- Stats Widgets -->
-                <div class="grid-cards" style="margin-bottom:2rem;">
-                    <div class="card stat-card">
+                <div class="grid-cards" style="margin-bottom:1.5rem;">
+                    <div class="card stat-card" style="border-left: 4px solid #10b981;">
                         <div class="stat-icon" style="background:#dcfce7; color:#15803d;"><i class="fa-solid fa-sack-dollar"></i></div>
                         <div>
-                            <div class="stat-value" style="font-size:1.4rem;" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+                            <div class="stat-value" style="font-size:1.35rem; color:#15803d;" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
                             <div class="stat-label">Tổng doanh thu thực thu</div>
                         </div>
                     </div>
 
-                    <div class="card stat-card">
+                    <div class="card stat-card" style="border-left: 4px solid #0284c7;">
                         <div class="stat-icon" style="background:#e0f2fe; color:#0369a1;"><i class="fa-solid fa-calendar-check"></i></div>
                         <div>
                             <div class="stat-value" th:text="${totalAppointments}">0</div>
-                            <div class="stat-label">Tổng số lượt đăng ký khám</div>
+                            <div class="stat-label">Tổng số ca đăng ký khám</div>
                         </div>
                     </div>
 
-                    <div class="card stat-card">
+                    <div class="card stat-card" style="border-left: 4px solid #8b5cf6;">
                         <div class="stat-icon" style="background:#fae8ff; color:#86198f;"><i class="fa-solid fa-hospital-user"></i></div>
                         <div>
                             <div class="stat-value" th:text="${totalPatients}">0</div>
@@ -45,42 +51,131 @@
                         </div>
                     </div>
 
-                    <div class="card stat-card">
-                        <div class="stat-icon" style="background:#e0e7ff; color:#4338ca;"><i class="fa-solid fa-user-doctor"></i></div>
+                    <div class="card stat-card" style="border-left: 4px solid #f59e0b;">
+                        <div class="stat-icon" style="background:#fef3c7; color:#b45309;"><i class="fa-solid fa-user-doctor"></i></div>
                         <div>
                             <div class="stat-value" th:text="${totalDoctors}">0</div>
-                            <div class="stat-label">Bác sĩ chuyên khoa</div>
+                            <div class="stat-label">Bác sĩ chuyên khoa trực</div>
                         </div>
                     </div>
                 </div>
 
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
-                    <div class="card">
-                        <h3 class="card-title"><i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Phân Tích Trạng Thái Lịch Hẹn</h3>
-                        <div style="margin-top:1rem; font-size:0.95rem;">
-                            <p style="margin-bottom:0.5rem;"><strong>Đang chờ duyệt:</strong> <span class="badge badge-pending" th:text="${pendingAppointments}">0</span></p>
-                            <p style="margin-bottom:0.5rem;"><strong>Đã khám hoàn thành:</strong> <span class="badge badge-completed" th:text="${completedAppointments}">0</span></p>
-                            <p style="margin-bottom:0.5rem;"><strong>Đã hủy:</strong> <span class="badge badge-cancelled" th:text="${cancelledAppointments}">0</span></p>
+                <!-- Charts Row -->
+                <div style="display:grid; grid-template-columns: 2fr 1.2fr; gap:1.5rem; margin-bottom:1.5rem;">
+                    <!-- Line Chart: 6-Month Trend -->
+                    <div class="card" style="padding:1.5rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                            <h3 class="card-title" style="margin:0;"><i class="fa-solid fa-arrow-trend-up" style="color:var(--primary);"></i> Xu Hướng Doanh Thu 6 Tháng Gần Nhất</h3>
+                            <span class="badge badge-completed"><i class="fa-solid fa-circle-check"></i> Tự động cập nhật</span>
+                        </div>
+                        <div style="position:relative; height:280px; width:100%;">
+                            <canvas id="revenueTrendChart"></canvas>
                         </div>
                     </div>
 
-                    <div class="card">
-                        <h3 class="card-title"><i class="fa-solid fa-list-check" style="color:var(--secondary);"></i> Lượt Khám Theo 7 Dịch Vụ Y Tế</h3>
-                        <div class="table-responsive" style="margin-top:0.5rem;">
+                    <!-- Doughnut Chart: Appointment Status -->
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 class="card-title" style="margin-bottom:1rem;"><i class="fa-solid fa-chart-pie" style="color:#0d9488;"></i> Cơ Cấu Trạng Thái Lịch Hẹn</h3>
+                        <div style="position:relative; height:220px; width:100%;">
+                            <canvas id="appointmentStatusChart"></canvas>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; margin-top:1rem; font-size:0.85rem;">
+                            <div style="display:flex; align-items:center; gap:0.4rem;">
+                                <span style="width:10px; height:10px; border-radius:50%; background:#f59e0b; display:inline-block;"></span>
+                                <span>Chờ duyệt: <strong th:text="${pendingAppointments}">0</strong></span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:0.4rem;">
+                                <span style="width:10px; height:10px; border-radius:50%; background:#3b82f6; display:inline-block;"></span>
+                                <span>Đang xử lý: <strong th:text="${inProgressAppointments}">0</strong></span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:0.4rem;">
+                                <span style="width:10px; height:10px; border-radius:50%; background:#10b981; display:inline-block;"></span>
+                                <span>Hoàn thành: <strong th:text="${completedAppointments}">0</strong></span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:0.4rem;">
+                                <span style="width:10px; height:10px; border-radius:50%; background:#ef4444; display:inline-block;"></span>
+                                <span>Đã hủy: <strong th:text="${cancelledAppointments}">0</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Row: Services Breakdown & Quick Actions -->
+                <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:1.5rem;">
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 class="card-title" style="margin-bottom:1rem;"><i class="fa-solid fa-briefcase-medical" style="color:var(--primary);"></i> Lượt Đăng Ký Theo Dịch Vụ Y Tế</h3>
+                        <div class="table-responsive">
                             <table class="table" style="font-size:0.9rem;">
                                 <thead>
                                     <tr>
-                                        <th>Tên dịch vụ</th>
-                                        <th>Số lượt khám</th>
+                                        <th>Tên Dịch Vụ Y Tế</th>
+                                        <th style="text-align:right;">Số Lượt Khám</th>
+                                        <th style="text-align:right;">Tỷ Trọng (%)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="row : ${serviceStats}">
-                                        <td th:text="${row[0]}">Khám nội tổng quát</td>
-                                        <td style="font-weight:700; color:var(--primary);" th:text="${row[1]}">0</td>
+                                        <td>
+                                            <strong th:text="${row[0]}">Khám nội tổng quát</strong>
+                                        </td>
+                                        <td style="text-align:right; font-weight:700; color:var(--primary);" th:text="${row[1]}">0</td>
+                                        <td style="text-align:right; font-size:0.85rem; color:var(--slate);"
+                                            th:text="${totalAppointments > 0 ? #numbers.formatDecimal((row[1] * 100.0 / totalAppointments), 0, 'COMMA', 1, 'POINT') + '%' : '0%'}">0%</td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(serviceStats)}">
+                                        <td colspan="3" style="text-align:center; color:var(--slate);">Chưa có dữ liệu dịch vụ khám</td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding:1.5rem;">
+                        <h3 class="card-title" style="margin-bottom:1rem;"><i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> Lối Tắt Quản Trị</h3>
+                        <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                            <a th:href="@{/admin/reports}" class="card" style="padding:0.75rem 1rem; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:inherit; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--primary)';" onmouseout="this.style.borderColor='var(--border)';">
+                                <div style="display:flex; align-items:center; gap:0.75rem;">
+                                    <div style="width:36px; height:36px; border-radius:8px; background:#e0f2fe; color:var(--primary); display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                                    <div>
+                                        <div style="font-weight:600; font-size:0.9rem;">Báo Cáo Doanh Thu</div>
+                                        <div style="font-size:0.75rem; color:var(--slate);">Lọc theo thời gian & in PDF</div>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right" style="color:var(--slate); font-size:0.8rem;"></i>
+                            </a>
+
+                            <a th:href="@{/admin/reports/comparison}" class="card" style="padding:0.75rem 1rem; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:inherit; transition:all 0.2s;" onmouseover="this.style.borderColor='#0d9488';" onmouseout="this.style.borderColor='var(--border)';">
+                                <div style="display:flex; align-items:center; gap:0.75rem;">
+                                    <div style="width:36px; height:36px; border-radius:8px; background:#ccfbf1; color:#0d9488; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-scale-balanced"></i></div>
+                                    <div>
+                                        <div style="font-weight:600; font-size:0.9rem;">So Sánh Tăng Trưởng</div>
+                                        <div style="font-size:0.75rem; color:var(--slate);">Đối chiếu giữa 2 tháng bất kỳ</div>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right" style="color:var(--slate); font-size:0.8rem;"></i>
+                            </a>
+
+                            <a th:href="@{/admin/patients}" class="card" style="padding:0.75rem 1rem; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:inherit; transition:all 0.2s;" onmouseover="this.style.borderColor='#8b5cf6';" onmouseout="this.style.borderColor='var(--border)';">
+                                <div style="display:flex; align-items:center; gap:0.75rem;">
+                                    <div style="width:36px; height:36px; border-radius:8px; background:#fae8ff; color:#86198f; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-hospital-user"></i></div>
+                                    <div>
+                                        <div style="font-weight:600; font-size:0.9rem;">Hồ Sơ Bệnh Nhân</div>
+                                        <div style="font-size:0.75rem; color:var(--slate);">Tra cứu danh bạ & chi tiêu</div>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right" style="color:var(--slate); font-size:0.8rem;"></i>
+                            </a>
+
+                            <a th:href="@{/admin/users}" class="card" style="padding:0.75rem 1rem; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:inherit; transition:all 0.2s;" onmouseover="this.style.borderColor='#f59e0b';" onmouseout="this.style.borderColor='var(--border)';">
+                                <div style="display:flex; align-items:center; gap:0.75rem;">
+                                    <div style="width:36px; height:36px; border-radius:8px; background:#fef3c7; color:#b45309; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-users-gear"></i></div>
+                                    <div>
+                                        <div style="font-weight:600; font-size:0.9rem;">Quản Lý Tài Khoản</div>
+                                        <div style="font-size:0.75rem; color:var(--slate);">Cấp quyền Bác sĩ, Lễ tân</div>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right" style="color:var(--slate); font-size:0.8rem;"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -90,5 +185,103 @@
 
     <footer th:replace="~{fragments/layout :: footer}"></footer>
 
+    <!-- Chart.js Scripts Initialization -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Revenue Trend Line Chart
+            var trendLabels = /*[[${trendLabels}]]*/ ['T4/2026', 'T5/2026', 'T6/2026', 'T7/2026', 'T8/2026', 'T9/2026'];
+            var trendData = /*[[${trendData}]]*/ [0, 0, 0, 7700000, 11300000, 750000];
+
+            var ctxTrend = document.getElementById('revenueTrendChart');
+            if (ctxTrend) {
+                var gradient = ctxTrend.getContext('2d').createLinearGradient(0, 0, 0, 250);
+                gradient.addColorStop(0, 'rgba(2, 132, 199, 0.35)');
+                gradient.addColorStop(1, 'rgba(2, 132, 199, 0.0)');
+
+                new Chart(ctxTrend, {
+                    type: 'line',
+                    data: {
+                        labels: trendLabels,
+                        datasets: [{
+                            label: 'Doanh thu (VNĐ)',
+                            data: trendData,
+                            borderColor: '#0284c7',
+                            backgroundColor: gradient,
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#0284c7',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ' ' + context.parsed.y.toLocaleString('vi-VN') + ' VNĐ';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                                        if (value >= 1000) return (value / 1000).toFixed(0) + 'k';
+                                        return value;
+                                    }
+                                },
+                                grid: { color: '#f1f5f9' }
+                            },
+                            x: {
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Appointment Status Doughnut Chart
+            var pendingCount = /*[[${pendingAppointments}]]*/ 0;
+            var inProgCount = /*[[${inProgressAppointments}]]*/ 0;
+            var compCount = /*[[${completedAppointments}]]*/ 0;
+            var cancelCount = /*[[${cancelledAppointments}]]*/ 0;
+
+            var ctxStatus = document.getElementById('appointmentStatusChart');
+            if (ctxStatus) {
+                new Chart(ctxStatus, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Chờ duyệt', 'Đang xử lý', 'Hoàn thành', 'Đã hủy'],
+                        datasets: [{
+                            data: [pendingCount, inProgCount, compCount, cancelCount],
+                            backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+        });
+        /*]]>*/
+    </script>
 </body>
 </html>

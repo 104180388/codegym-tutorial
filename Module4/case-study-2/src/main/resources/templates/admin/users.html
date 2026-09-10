@@ -33,7 +33,7 @@
                                 <th>Số điện thoại</th>
                                 <th>Vai trò</th>
                                 <th>Trạng thái</th>
-                                <th>Thao tác</th>
+                                <th style="text-align:center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -58,13 +58,13 @@
                                         <i class="fa-solid fa-circle-xmark"></i> BỊ KHÓA
                                     </span>
                                 </td>
-                                <td>
-                                    <form th:action="@{/admin/users/toggle/{id}(id=${user.id})}" method="post" style="display:inline;">
-                                        <button type="submit" class="btn btn-outline btn-sm" th:style="${user.isActive} ? 'color:var(--danger); border-color:var(--danger);' : 'color:var(--success); border-color:var(--success);'">
-                                            <i class="fa-solid" th:classappend="${user.isActive} ? 'fa-lock' : 'fa-lock-open'"></i>
-                                            <span th:text="${user.isActive} ? 'Khóa' : 'Mở khóa'">Khóa</span>
+                                <td style="text-align:center;">
+                                    <form th:if="${user.username != 'admin'}" th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không? Thao tác này không thể hoàn tác!');">
+                                        <button type="submit" class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);" title="Xóa tài khoản">
+                                            <i class="fa-solid fa-trash-can"></i> Xóa
                                         </button>
                                     </form>
+                                    <span th:if="${user.username == 'admin'}" class="badge badge-secondary" style="font-size:0.75rem;">Mặc định</span>
                                 </td>
                             </tr>
                         </tbody>

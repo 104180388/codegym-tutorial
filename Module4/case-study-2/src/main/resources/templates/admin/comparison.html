@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Quản trị - So sánh doanh thu giữa các tháng')}"></head>
+<body>
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="main-container">
+        <div class="dashboard-layout">
+            <aside th:replace="~{fragments/layout :: adminSidebar}"></aside>
+
+            <main>
+                <!-- Page Header -->
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 1.5rem; flex-wrap:wrap; gap:1rem;">
+                    <div>
+                        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                            <i class="fa-solid fa-scale-balanced" style="color:var(--primary);"></i> So Sánh Doanh Thu & Hiệu Suất Giữa Các Tháng
+                        </h1>
+                        <p style="color:var(--slate); font-size:0.9rem;">Đối chiếu chỉ số tài chính, tỷ lệ tăng trưởng và hiệu suất khám chữa bệnh giữa hai kỳ kế toán.</p>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <a th:href="@{/admin/reports}" class="btn btn-outline btn-sm"><i class="fa-solid fa-chart-line"></i> Báo Cáo Doanh Thu</a>
+                        <button type="button" onclick="window.print();" class="btn btn-secondary btn-sm" style="background:#0d9488; color:white;"><i class="fa-solid fa-print"></i> In Báo Cáo / Xuất PDF</button>
+                    </div>
+                </div>
+
+                <div th:replace="~{fragments/layout :: alerts}"></div>
+
+                <!-- Month Selector Card -->
+                <div class="card" style="margin-bottom:1.5rem; padding:1.25rem;">
+                    <form th:action="@{/admin/reports/comparison}" method="get" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:1.5rem;">
+                        <!-- Period 1 Selection -->
+                        <div style="display:flex; align-items:center; gap:0.5rem; background:#f8fafc; padding:0.5rem 1rem; border-radius:var(--radius); border:1px solid var(--border);">
+                            <span style="font-weight:700; color:var(--primary); font-size:0.9rem;"><i class="fa-solid fa-calendar"></i> Kỳ 1:</span>
+                            <select name="month1" class="form-control" style="width:110px; padding:0.35rem 0.6rem; font-size:0.85rem;">
+                                <option th:each="m : ${#numbers.sequence(1, 12)}" th:value="${m}" th:text="'Tháng ' + ${m}" th:selected="${m == month1}">Tháng 7</option>
+                            </select>
+                            <select name="year1" class="form-control" style="width:90px; padding:0.35rem 0.6rem; font-size:0.85rem;">
+                                <option value="2025" th:selected="${year1 == 2025}">2025</option>
+                                <option value="2026" th:selected="${year1 == 2026}">2026</option>
+                                <option value="2027" th:selected="${year1 == 2027}">2027</option>
+                            </select>
+                        </div>
+
+                        <!-- VS Badge -->
+                        <div style="width:36px; height:36px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.85rem; box-shadow:0 2px 8px rgba(2,132,199,0.3);">
+                            VS
+                        </div>
+
+                        <!-- Period 2 Selection -->
+                        <div style="display:flex; align-items:center; gap:0.5rem; background:#f8fafc; padding:0.5rem 1rem; border-radius:var(--radius); border:1px solid var(--border);">
+                            <span style="font-weight:700; color:#0d9488; font-size:0.9rem;"><i class="fa-solid fa-calendar-check"></i> Kỳ 2:</span>
+                            <select name="month2" class="form-control" style="width:110px; padding:0.35rem 0.6rem; font-size:0.85rem;">
+                                <option th:each="m : ${#numbers.sequence(1, 12)}" th:value="${m}" th:text="'Tháng ' + ${m}" th:selected="${m == month2}">Tháng 8</option>
+                            </select>
+                            <select name="year2" class="form-control" style="width:90px; padding:0.35rem 0.6rem; font-size:0.85rem;">
+                                <option value="2025" th:selected="${year2 == 2025}">2025</option>
+                                <option value="2026" th:selected="${year2 == 2026}">2026</option>
+                                <option value="2027" th:selected="${year2 == 2027}">2027</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="padding:0.45rem 1.25rem;"><i class="fa-solid fa-arrows-rotate"></i> Đối Chiếu Dữ Liệu</button>
+                    </form>
+                </div>
+
+                <!-- Growth Comparison KPI Cards -->
+                <div class="grid-cards" style="margin-bottom:1.5rem;">
+                    <!-- Revenue Growth Card -->
+                    <div class="card stat-card" style="border-top: 4px solid var(--primary); padding:1.25rem;">
+                        <div>
+                            <div style="font-size:0.8rem; text-transform:uppercase; color:var(--slate); font-weight:700;">TĂNG TRƯỞNG DOANH THU</div>
+                            <div style="display:flex; align-items:center; gap:0.65rem; margin-top:0.4rem; flex-wrap:wrap;">
+                                <div style="font-size:1.35rem; font-weight:800;" th:text="${#numbers.formatDecimal(rev2, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+                                <span th:if="${revGrowthPct >= 0}" class="badge badge-completed" style="display:inline-flex; align-items:center; gap:0.3rem; font-size:0.8rem; padding:0.25rem 0.6rem; border-radius:9999px; font-weight:700;">
+                                    <i class="fa-solid fa-arrow-trend-up"></i> <span th:text="'+' + ${revGrowthPct} + '%'">+0%</span>
+                                </span>
+                                <span th:if="${revGrowthPct < 0}" class="badge badge-cancelled" style="display:inline-flex; align-items:center; gap:0.3rem; font-size:0.8rem; padding:0.25rem 0.6rem; border-radius:9999px; font-weight:700;">
+                                    <i class="fa-solid fa-arrow-trend-down"></i> <span th:text="${revGrowthPct} + '%'">-0%</span>
+                                </span>
+                            </div>
+                            <div style="font-size:0.8rem; color:var(--slate); margin-top:0.35rem;">
+                                Kỳ 1: <strong th:text="${#numbers.formatDecimal(rev1, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</strong> 
+                                (<span th:style="${revDiff >= 0 ? 'color:#15803d; font-weight:600;' : 'color:#b91c1c; font-weight:600;'}"
+                                       th:text="${(revDiff >= 0 ? '+ ' : '') + #numbers.formatDecimal(revDiff, 0, 'COMMA', 0, 'POINT')} + ' đ'">+0 đ</span>)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Count Growth Card -->
+                    <div class="card stat-card" style="border-top: 4px solid #0d9488; padding:1.25rem;">
+                        <div>
+                            <div style="font-size:0.8rem; text-transform:uppercase; color:var(--slate); font-weight:700;">TỔNG LƯỢT KHÁM</div>
+                            <div style="display:flex; align-items:center; gap:0.65rem; margin-top:0.4rem; flex-wrap:wrap;">
+                                <div style="font-size:1.35rem; font-weight:800;" th:text="${apptCount2} + ' ca'">0 ca</div>
+                                <span th:if="${apptGrowthPct >= 0}" class="badge badge-completed" style="display:inline-flex; align-items:center; gap:0.3rem; font-size:0.8rem; padding:0.25rem 0.6rem; border-radius:9999px; font-weight:700;">
+                                    <i class="fa-solid fa-arrow-trend-up"></i> <span th:text="'+' + ${#numbers.formatDecimal(apptGrowthPct, 0, 'COMMA', 1, 'POINT')} + '%'">+0%</span>
+                                </span>
+                                <span th:if="${apptGrowthPct < 0}" class="badge badge-cancelled" style="display:inline-flex; align-items:center; gap:0.3rem; font-size:0.8rem; padding:0.25rem 0.6rem; border-radius:9999px; font-weight:700;">
+                                    <i class="fa-solid fa-arrow-trend-down"></i> <span th:text="${#numbers.formatDecimal(apptGrowthPct, 0, 'COMMA', 1, 'POINT')} + '%'">-0%</span>
+                                </span>
+                            </div>
+                            <div style="font-size:0.8rem; color:var(--slate); margin-top:0.35rem;">
+                                Kỳ 1: <strong th:text="${apptCount1} + ' ca'">0 ca</strong>
+                                (<span th:style="${apptDiff >= 0 ? 'color:#15803d; font-weight:600;' : 'color:#b91c1c; font-weight:600;'}"
+                                       th:text="${(apptDiff >= 0 ? '+ ' : '') + apptDiff + ' ca'}">+0 ca</span>)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Completed Visits Growth Card -->
+                    <div class="card stat-card" style="border-top: 4px solid #10b981; padding:1.25rem;">
+                        <div>
+                            <div style="font-size:0.8rem; text-transform:uppercase; color:var(--slate); font-weight:700;">CA KHÁM HOÀN TẤT</div>
+                            <div style="display:flex; align-items:center; gap:0.65rem; margin-top:0.4rem; flex-wrap:wrap;">
+                                <div style="font-size:1.35rem; font-weight:800;" th:text="${compCount2} + ' ca'">0 ca</div>
+                                <span th:if="${compGrowthPct >= 0}" class="badge badge-completed" style="display:inline-flex; align-items:center; gap:0.3rem; font-size:0.8rem; padding:0.25rem 0.6rem; border-radius:9999px; font-weight:700;">
+                                    <i class="fa-solid fa-arrow-trend-up"></i> <span th:text="'+' + ${#numbers.formatDecimal(compGrowthPct, 0, 'COMMA', 1, 'POINT')} + '%'">+0%</span>
+                                </span>
+                                <span th:if="${compGrowthPct < 0}" class="badge badge-cancelled" style="display:inline-flex; align-items:center; gap:0.3rem; font-size:0.8rem; padding:0.25rem 0.6rem; border-radius:9999px; font-weight:700;">
+                                    <i class="fa-solid fa-arrow-trend-down"></i> <span th:text="${#numbers.formatDecimal(compGrowthPct, 0, 'COMMA', 1, 'POINT')} + '%'">-0%</span>
+                                </span>
+                            </div>
+                            <div style="font-size:0.8rem; color:var(--slate); margin-top:0.35rem;">
+                                Tỷ lệ hoàn tất: <strong th:text="${apptCount2 > 0 ? #numbers.formatDecimal((compCount2 * 100.0 / apptCount2), 0, 'COMMA', 1, 'POINT') + '%' : '0%'}">0%</strong>
+                                (Kỳ 1: <span th:text="${apptCount1 > 0 ? #numbers.formatDecimal((compCount1 * 100.0 / apptCount1), 0, 'COMMA', 1, 'POINT') + '%' : '0%'}">0%</span>)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Average Revenue Per Patient (ARPU) -->
+                    <div class="card stat-card" style="border-top: 4px solid #8b5cf6; padding:1.25rem;">
+                        <div>
+                            <div style="font-size:0.8rem; text-transform:uppercase; color:var(--slate); font-weight:700;">DOANH THU TB / LƯỢT KHÁM</div>
+                            <div style="font-size:1.35rem; font-weight:800; margin-top:0.4rem;" th:text="${#numbers.formatDecimal(avgPerAppt2, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+                            <div style="font-size:0.8rem; color:var(--slate); margin-top:0.35rem;">
+                                Kỳ 1: <strong th:text="${#numbers.formatDecimal(avgPerAppt1, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2 Interactive Clickable Charts (Click to zoom & view detailed breakdown) -->
+                <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                    <!-- 1. Service Revenue Comparison Card (Clickable) -->
+                    <div class="card chart-interactive-card" onclick="openServiceModal()" style="padding:1.5rem; cursor:pointer; transition:all 0.2s ease;" title="Bấm để phóng to và xem bảng đề mục chi tiết">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                            <h3 class="card-title" style="margin:0;"><i class="fa-solid fa-chart-column" style="color:var(--primary);"></i> Đối Chiếu Doanh Thu Theo Dịch Vụ Y Tế</h3>
+                            <span class="badge" style="background:#e0f2fe; color:#0369a1; font-size:0.75rem;"><i class="fa-solid fa-up-right-and-down-left-from-center"></i> Phóng to & chi tiết</span>
+                        </div>
+                        <div style="position:relative; height:220px; width:100%;">
+                            <canvas id="serviceComparisonChart"></canvas>
+                        </div>
+                    
+                    </div>
+
+                    <!-- 2. Doctor Appointment Count Comparison Card (Clickable) -->
+                    <div class="card chart-interactive-card" onclick="openDoctorModal()" style="padding:1.5rem; cursor:pointer; transition:all 0.2s ease;" title="Bấm để phóng to và xem bảng đề mục chi tiết">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                            <h3 class="card-title" style="margin:0;"><i class="fa-solid fa-user-doctor" style="color:#0d9488;"></i> Lượt Khám Của Bác Sĩ</h3>
+                            <span class="badge" style="background:#ccfbf1; color:#0f766e; font-size:0.75rem;"><i class="fa-solid fa-up-right-and-down-left-from-center"></i> Phóng to & chi tiết</span>
+                        </div>
+                        <div style="position:relative; height:220px; width:100%;">
+                            <canvas id="doctorComparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         MODAL 1: Phóng To Đối Chiếu Doanh Thu Dịch Vụ Y Tế & Bảng Đề Mục Chi Tiết
+         ========================================================================= -->
+    <div id="serviceDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; padding:1.5rem;">
+        <div class="card" style="width:100%; max-width:1100px; max-height:92vh; overflow-y:auto; padding:2rem; border-radius:var(--radius); animation: fadeIn 0.2s ease; background:white; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);">
+            <!-- Modal Header -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1rem;">
+                <div>
+                    <h2 style="margin:0; font-size:1.35rem; color:var(--dark); display:flex; align-items:center; gap:0.5rem;">
+                        <i class="fa-solid fa-chart-column" style="color:var(--primary);"></i> Chi Tiết Đối Chiếu Doanh Thu Theo Dịch Vụ Y Tế
+                    </h2>
+                    <p style="margin:0.25rem 0 0 0; font-size:0.85rem; color:var(--slate);">
+                        Đối chiếu doanh số và số lượt khám giữa <strong th:text="${period1Label}">Kỳ 1</strong> và <strong th:text="${period2Label}">Kỳ 2</strong>.
+                    </p>
+                </div>
+                <button type="button" onclick="closeServiceModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--slate); line-height:1;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Enlarged Chart View inside Modal -->
+            <div style="background:#f8fafc; padding:1.5rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:1.5rem;">
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:1rem; color:var(--dark);">
+                    <i class="fa-solid fa-chart-area" style="color:var(--primary);"></i> Biểu Đồ Doanh Thu Dịch Vụ Phóng To (VNĐ)
+                </div>
+                <div style="position:relative; height:340px; width:100%;">
+                    <canvas id="modalServiceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Detailed Breakdown Table of 7 Services -->
+            <div>
+                <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:0.75rem; color:var(--dark); display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fa-solid fa-list-check" style="color:var(--primary);"></i> Bảng Đề Mục Chi Tiết 7 Dịch Vụ Y Tế
+                </h3>
+                <div class="table-responsive">
+                    <table class="table" style="font-size:0.9rem;">
+                        <thead>
+                            <tr>
+                                <th>Tên Dịch Vụ Y Tế</th>
+                                <th style="text-align:right;">Doanh Thu <span th:text="${period1Label}">Kỳ 1</span></th>
+                                <th style="text-align:right;">Doanh Thu <span th:text="${period2Label}">Kỳ 2</span></th>
+                                <th style="text-align:right;">Chênh Lệch</th>
+                                <th style="text-align:right;">Tăng Trưởng (%)</th>
+                                <th style="text-align:center;">Lượt Khám (K1 $\rightarrow$ K2)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${serviceComparisonList}">
+                                <td>
+                                    <strong th:text="${item.serviceName}">Khám nội tổng quát</strong>
+                                </td>
+                                <td style="text-align:right;" th:text="${#numbers.formatDecimal(item.rev1, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</td>
+                                <td style="text-align:right; font-weight:700; color:var(--primary);" th:text="${#numbers.formatDecimal(item.rev2, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</td>
+                                <td style="text-align:right; font-weight:600;"
+                                    th:style="${item.diff >= 0 ? 'text-align:right; color:#15803d; font-weight:600;' : 'text-align:right; color:#b91c1c; font-weight:600;'}"
+                                    th:text="${(item.diff >= 0 ? '+ ' : '') + #numbers.formatDecimal(item.diff, 0, 'COMMA', 0, 'POINT')} + ' đ'">+0 đ</td>
+                                <td style="text-align:right;">
+                                    <span th:if="${item.growthPct >= 0}" class="badge badge-completed" th:text="'+' + ${item.growthPct} + '%'">+0%</span>
+                                    <span th:if="${item.growthPct < 0}" class="badge badge-cancelled" th:text="${item.growthPct} + '%'">-0%</span>
+                                </td>
+                                <td style="text-align:center; font-weight:600; color:var(--slate);" th:text="${item.count1} + '  ➜  ' + ${item.count2}">0 ➜ 0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div style="margin-top:1.5rem; text-align:right; border-top:1px solid var(--border); padding-top:1rem;">
+                <button type="button" onclick="closeServiceModal()" class="btn btn-secondary btn-sm">Đóng cửa sổ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         MODAL 2: Phóng To Lượt Khám Bác Sĩ & Bảng Đề Mục Chi Tiết
+         ========================================================================= -->
+    <div id="doctorDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; padding:1.5rem;">
+        <div class="card" style="width:100%; max-width:1100px; max-height:92vh; overflow-y:auto; padding:2rem; border-radius:var(--radius); animation: fadeIn 0.2s ease; background:white; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);">
+            <!-- Modal Header -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1rem;">
+                <div>
+                    <h2 style="margin:0; font-size:1.35rem; color:var(--dark); display:flex; align-items:center; gap:0.5rem;">
+                        <i class="fa-solid fa-user-doctor" style="color:#0d9488;"></i> Chi Tiết Hiệu Suất & Lượt Khám Bác Sĩ
+                    </h2>
+                    <p style="margin:0.25rem 0 0 0; font-size:0.85rem; color:var(--slate);">
+                        Đối chiếu số ca khám và doanh số của các Bác sĩ chuyên khoa giữa <strong th:text="${period1Label}">Kỳ 1</strong> và <strong th:text="${period2Label}">Kỳ 2</strong>.
+                    </p>
+                </div>
+                <button type="button" onclick="closeDoctorModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--slate); line-height:1;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Enlarged Chart View inside Modal -->
+            <div style="background:#f8fafc; padding:1.5rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:1.5rem;">
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:1rem; color:var(--dark);">
+                    <i class="fa-solid fa-chart-bar" style="color:#0d9488;"></i> Biểu Đồ Lượt Khám Của Bác Sĩ Phóng To (Số Ca)
+                </div>
+                <div style="position:relative; height:340px; width:100%;">
+                    <canvas id="modalDoctorChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Detailed Breakdown Table of Doctors -->
+            <div>
+                <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:0.75rem; color:var(--dark); display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fa-solid fa-stethoscope" style="color:#0d9488;"></i> Bảng Đề Mục Chi Tiết Hiệu Suất Bác Sĩ Chuyên Khoa
+                </h3>
+                <div class="table-responsive">
+                    <table class="table" style="font-size:0.9rem;">
+                        <thead>
+                            <tr>
+                                <th>Họ Và Tên Bác Sĩ</th>
+                                <th style="text-align:center;">Lượt Đăng Ký (K1 vs K2)</th>
+                                <th style="text-align:center;">Đã Hoàn Thành (K1 vs K2)</th>
+                                <th style="text-align:right;">Doanh Thu <span th:text="${period1Label}">Kỳ 1</span></th>
+                                <th style="text-align:right;">Doanh Thu <span th:text="${period2Label}">Kỳ 2</span></th>
+                                <th style="text-align:right;">Chênh Lệch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="doc : ${doctorComparisonList}">
+                                <td>
+                                    <strong th:text="${doc.doctorName}">BS. Nguyễn Văn A</strong>
+                                </td>
+                                <td style="text-align:center;" th:text="${doc.count1} + ' vs ' + ${doc.count2}">0 vs 0</td>
+                                <td style="text-align:center; font-weight:600; color:#15803d;" th:text="${doc.completed1} + ' vs ' + ${doc.completed2}">0 vs 0</td>
+                                <td style="text-align:right;" th:text="${#numbers.formatDecimal(doc.rev1, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</td>
+                                <td style="text-align:right; font-weight:700; color:var(--primary);" th:text="${#numbers.formatDecimal(doc.rev2, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</td>
+                                <td style="text-align:right; font-weight:600;"
+                                    th:style="${doc.diff >= 0 ? 'text-align:right; color:#15803d; font-weight:600;' : 'text-align:right; color:#b91c1c; font-weight:600;'}"
+                                    th:text="${(doc.diff >= 0 ? '+ ' : '') + #numbers.formatDecimal(doc.diff, 0, 'COMMA', 0, 'POINT')} + ' đ'">+0 đ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div style="margin-top:1.5rem; text-align:right; border-top:1px solid var(--border); padding-top:1rem;">
+                <button type="button" onclick="closeDoctorModal()" class="btn btn-secondary btn-sm">Đóng cửa sổ</button>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <!-- Interactive Styles -->
+    <style>
+        .chart-interactive-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        @media print {
+            body { background: white !important; }
+            nav, aside, footer, form, .btn, #serviceDetailModal, #doctorDetailModal { display: none !important; }
+            .main-container { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+            main { width: 100% !important; margin: 0 !important; }
+            .card { box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid; }
+        }
+    </style>
+
+    <!-- Grouped Bar Charts & Modal Scripts -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var label1 = /*[[${period1Label}]]*/ 'Kỳ 1';
+        var label2 = /*[[${period2Label}]]*/ 'Kỳ 2';
+        var sLabels = /*[[${compServiceLabels}]]*/ [];
+        var sRev1 = /*[[${compServiceRev1}]]*/ [];
+        var sRev2 = /*[[${compServiceRev2}]]*/ [];
+        var dLabels = /*[[${compDoctorLabels}]]*/ [];
+        var dAppt1 = /*[[${compDoctorAppt1}]]*/ [];
+        var dAppt2 = /*[[${compDoctorAppt2}]]*/ [];
+
+        var modalServiceChartInstance = null;
+        var modalDoctorChartInstance = null;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Service Revenue Main Page Preview Chart (Minimalist: Only pure comparison bars)
+            var ctxS = document.getElementById('serviceComparisonChart');
+            if (ctxS && sLabels.length > 0) {
+                new Chart(ctxS, {
+                    type: 'bar',
+                    data: {
+                        labels: sLabels,
+                        datasets: [
+                            {
+                                label: label1 + ' (VNĐ)',
+                                data: sRev1,
+                                backgroundColor: '#94a3b8',
+                                borderRadius: 6,
+                                maxBarThickness: 32
+                            },
+                            {
+                                label: label2 + ' (VNĐ)',
+                                data: sRev2,
+                                backgroundColor: '#0284c7',
+                                borderRadius: 6,
+                                maxBarThickness: 32
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(ctx) {
+                                        return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString('vi-VN') + ' VNĐ';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                ticks: { display: false },
+                                grid: { display: true, color: '#f1f5f9' },
+                                border: { display: false }
+                            },
+                            y: {
+                                display: true,
+                                beginAtZero: true,
+                                ticks: { display: false },
+                                grid: { display: true, color: '#e2e8f0' },
+                                border: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Doctor Appointment Counts Main Page Preview Chart (Minimalist: Bars + Grid lines)
+            var ctxD = document.getElementById('doctorComparisonChart');
+            if (ctxD && dLabels.length > 0) {
+                new Chart(ctxD, {
+                    type: 'bar',
+                    data: {
+                        labels: dLabels,
+                        datasets: [
+                            {
+                                label: label1 + ' (Ca)',
+                                data: dAppt1,
+                                backgroundColor: '#cbd5e1',
+                                borderRadius: 6,
+                                maxBarThickness: 28
+                            },
+                            {
+                                label: label2 + ' (Ca)',
+                                data: dAppt2,
+                                backgroundColor: '#0d9488',
+                                borderRadius: 6,
+                                maxBarThickness: 28
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(ctx) {
+                                        return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + ' ca';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                ticks: { display: false },
+                                grid: { display: true, color: '#f1f5f9' },
+                                border: { display: false }
+                            },
+                            y: {
+                                display: true,
+                                beginAtZero: true,
+                                ticks: { display: false },
+                                grid: { display: true, color: '#e2e8f0' },
+                                border: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        // Open & Close Service Comparison Modal
+        function openServiceModal() {
+            var modal = document.getElementById('serviceDetailModal');
+            modal.style.display = 'flex';
+
+            if (!modalServiceChartInstance) {
+                var ctx = document.getElementById('modalServiceChart');
+                if (ctx && sLabels.length > 0) {
+                    modalServiceChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: sLabels,
+                            datasets: [
+                                {
+                                    label: label1 + ' (VNĐ)',
+                                    data: sRev1,
+                                    backgroundColor: '#94a3b8',
+                                    borderRadius: 6,
+                                    maxBarThickness: 40
+                                },
+                                {
+                                    label: label2 + ' (VNĐ)',
+                                    data: sRev2,
+                                    backgroundColor: '#0284c7',
+                                    borderRadius: 6,
+                                    maxBarThickness: 40
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'top', labels: { boxWidth: 14, font: { size: 12, weight: 'bold' } } },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(ctx) {
+                                            return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString('vi-VN') + ' VNĐ';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(v) {
+                                            if (v >= 1000000) return (v / 1000000).toFixed(1) + ' Triệu VNĐ';
+                                            if (v >= 1000) return (v / 1000).toFixed(0) + 'k';
+                                            return v;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                modalServiceChartInstance.resize();
+            }
+        }
+
+        function closeServiceModal() {
+            document.getElementById('serviceDetailModal').style.display = 'none';
+        }
+
+        // Open & Close Doctor Comparison Modal
+        function openDoctorModal() {
+            var modal = document.getElementById('doctorDetailModal');
+            modal.style.display = 'flex';
+
+            if (!modalDoctorChartInstance) {
+                var ctx = document.getElementById('modalDoctorChart');
+                if (ctx && dLabels.length > 0) {
+                    modalDoctorChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: dLabels,
+                            datasets: [
+                                {
+                                    label: label1 + ' (Ca)',
+                                    data: dAppt1,
+                                    backgroundColor: '#cbd5e1',
+                                    borderRadius: 6,
+                                    maxBarThickness: 36
+                                },
+                                {
+                                    label: label2 + ' (Ca)',
+                                    data: dAppt2,
+                                    backgroundColor: '#0d9488',
+                                    borderRadius: 6,
+                                    maxBarThickness: 36
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'top', labels: { boxWidth: 14, font: { size: 12, weight: 'bold' } } }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { precision: 0 }
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                modalDoctorChartInstance.resize();
+            }
+        }
+
+        function closeDoctorModal() {
+            document.getElementById('doctorDetailModal').style.display = 'none';
+        }
+
+        // Backdrop click to close modals
+        window.onclick = function(event) {
+            var sModal = document.getElementById('serviceDetailModal');
+            var dModal = document.getElementById('doctorDetailModal');
+            if (event.target == sModal) {
+                closeServiceModal();
+            }
+            if (event.target == dModal) {
+                closeDoctorModal();
+            }
+        };
+
+        // ESC key to close modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeServiceModal();
+                closeDoctorModal();
+            }
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>

@@ -32,6 +32,12 @@ public class Patient {
     @Column(length = 255)
     private String address;
 
+    @Column(columnDefinition = "TEXT")
+    private String allergies;
+
+    @Column(name = "medical_history", columnDefinition = "TEXT")
+    private String medicalHistory;
+
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -107,6 +113,22 @@ public class Patient {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getAllergies() {
+        return allergies;
+    }
+
+    public void setAllergies(String allergies) {
+        this.allergies = allergies;
+    }
+
+    public String getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(String medicalHistory) {
+        this.medicalHistory = medicalHistory;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -86,6 +86,19 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
+    @PostMapping("/users/delete/{id}")
+    public String deleteUser(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            authService.deleteUser(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa tài khoản người dùng thành công!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa tài khoản: " + e.getMessage());
+        }
+        return "redirect:/admin/users";
+    }
+
     @GetMapping("/services")
     public String services(Model model) {
         model.addAttribute("services", serviceManagementService.getAllServices());
@@ -125,10 +138,35 @@ public class AdminController {
     }
 
     @GetMapping("/reports")
-    public String reports(Model model) {
-        Map<String, Object> stats = reportService.getAdminDashboardStats();
-        model.addAllAttributes(stats);
+    public String reports(
+            @RequestParam(value = "filter", required = false, defaultValue = "all") String filter,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            Model model) {
+        Map<String, Object> report = reportService.getFilteredRevenueReport(filter, startDate, endDate);
+        model.addAllAttributes(report);
         return "admin/reports";
+    }
+
+    @GetMapping("/reports/comparison")
+    public String comparisonReport(
+            @RequestParam(value = "month1", required = false, defaultValue = "7") int month1,
+            @RequestParam(value = "year1", required = false, defaultValue = "2026") int year1,
+            @RequestParam(value = "month2", required = false, defaultValue = "8") int month2,
+            @RequestParam(value = "year2", required = false, defaultValue = "2026") int year2,
+            Model model) {
+        Map<String, Object> comparison = reportService.getMonthComparisonReport(month1, year1, month2, year2);
+        model.addAllAttributes(comparison);
+        return "admin/comparison";
+    }
+
+    @GetMapping("/patients")
+    public String patients(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Model model) {
+        Map<String, Object> patientReport = reportService.getPatientsAdminReport(keyword);
+        model.addAllAttributes(patientReport);
+        return "admin/patients";
     }
 
 }
