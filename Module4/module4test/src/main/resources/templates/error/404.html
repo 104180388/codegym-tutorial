@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Không tìm thấy trang</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header class="navbar">
+        <a th:href="@{/giao-dich}" class="navbar-brand">
+            <span class="brand-icon">🏠</span>
+            <span>Bất Động Sản</span>
+        </a>
+    </header>
+
+    <main class="container">
+        <div class="card" style="text-align: center; padding: 3rem 1.5rem; max-width: 500px; margin: 3rem auto;">
+            <h1 style="font-size: 3rem; color: var(--danger-color); margin-bottom: 1rem;">404</h1>
+            <h2 style="margin-bottom: 1rem;">Không tìm thấy trang</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Giao dịch hoặc trang bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+            <a th:href="@{/giao-dich}" class="btn btn-primary">Quay lại trang danh sách</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Quản Lý Giao Dịch Nhà Đất - CodeGym</p>
+    </footer>
+</body>
+</html>

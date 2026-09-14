@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm mới giao dịch</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <a th:href="@{/giao-dich}" class="navbar-brand">
+            <span class="brand-icon">🏠</span>
+            <span>Bất Động Sản</span>
+        </a>
+        <nav>
+            <ul class="navbar-nav">
+                <li><a th:href="@{/giao-dich}" class="nav-link">Danh sách giao dịch</a></li>
+                <li><a th:href="@{/giao-dich/them-moi}" class="nav-link active">Thêm mới giao dịch</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Error alert if any -->
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div class="card form-container">
+            <div class="page-header">
+                <h1 class="page-title">Thêm mới giao dịch</h1>
+            </div>
+
+            <form th:action="@{/giao-dich/them-moi}" th:object="${giaoDichDto}" method="post" id="createForm" novalidate>
+                <!-- Mã giao dịch -->
+                <div class="form-group">
+                    <label for="maGiaoDich" class="form-label">
+                        Mã giao dịch <span class="required">*</span>
+                    </label>
+                    <input type="text" id="maGiaoDich" th:field="*{maGiaoDich}" class="form-control"
+                           placeholder="Ví dụ: MGD-0001"
+                           th:classappend="${#fields.hasErrors('maGiaoDich')} ? 'is-invalid' : ''" style="width: 100%;">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('maGiaoDich')}" th:text="${#fields.errors('maGiaoDich')[0]}"></div>
+                </div>
+
+                <!-- Tên khách hàng (Dropdown) -->
+                <div class="form-group">
+                    <label for="maKhachHang" class="form-label">
+                        Tên khách hàng <span class="required">*</span>
+                    </label>
+                    <select id="maKhachHang" th:field="*{maKhachHang}" class="form-select"
+                            th:classappend="${#fields.hasErrors('maKhachHang')} ? 'is-invalid' : ''" style="width: 100%;">
+                        <option value="">-- Chọn khách hàng --</option>
+                        <option th:each="kh : ${danhSachKhachHang}"
+                                th:value="${kh.maKhachHang}"
+                                th:text="${kh.tenKhachHang} + ' (' + ${kh.maKhachHang} + ')'">
+                            Nguyễn Văn A (KH-001)
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('maKhachHang')}" th:text="${#fields.errors('maKhachHang')[0]}"></div>
+                </div>
+
+                <!-- Loại bất động sản (Radio buttons) -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Loại bất động sản <span class="required">*</span>
+                    </label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" th:field="*{loaiDichVu}" value="Đất">
+                            <span>Đất</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" th:field="*{loaiDichVu}" value="Nhà đất">
+                            <span>Nhà đất</span>
+                        </label>
+                    </div>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('loaiDichVu')}" th:text="${#fields.errors('loaiDichVu')[0]}"></div>
+                </div>
+
+                <!-- Ngày giao dịch -->
+                <div class="form-group">
+                    <label for="ngayGiaoDich" class="form-label">
+                        Ngày giao dịch <span class="required">*</span>
+                    </label>
+                    <input type="date" id="ngayGiaoDich" th:field="*{ngayGiaoDich}" class="form-control"
+                           th:classappend="${#fields.hasErrors('ngayGiaoDich')} ? 'is-invalid' : ''" style="width: 100%;">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('ngayGiaoDich')}" th:text="${#fields.errors('ngayGiaoDich')[0]}"></div>
+                </div>
+
+                <!-- Đơn giá -->
+                <div class="form-group">
+                    <label for="donGia" class="form-label">
+                        Đơn giá (VND/m²) <span class="required">*</span>
+                    </label>
+                    <input type="number" step="any" id="donGia" th:field="*{donGia}" class="form-control"
+                           placeholder="Nhập đơn giá (lớn hơn 500.000)"
+                           th:classappend="${#fields.hasErrors('donGia')} ? 'is-invalid' : ''" style="width: 100%;">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('donGia')}" th:text="${#fields.errors('donGia')[0]}"></div>
+                </div>
+
+                <!-- Diện tích -->
+                <div class="form-group">
+                    <label for="dienTich" class="form-label">
+                        Diện tích (m²) <span class="required">*</span>
+                    </label>
+                    <input type="number" step="any" id="dienTich" th:field="*{dienTich}" class="form-control"
+                           placeholder="Nhập diện tích (lớn hơn 20 m²)"
+                           th:classappend="${#fields.hasErrors('dienTich')} ? 'is-invalid' : ''" style="width: 100%;">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('dienTich')}" th:text="${#fields.errors('dienTich')[0]}"></div>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="btnSave">Lưu</button>
+                    <a th:href="@{/giao-dich}" class="btn btn-secondary" id="btnCancel">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Quản Lý Giao Dịch Nhà Đất - CodeGym</p>
+    </footer>
+
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

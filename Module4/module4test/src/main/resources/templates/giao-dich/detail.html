@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết giao dịch</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <a th:href="@{/giao-dich}" class="navbar-brand">
+            <span class="brand-icon">🏠</span>
+            <span>Bất Động Sản</span>
+        </a>
+        <nav>
+            <ul class="navbar-nav">
+                <li><a th:href="@{/giao-dich}" class="nav-link active">Danh sách giao dịch</a></li>
+                <li><a th:href="@{/giao-dich/them-moi}" class="nav-link">Thêm mới giao dịch</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="card detail-card">
+            <div class="page-header">
+                <h1 class="page-title">Chi tiết giao dịch</h1>
+            </div>
+
+            <div class="detail-list">
+                <div class="detail-item">
+                    <span class="detail-label">Mã giao dịch</span>
+                    <span class="detail-value" th:text="${giaoDich.maGiaoDich}">MGD-0001</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Loại bất động sản</span>
+                    <span class="detail-value">
+                        <span th:if="${giaoDich.loaiDichVu == 'Đất'}" class="badge badge-land" th:text="${giaoDich.loaiDichVu}">Đất</span>
+                        <span th:if="${giaoDich.loaiDichVu != 'Đất'}" class="badge badge-house" th:text="${giaoDich.loaiDichVu}">Nhà đất</span>
+                    </span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Ngày giao dịch</span>
+                    <span class="detail-value" th:text="${#temporals.format(giaoDich.ngayGiaoDich, 'dd/MM/yyyy')}">12/12/2026</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Đơn giá (VND)</span>
+                    <span class="detail-value" th:text="${#numbers.formatDecimal(giaoDich.donGia, 0, 'POINT', 0, 'POINT')}">2.000.000</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Diện tích (m²)</span>
+                    <span class="detail-value" th:text="${#numbers.formatDecimal(giaoDich.dienTich, 0, 'POINT', (giaoDich.dienTich % 1 == 0 ? 0 : 2), 'POINT')}">100</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Tên khách hàng</span>
+                    <span class="detail-value" th:text="${giaoDich.khachHang != null ? giaoDich.khachHang.tenKhachHang : 'N/A'}">Nguyễn Văn A</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Số điện thoại</span>
+                    <span class="detail-value" th:text="${giaoDich.khachHang != null ? giaoDich.khachHang.soDienThoai : 'N/A'}">0905973155</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value" th:text="${giaoDich.khachHang != null ? giaoDich.khachHang.email : 'N/A'}">nguyenvana@gmail.com</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-warning" id="openDeleteModalBtn">
+                    Xóa
+                </button>
+                <a th:href="@{/giao-dich}" class="btn btn-primary" id="btnBack">
+                    Quay lại
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Confirmation Modal Dialog -->
+    <div class="modal-backdrop" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title">Xác nhận xóa giao dịch</h3>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có muốn xóa giao dịch <strong th:text="${giaoDich.maGiaoDich}">MGD-0001</strong> này không?</p>
+            </div>
+            <div class="modal-footer">
+                <form th:action="@{/giao-dich/xoa/{id}(id=${giaoDich.maGiaoDich})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Có</button>
+                </form>
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Không</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Quản Lý Giao Dịch Nhà Đất - CodeGym</p>
+    </footer>
+
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

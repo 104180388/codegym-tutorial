@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách giao dịch nhà đất</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <a th:href="@{/giao-dich}" class="navbar-brand">
+            <span class="brand-icon">🏠</span>
+            <span>Bất Động Sản</span>
+        </a>
+        <nav>
+            <ul class="navbar-nav">
+                <li><a th:href="@{/giao-dich}" class="nav-link active">Danh sách giao dịch</a></li>
+                <li><a th:href="@{/giao-dich/them-moi}" class="nav-link">Thêm mới giao dịch</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Flash Alert -->
+        <div th:if="${message}" th:class="'alert alert-' + (${messageType} != null ? ${messageType} : 'success')" role="alert">
+            <span th:text="${message}"></span>
+        </div>
+
+        <div class="card">
+            <div class="page-header">
+                <h1 class="page-title">Danh sách giao dịch nhà đất</h1>
+            </div>
+
+            <!-- Toolbar: Create Button & Search Form -->
+            <div class="toolbar">
+                <div>
+                    <a th:href="@{/giao-dich/them-moi}" class="btn btn-success" id="btnAddNew">
+                        + Thêm mới
+                    </a>
+                </div>
+
+                <form th:action="@{/giao-dich}" method="get" class="search-form">
+                    <select name="loaiDichVu" class="form-select" id="searchLoaiDichVu">
+                        <option value="" th:selected="${loaiDichVu == null or loaiDichVu == ''}">Chọn loại bất động sản</option>
+                        <option value="Đất" th:selected="${loaiDichVu == 'Đất'}">Đất</option>
+                        <option value="Nhà đất" th:selected="${loaiDichVu == 'Nhà đất' or loaiDichVu == 'Nhà và đất'}">Nhà đất</option>
+                    </select>
+
+                    <input type="text" name="tenKhachHang" class="form-control" placeholder="Tên khách hàng"
+                           th:value="${tenKhachHang}" id="searchTenKhachHang">
+
+                    <button type="submit" class="btn btn-primary" id="btnSearch">
+                        Tìm kiếm
+                    </button>
+                    <a th:if="${(tenKhachHang != null and !tenKhachHang.isEmpty()) or (loaiDichVu != null and !loaiDichVu.isEmpty())}" 
+                       th:href="@{/giao-dich}" class="btn btn-secondary" title="Đặt lại bộ lọc">
+                        Làm mới
+                    </a>
+                </form>
+            </div>
+
+            <!-- Table of Transactions -->
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Mã giao dịch</th>
+                            <th>Tên khách hàng</th>
+                            <th>Ngày giao dịch</th>
+                            <th>Loại dịch vụ</th>
+                            <th>Đơn giá (VND/m²)</th>
+                            <th>Diện tích (m²)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(danhSachGiaoDich)}">
+                            <td colspan="7" class="table-empty">
+                                Không có dữ liệu giao dịch nào phù hợp.
+                            </td>
+                        </tr>
+                        <tr th:each="gd : ${danhSachGiaoDich}">
+                            <td><strong th:text="${gd.maGiaoDich}">MGD-0001</strong></td>
+                            <td th:text="${gd.khachHang != null ? gd.khachHang.tenKhachHang : 'N/A'}">Nguyễn Văn A</td>
+                            <td th:text="${#temporals.format(gd.ngayGiaoDich, 'dd/MM/yyyy')}">12/12/2026</td>
+                            <td>
+                                <span th:if="${gd.loaiDichVu == 'Đất'}" class="badge badge-land" th:text="${gd.loaiDichVu}">Đất</span>
+                                <span th:if="${gd.loaiDichVu != 'Đất'}" class="badge badge-house" th:text="${gd.loaiDichVu}">Nhà đất</span>
+                            </td>
+                            <td th:text="${#numbers.formatDecimal(gd.donGia, 0, 'POINT', 0, 'POINT')}">2.000.000</td>
+                            <td th:text="${#numbers.formatDecimal(gd.dienTich, 0, 'POINT', (gd.dienTich % 1 == 0 ? 0 : 2), 'POINT')}">100</td>
+                            <td>
+                                <a th:href="@{/giao-dich/chi-tiet/{id}(id=${gd.maGiaoDich})}" class="btn btn-primary btn-sm">
+                                    Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Quản Lý Giao Dịch Nhà Đất - CodeGym</p>
+    </footer>
+
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>
