@@ -1,0 +1,51 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f9fafb;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Container chung cho trang */
+.page {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* Tiêu đề */
+.page h1 {
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    color: #2c3e50;
+}
+
+/* Đoạn văn bản */
+.page p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Menu link */
+ul {
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+ul li {
+    display: inline-block;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #3498db;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+ul li a:hover {
+    background-color: #ecf0f1;
+}
